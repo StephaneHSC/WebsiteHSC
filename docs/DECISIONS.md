@@ -15,6 +15,76 @@ Format:
 
 ---
 
+## 2026-04-29 — Quote form rollout: build once in M8, use CTA placeholders in M2/M3 (Option A)
+
+**Decision**: The Quote form has two visual variants in the Figma — embedded (split layout, used on Home and Services Listing) and full-page (used on /quote). Both share the same form logic. We build the form ONCE in Module 8 and place both variants in the same module. Until M8, Module 2 (Home) and Module 3 (Services Listing) use simple CTA placeholder cards (image + headline + button) that link to /quote, where /quote is a stub until M8.
+
+**Why**:
+
+- M2 is already the heaviest module (8 sections, 4 days). Adding the multi-step form (state machine + file upload + Turnstile + Formspree) to M2 risks slipping the schedule.
+- Building the form once in M8 — when all the form complexity is in one focused window — is cleaner than splitting it across modules.
+- CTA placeholders mean users never see a half-functional form. They see either a button-link or a real working form.
+
+**Alternatives considered (Option B)**: build the working form in M2 and reuse on /quote in M8. Pros: home page matches Figma immediately, fewer placeholders. Cons: pushes M2 deeper into form complexity, risk of M2 slipping.
+
+**How to apply**:
+
+- M2: render a CTA card matching the "Start your global transport request" Figma section. Button → /quote.
+- M3: render the same CTA card pattern in the services listing footer. Button → /quote.
+- /quote: stub page until M8 (placeholder content, "Coming soon" or similar).
+- M8: build the form (multi-step state, file upload, Turnstile, Formspree wiring). Render two variants: `<QuoteFormPage />` on /quote, `<QuoteFormEmbedded />` to replace the CTA cards on M2 home and M3 services listing. All three placements ship in M8.
+
+---
+
+## 2026-04-29 — Quote form: schema supports BOTH iframe AND custom React paths via `form_mode` toggle
+
+**Decision**: The `quoteFormConfig` Sanity schema now exposes both paths side-by-side, with a `form_mode` radio (`"custom"` | `"embed"`) that hides the irrelevant fields. Editors fill exactly one path. Frontend reads `form_mode` to decide what to render.
+
+**Schema additions (Path B — custom React form)**:
+
+- `form_endpoint` (url) — Formspree REST or other POST URL
+- `transport_modes` (string[]) — Step 1 dropdown options, seeded with the 6 PDF defaults
+- `helicopter_models` (string[]) — Step 3 dropdown options, seeded with 6 common models
+- `transaction_types` (string[]) — Step 4 options
+- `step_titles` (object) — optional copy overrides for step 1–5
+
+**Schema additions (Path A — iframe)**: existing `form_embed_code` (text) — raw HTML iframe from Tally / Formspree / Google Forms / Typeform / etc.
+
+**Why**:
+
+- The PDF wording ("frontend reads the embed code / config from the CMS and renders the form") admits both interpretations. The original PM may have envisioned iframe; the design clearly wants a branded form.
+- Carrying both options lets the PM negotiation in M8 land on either without a schema change.
+- The `form_mode` toggle prevents editors from accidentally filling both fields and creating ambiguity.
+- Path B's dropdown options being CMS-driven means the client can update helicopter models, transport modes, etc. without dev work — addresses the "dynamic fields" concern from the PDF.
+
+**Tradeoffs**:
+
+- Slightly more schema surface area for the editor to understand. Mitigated by the radio toggle hiding irrelevant fields.
+- Frontend rendering code in M8 will branch on `form_mode`. Modest extra complexity.
+
+**How to apply (M8)**: In the QuoteForm component, read `form_mode` from the CMS singleton. If `"embed"`, render `<div dangerouslySetInnerHTML={{ __html: form_embed_code }} />` (sandboxed). If `"custom"`, render the React form using the dropdown arrays + step titles + endpoint.
+
+---
+
+## 2026-04-29 — Sanity content-publishing access control: defer until handover
+
+**Decision**: For Module 1, all Sanity users will get the **Editor** role (full draft + publish power). At handover to the client team, if they want junior staff to edit drafts but not publish, add per-user `document.actions` filtering in `sanity.config.ts` (Layer 2 of Sanity's permission model — free tier compatible).
+
+**Why**:
+
+- Free tier built-in roles only offer Administrator / Editor / Viewer — no built-in "edit but can't publish" distinction.
+- Custom document actions in `sanity.config.ts` can hide the Publish button for specific user IDs, achieving a "submitter / publisher" workflow without paid tier.
+- Premature to wire this up before we know who the client's editor team is and what workflow they need. The infrastructure (custom actions API) is free and 30 minutes of work to add later.
+
+**Alternatives considered**:
+
+- `sanity-plugin-workflow` for explicit Draft → In Review → Approved → Published states. Useful if the client wants formal review queues. Defer to warranty period if asked for.
+- Sanity Growth tier ($99/mo) for true custom roles with document-level permissions — overkill for this site.
+
+**How to apply**: At handover, ask the client which team members should be publishers vs. submitters. Add an `isPublisher(currentUser)` allowlist in `sanity.config.ts → document.actions`. Document the publisher list in `docs/HANDOVER.md`.
+
+---
+
 ## 2026-04-28 — Mobile-first responsiveness is a top-line rule, not a final-module concern
 
 **Decision**: Every module ships with full responsive behavior at 375px / 768px / 1024px / 1440px from day one. Module 9 (Mobile & Polish) is for splash screen, mobile nav overlay, and final polish — NOT for retrofitting basic responsive layouts.
