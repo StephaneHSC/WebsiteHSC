@@ -19,9 +19,10 @@ const STORE_META: Record<Store, { href: string; primary: string; href_aria: stri
 
 const variantClasses: Record<BadgeVariant, string> = {
   // Dark pill on light/photo backgrounds
-  dark: "bg-ink text-surface hover:bg-ink/90 focus-visible:ring-offset-surface",
-  // Light pill on dark backgrounds
-  light: "bg-surface text-ink hover:bg-surface/90 focus-visible:ring-offset-ink",
+  dark: "bg-ink text-surface hover:bg-ink/85 focus-visible:ring-offset-surface",
+  // Light pill on dark backgrounds (footer). When used on a light bg, pass
+  // `border border-ink` (or similar) via className so the pill outline shows.
+  light: "bg-surface text-ink hover:bg-surface-alt focus-visible:ring-offset-ink",
 };
 
 export type AppBadgeProps = {
@@ -39,7 +40,7 @@ export function AppBadge({ store, variant = "dark", className }: AppBadgeProps) 
       rel="noopener noreferrer"
       aria-label={meta.href_aria}
       className={cn(
-        "focus-visible:ring-brand-red inline-flex items-center gap-3 rounded-full px-5 py-2.5 transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
+        "focus-visible:ring-brand-red inline-flex items-center gap-3 rounded-full px-5 py-2.5 transition-all duration-200 hover:scale-[1.02] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
         variantClasses[variant],
         className,
       )}
@@ -56,14 +57,17 @@ export function AppBadge({ store, variant = "dark", className }: AppBadgeProps) 
 export type AppBadgeRowProps = {
   variant?: BadgeVariant;
   className?: string;
+  /** Forwarded to each individual <AppBadge>. Used for per-context tweaks like
+   *  adding a border when the light variant lands on a light bg. */
+  badgeClassName?: string;
 };
 
 /** Convenience row: App Store + Google Play side by side. */
-export function AppBadgeRow({ variant = "dark", className }: AppBadgeRowProps) {
+export function AppBadgeRow({ variant = "dark", className, badgeClassName }: AppBadgeRowProps) {
   return (
     <div className={cn("flex flex-wrap items-center gap-3", className)}>
-      <AppBadge store="app-store" variant={variant} />
-      <AppBadge store="google-play" variant={variant} />
+      <AppBadge store="app-store" variant={variant} className={badgeClassName} />
+      <AppBadge store="google-play" variant={variant} className={badgeClassName} />
     </div>
   );
 }

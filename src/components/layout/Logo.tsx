@@ -4,6 +4,9 @@ import { cn } from "@/lib/utils";
 
 export type LogoProps = {
   className?: string;
+  /** Tailwind classes applied to the inner <Image> — use to override the
+   *  default `h-12 w-auto` size (e.g. responsive sizing on the video tile). */
+  imageClassName?: string;
   /** Use the white-on-transparent variant for dark backgrounds (footer). */
   inverted?: boolean;
   /** Optional click handler — used by MobileNav to close the drawer when the
@@ -18,7 +21,7 @@ export type LogoProps = {
  *   /public/logo.svg        — dark text + red, for light backgrounds (Header, MobileNav drawer)
  *   /public/logo-light.svg  — white text + red, for dark backgrounds (Footer)
  */
-export function Logo({ className, inverted = false, onClick }: LogoProps) {
+export function Logo({ className, imageClassName, inverted = false, onClick }: LogoProps) {
   return (
     <Link
       href="/"
@@ -32,7 +35,7 @@ export function Logo({ className, inverted = false, onClick }: LogoProps) {
         width={232}
         height={79}
         priority
-        className="h-12 w-auto"
+        className={cn("h-12 w-auto", imageClassName)}
       />
     </Link>
   );

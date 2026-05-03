@@ -16,7 +16,7 @@ import { buttonVariants } from "@/components/ui/Button";
  */
 export function OurSolutions() {
   return (
-    <Section tone="light" className="overflow-hidden pt-20 md:pt-48 lg:pt-64">
+    <Section tone="light" className="overflow-hidden pt-20 md:pt-48 lg:pt-80 lg:pb-70">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 flex items-center justify-center"
