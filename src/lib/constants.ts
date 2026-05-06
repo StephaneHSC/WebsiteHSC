@@ -185,47 +185,159 @@ export type ShowcaseTile = {
   alt: string;
   label?: readonly string[];
   showFlag?: boolean;
+  /**
+   * M4 addition — service slugs this project applies to. Detail pages render
+   * a filtered subset (`tile.relatedServices?.includes(serviceSlug) ?? true`).
+   * When undefined, the tile shows on every detail page.
+   */
+  relatedServices?: readonly string[];
+  /**
+   * M4 placeholder shape — drives the desktop tall/short bento offset. Home
+   * page already infers this from the column index, so the field is optional
+   * for now and reserved for the M7 showcase page.
+   */
+  shape?: "tall" | "short";
+  /**
+   * M4 — modal payload populated for M7's project lightbox. M4 stores the
+   * data; M7 reads it. M4 ships placeholder copy where unknown.
+   * TODO: client review of project modal copy in M7.
+   */
+  modal?: {
+    aircraft: string;
+    route: string;
+    transportMode: string;
+    timeline: string;
+    challenge: string;
+    solution: string;
+    result: string;
+  };
 };
 
+// TODO: PM/client to confirm per-project relatedServices mapping. Initial
+// guesses below are inferred from the route hints (e.g. Khalifa Port → ocean,
+// Switzerland → likely air); modal copy is placeholder until content review.
 export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
   {
     id: "switzerland-india",
     src: "/showcase/switzerland-to-india.webp",
     alt: "Helicopter shipment from Switzerland to India",
     label: ["From", "Switzer-", "land to", "India"],
+    relatedServices: ["air-commercial", "air-chartering"],
+    modal: {
+      aircraft: "Airbus H125",
+      route: "Switzerland → India",
+      transportMode: "Air Commercial",
+      timeline: "12 Days",
+      challenge:
+        "A tight delivery window required a coordinated multi-leg air freight plan across two continents and three customs jurisdictions.",
+      solution:
+        'Heli Skycargo dismantled the helicopter to fit a 20" aircraft pallet, secured space on a B747-400F freighter, and managed every clearance step end-to-end.',
+      result:
+        "The aircraft arrived in India within the agreed timeline, fully traceable through Heli Skycargo's tracking platform.",
+    },
   },
-  { id: "loading-1", src: "/showcase/project-2.webp", alt: "Helicopter loading operations" },
+  {
+    id: "loading-1",
+    src: "/showcase/project-2.webp",
+    alt: "Helicopter loading operations",
+    relatedServices: ["ocean-roro", "ocean-lolo", "ocean-fcl"],
+  },
   {
     id: "japan-desk",
     src: "/showcase/japan-desk.webp",
     alt: "HSC Japan office team",
     label: ["Our", "Japan", "Desk"],
     showFlag: true,
+    modal: {
+      aircraft: "Multiple Models",
+      route: "Tokyo, Japan",
+      transportMode: "Local Coordination",
+      timeline: "Year-Round",
+      challenge:
+        "Japanese clients required Japanese-speaking specialists able to handle local export formalities, port nominations, and time-zone-aligned support.",
+      solution:
+        "We established a dedicated Japan Desk staffed by bilingual logistics experts coordinating directly with the global Heli Skycargo network.",
+      result:
+        "Faster response times, cleaner customs paperwork, and a single accountable contact for every Japan-origin shipment.",
+    },
   },
   {
     id: "belgium-cameroon",
     src: "/showcase/belgium-to-cameroon.webp",
     alt: "Helicopter shipment from Belgium to Cameroon",
     label: ["From", "Belgium", "to", "Cameroon"],
+    relatedServices: ["ocean-roro", "ocean-lolo"],
+    modal: {
+      aircraft: "Airbus H145",
+      route: "Antwerp → Douala",
+      transportMode: "Ocean Freight (RoRo)",
+      timeline: "21 Days",
+      challenge:
+        "Door-to-door movement of an in-service helicopter required minimal disassembly and a guaranteed under-deck stow for monsoon-season transit.",
+      solution:
+        "We loaded onto a MAFI roll trailer at Antwerp, secured a confirmed under-deck slot with our Ro/Ro carrier, and arranged inland delivery to the operator's hangar in Douala.",
+      result: "Delivered fully assembled, on schedule, with zero handling damage.",
+    },
   },
   {
     id: "myanmar-gabon",
     src: "/showcase/myanmar-to-gabon.webp",
     alt: "Helicopter shipment from Myanmar to Gabon",
     label: ["From", "Myanmar", "to Gabon"],
+    relatedServices: ["ocean-roro", "ocean-fcl"],
+    modal: {
+      aircraft: "Bell 412",
+      route: "Yangon → Libreville",
+      transportMode: "Ocean Freight (FCL)",
+      timeline: "35 Days",
+      challenge:
+        "An off-network origin port and remote destination demanded creative routing and tight container fit to keep budget on plan.",
+      solution:
+        "Partial disassembly fitted the helicopter into a 40' open-top container; we managed transshipment via Singapore and onward via a multipurpose carrier to Libreville.",
+      result: "Cost-efficient delivery with full visibility through every transshipment leg.",
+    },
   },
-  { id: "loading-2", src: "/showcase/project-6.webp", alt: "Helicopter cargo on the dock" },
+  {
+    id: "loading-2",
+    src: "/showcase/project-6.webp",
+    alt: "Helicopter cargo on the dock",
+    relatedServices: ["ocean-roro", "ocean-lolo"],
+  },
   {
     id: "khalifa-port",
     src: "/showcase/khalifa-port.webp",
     alt: "Loading at Khalifa Port",
     label: ["Loading", "at Khalifa", "Port"],
+    relatedServices: ["ocean-roro", "ocean-lolo", "ocean-fcl"],
+    modal: {
+      aircraft: "Sikorsky S-92",
+      route: "Khalifa Port, UAE",
+      transportMode: "Ocean Freight (LoLo)",
+      timeline: "10 Days",
+      challenge:
+        "Heavy-lift helicopter required crane handling, dockside cradle support, and coordinated lashing under tight port windows.",
+      solution:
+        "Our UAE team supervised the lift, custom-built saddles, and a specialist stevedore crew working with the line's chief mate to secure under-deck stowage.",
+      result: "Vessel sailed on schedule with the helicopter safely lashed for ocean transit.",
+    },
   },
   {
     id: "china-guatemala",
     src: "/showcase/china-to-guatemala.webp",
     alt: "Helicopter shipment from China to Guatemala",
     label: ["From", "China to", "Guatemala"],
+    relatedServices: ["air-commercial", "air-chartering", "ocean-fcl"],
+    modal: {
+      aircraft: "Airbus H225",
+      route: "Shanghai → Guatemala City",
+      transportMode: "Air Charter (AN-124)",
+      timeline: "5 Days",
+      challenge:
+        "Urgent operational need demanded a Pacific-spanning charter with minimal disassembly and zero scheduled commercial connections.",
+      solution:
+        "We chartered an Antonov An-124 with a direct Shanghai–Guatemala City routing, managed export licensing in 72 hours, and provided onboard couriers throughout.",
+      result: "Delivered five days from booking confirmation — operationally ready on arrival.",
+    },
   },
 ] as const;
 
@@ -276,6 +388,28 @@ export const SMART_TRACKING_CARDS: readonly SmartTrackingCard[] = [
  * Image assets live in /public/services/<slug>.webp (1400px wide, ~50-110KB).
  * Description copy is editorial — adjust freely; image+slug are the contract.
  */
+/**
+ * M4 — segment of an overview paragraph. Each paragraph is an array of
+ * "regular" and "bold" runs so per-Figma emphasis (carrier names, key terms)
+ * survives without raw HTML in `constants.ts`.
+ */
+export type OverviewSegment = { kind: "regular"; text: string } | { kind: "bold"; text: string };
+export type OverviewParagraph = { parts: readonly OverviewSegment[] };
+
+/** M4 — single benefit chip in the service-detail hero. */
+export type ServiceBenefit = {
+  slug: string;
+  label: string;
+  /** Path under /public for the chip icon SVG. */
+  icon: string;
+};
+
+/** M4 — single card in the When-to-Choose 2x2 grid. */
+export type WhenToChooseCard = {
+  title: string;
+  subtitle: string;
+};
+
 export type Service = {
   slug: string;
   /** Display name (rendered uppercase via CSS where required). */
@@ -284,7 +418,102 @@ export type Service = {
   description: string;
   /** Path to the card image in /public. */
   image: string;
+
+  // ---- M4 — Service Detail Page fields ----
+
+  /** Eyebrow text on detail page hero, e.g. "OVERVIEW OCEAN RO/RO". */
+  detailEyebrow: string;
+  /** H1 lines on the detail page hero. Length 1 (single line) or 2 (wrapped). */
+  detailHeroTitle: readonly [string] | readonly [string, string];
+  /** Detail-page hero background photo (full-bleed). */
+  detailHeroImage: string;
+  /**
+   * 4 benefit chips on the hero. Optional — when omitted, the shared default
+   * (`SHARED_DETAIL_HERO_BENEFITS`) renders. Per §6.2 user direction.
+   */
+  detailHeroBenefits?: readonly ServiceBenefit[];
+
+  /** §3.2 — Overview section. */
+  detailOverview: {
+    /** Gray pill label, e.g. "Roll-On/Roll-Off Ocean Transport". */
+    label: string;
+    /** H2 broken into 1, 2, or 3 lines (Figma shows 2–3 across services). */
+    title: readonly string[];
+    /** Body paragraphs (typically 1–2). */
+    paragraphs: readonly OverviewParagraph[];
+    /** Section photo (right column desktop, top mobile). */
+    image: string;
+    /** When true, render the play-badge SVG overlay on the photo. */
+    hasVideoBadge?: boolean;
+  };
+
+  /** §3.3 — When-to-Choose section. Defaults to SHARED_WHEN_TO_CHOOSE. */
+  detailWhenToChoose: {
+    /** H2 broken into 2 lines. Defaults to "When to Choose / This Service". */
+    title?: readonly [string, string];
+    /** Intro paragraph above the cards. */
+    intro: string;
+    /** Section photo (left column desktop, top mobile). */
+    image: string;
+    /** Exactly 4 cards. */
+    cards: readonly [WhenToChooseCard, WhenToChooseCard, WhenToChooseCard, WhenToChooseCard];
+  };
 };
+
+/**
+ * M4 — Default 4 benefit chips on the service-detail hero.
+ * Per §3.1 audit, every audited Figma frame ships these four labels regardless
+ * of service. User confirmed (2026-05-06) to keep them identical for now and
+ * leave the field overridable.
+ */
+export const SHARED_DETAIL_HERO_BENEFITS: readonly ServiceBenefit[] = [
+  {
+    slug: "secure-handling",
+    label: "Secure Handling",
+    icon: "/services/detail/icons/secure-handling.svg",
+  },
+  {
+    slug: "global-routes",
+    label: "Global Routes",
+    icon: "/services/detail/icons/global-routes.svg",
+  },
+  {
+    slug: "fast-vessel-loading",
+    label: "Fast Vessel Loading",
+    icon: "/services/detail/icons/fast-vessel-loading.svg",
+  },
+  {
+    slug: "expert-coordination",
+    label: "Expert Coordination",
+    icon: "/services/detail/icons/expert-coordination.svg",
+  },
+];
+
+/**
+ * M4 — shared "When to Choose" content. The Figma audit confirmed that
+ * intro paragraph + the 4 cards are byte-identical across all 6 service
+ * frames. We expose them per-Service anyway so a single page can override
+ * later without a code change.
+ *
+ * TODO: client review of WTC intro — RO/RO-specific copy used as global
+ * default ("not served by Ro/Ro carriers" wording is not generic).
+ */
+export const SHARED_WHEN_TO_CHOOSE = {
+  title: ["When to Choose", "This Service"] as const,
+  intro:
+    "Though this method adds some time to your transportation schedule to account for loading and unloading, it is ideal for situations where the destination or departure port is not served by Ro/Ro carriers, or where the Ro/Ro carrier schedule does not meet your requirements.",
+  cards: [
+    { title: "Long-Distance", subtitle: "International Transport" },
+    { title: "Cost-Efficient", subtitle: "Alternative To Air Freight" },
+    { title: "Safe Transport For", subtitle: "Wheeled Helicopter Platforms" },
+    { title: "Ideal For Scheduled", subtitle: "Delivery Timelines" },
+  ] as const satisfies readonly [
+    WhenToChooseCard,
+    WhenToChooseCard,
+    WhenToChooseCard,
+    WhenToChooseCard,
+  ],
+} as const;
 
 /**
  * Value-Added Services (8 supporting services beyond the 6 main offerings).
@@ -305,6 +534,14 @@ export type ValueAddedService = {
     midBold: string;
     tail: string;
   };
+  /**
+   * M4 — short copy used by the service-detail-page Value-Added grid (§3.4).
+   * Distinct from `description`/`detail` (which power the M3 services-page
+   * accordion) so the same data array can feed both visual treatments.
+   */
+  shortDescription: string;
+  /** M4 — red line-illustration icon path under /public for the grid. */
+  iconM4: string;
 };
 
 export const VALUE_ADDED_SERVICES: readonly ValueAddedService[] = [
@@ -312,9 +549,24 @@ export const VALUE_ADDED_SERVICES: readonly ValueAddedService[] = [
     slug: "equipment-rental",
     label: "Equipment Rental",
     thumb: "/services/value-added/equipment-rental.webp",
+    shortDescription: "Lifting tool, transport saddle and other shipping kits available for rental",
+    iconM4: "/services/detail/value-added/equipment-rental.png",
   },
-  { slug: "aog", label: "AOG", thumb: "/services/value-added/aog.webp" },
-  { slug: "obc", label: "OBC", thumb: "/services/value-added/obc.webp" },
+  {
+    slug: "aog",
+    label: "AOG",
+    thumb: "/services/value-added/aog.webp",
+    shortDescription: "Grounded aircraft? We arrange parts and engineers to restore service fast.",
+    iconM4: "/services/detail/value-added/aog.png",
+  },
+  {
+    slug: "obc",
+    label: "OBC",
+    thumb: "/services/value-added/obc.webp",
+    shortDescription:
+      "Our hand-carry team ensures supervised transport and secure delivery of critical aeroparts.",
+    iconM4: "/services/detail/value-added/obc.png",
+  },
   {
     slug: "ferry-flight-clearance",
     label: "Ferry Flight Clearance",
@@ -328,28 +580,46 @@ export const VALUE_ADDED_SERVICES: readonly ValueAddedService[] = [
       midBold: "your behalf to ensure",
       tail: " that your shipping remains on schedule.",
     },
+    shortDescription: "import and export custom clearance of Ferry flight in major countries",
+    iconM4: "/services/detail/value-added/ferry-flight-clearance.png",
   },
   {
     slug: "customs-brokerage",
     label: "Customs Brokerage",
     thumb: "/services/value-added/customs-brokerage.webp",
+    shortDescription:
+      "We connect you with expert customs brokers for smooth import clearance at destination.",
+    iconM4: "/services/detail/value-added/customs-brokerage.png",
   },
   {
     slug: "crates-manufacturing",
     label: "Crates Manufacturing",
     thumb: "/services/value-added/crates-manufacturing.webp",
+    shortDescription: "We source bespoke crates to safely transport blades and accessories",
+    iconM4: "/services/detail/value-added/crates-manufacturing.png",
   },
   {
     slug: "shrink-wrapping",
     label: "Shrink Wrapping",
     thumb: "/services/value-added/shrink-wrapping.webp",
+    shortDescription:
+      "Shrink-wrapping services to protect and preserve your helicopter during transport.",
+    iconM4: "/services/detail/value-added/shrink-wrapping.png",
   },
   {
     slug: "cargo-insurance",
     label: "Cargo Insurance",
     thumb: "/services/value-added/cargo-insurance.webp",
+    shortDescription:
+      "We prioritise protecting high-value cargo from loss, damage, or risk during transit.",
+    iconM4: "/services/detail/value-added/cargo-insurance.png",
   },
 ] as const;
+
+/** M4 helper: build a paragraph from interleaved regular/bold runs. */
+const para = (parts: readonly OverviewSegment[]): OverviewParagraph => ({ parts });
+const reg = (text: string): OverviewSegment => ({ kind: "regular", text });
+const bold = (text: string): OverviewSegment => ({ kind: "bold", text });
 
 export const SERVICES: readonly Service[] = [
   {
@@ -357,12 +627,78 @@ export const SERVICES: readonly Service[] = [
     name: "Ocean RO/RO",
     description: "Transport your aircraft using Ro/Ro vessel, loaded on a MAFI or simply towing.",
     image: "/services/ocean-roro.webp",
+    detailEyebrow: "OVERVIEW OCEAN RO/RO",
+    detailHeroTitle: ["Roll-On/Roll-Off", "Ocean Transport"],
+    detailHeroImage: "/services/detail/ocean-roro-hero.webp",
+    detailOverview: {
+      label: "Roll-On/Roll-Off Ocean Transport",
+      title: ["Fast, Secure", "Helicopter Transport", "Using RoRo Vessels."],
+      paragraphs: [
+        para([
+          reg("Shipped on a "),
+          bold("MAFI Roll Trailer"),
+          reg(" or "),
+          bold("towed inside the vessel"),
+          reg(
+            ", helicopters are stowed and transported safely under deck. With Ro/Ro vessels, loading and unloading is fast and efficient, saving valuable time on the transportation journey.",
+          ),
+        ]),
+        para([
+          reg(
+            "Heli Skycargo contracts with the very best global Ro/Ro carriers, including NYK, Höegh Autoliners, Wallenius Wilhelmsen, ",
+          ),
+          bold("MOL (Mitsui O.S.K. Lines)"),
+          reg(", K Line, Armacup, "),
+          bold("EUKOR"),
+          reg(", the Grimaldi Group, Bahri Shipping and many others."),
+        ]),
+      ],
+      image: "/services/detail/ocean-roro-overview.webp",
+      hasVideoBadge: true,
+    },
+    detailWhenToChoose: {
+      title: SHARED_WHEN_TO_CHOOSE.title,
+      intro: SHARED_WHEN_TO_CHOOSE.intro,
+      image: "/services/detail/ocean-roro-when.webp",
+      cards: SHARED_WHEN_TO_CHOOSE.cards,
+    },
   },
   {
     slug: "ocean-lolo",
     name: "Ocean LO/LO",
     description: "Safe Lift-on/Lift-off into cargo load of container vessel or MPV Breakbulk ship.",
     image: "/services/ocean-lolo.webp",
+    detailEyebrow: "OVERVIEW OCEAN LO/LO",
+    detailHeroTitle: ["Ocean Lift-On / Lift-Off", "Transport Method"],
+    detailHeroImage: "/services/detail/ocean-lolo-hero.webp",
+    detailOverview: {
+      label: "Lift-on / Lift-off Shipping",
+      title: ["Container & Heavy", "Lift Shipping Options"],
+      paragraphs: [
+        para([
+          reg("Alternatively, helicopters can be transported using a "),
+          bold("Lift-On/Lift-Off method"),
+          reg(" – either via container ships or a multipurpose "),
+          bold("heavy lift vessel"),
+          reg(
+            ". The cargo is lifted on and off the shipping vessel by crane, before being safely stored and secured for travel.",
+          ),
+        ]),
+        para([
+          reg(
+            "Though this method adds some time to your transportation schedule to account for loading and unloading, it is ideal for situations where the destination or departure port is not served by Ro/Ro carriers, or where the Ro/Ro carrier schedule does not meet your requirements.",
+          ),
+        ]),
+      ],
+      image: "/services/detail/ocean-lolo-overview.webp",
+      hasVideoBadge: true,
+    },
+    detailWhenToChoose: {
+      title: SHARED_WHEN_TO_CHOOSE.title,
+      intro: SHARED_WHEN_TO_CHOOSE.intro,
+      image: "/services/detail/ocean-lolo-when.webp",
+      cards: SHARED_WHEN_TO_CHOOSE.cards,
+    },
   },
   {
     slug: "ocean-fcl",
@@ -370,6 +706,31 @@ export const SERVICES: readonly Service[] = [
     description:
       "Save on freight cost by shipping in 40' container High Cube, Open Top or Flat Rack.",
     image: "/services/ocean-fcl.webp",
+    detailEyebrow: "OVERVIEW OCEAN FCL",
+    detailHeroTitle: ["Ocean FCL - Container Transport"],
+    detailHeroImage: "/services/detail/ocean-fcl-hero.webp",
+    detailOverview: {
+      // TODO: client review of FCL eyebrow text — replaced "Lift-on / Lift-off
+      // Shipping" Figma value with "Full Container Load Shipping" pending
+      // content review (per M4 plan §6.4).
+      label: "Full Container Load Shipping",
+      title: ["Dedicated & Secure", "Full Container Ocean", "Solutions"],
+      paragraphs: [
+        para([
+          reg(
+            "Whether partially or fully disassembled, helicopters can be transported using 40' high cube, 40' open-top, or 40' flat rack containers.",
+          ),
+        ]),
+      ],
+      image: "/services/detail/ocean-fcl-overview.webp",
+      hasVideoBadge: true,
+    },
+    detailWhenToChoose: {
+      title: SHARED_WHEN_TO_CHOOSE.title,
+      intro: SHARED_WHEN_TO_CHOOSE.intro,
+      image: "/services/detail/ocean-fcl-when.webp",
+      cards: SHARED_WHEN_TO_CHOOSE.cards,
+    },
   },
   {
     slug: "road-freight",
@@ -377,12 +738,66 @@ export const SERVICES: readonly Service[] = [
     description:
       "We deal with assets-own trucking companies providing GPS-equipped Air-ride specialised trailers.",
     image: "/services/road-freight.webp",
+    detailEyebrow: "OVERVIEW ROAD FREIGHT",
+    detailHeroTitle: ["Helicopter Road Freight Solutions"],
+    detailHeroImage: "/services/detail/road-freight-hero.webp",
+    detailOverview: {
+      label: "Road Freight Transport",
+      title: ["End-to-End", "Road Freight Services"],
+      paragraphs: [
+        para([
+          reg(
+            "Whether the helicopter is being exclusively transported by road, or it is just a small part of the wider journey, Heli Skycargo can arrange road freight solutions including road survey and road permit application to meet your exact requirements.",
+          ),
+        ]),
+        para([
+          reg(
+            "Our carefully selected trucking and haulage companies are on standby ready to serve, and we have exclusive contracts around the world with specialist freight companies offering exceptional transports using air ride and hydraulic trucks.",
+          ),
+        ]),
+      ],
+      image: "/services/detail/road-freight-overview.webp",
+      hasVideoBadge: true,
+    },
+    detailWhenToChoose: {
+      title: SHARED_WHEN_TO_CHOOSE.title,
+      intro: SHARED_WHEN_TO_CHOOSE.intro,
+      image: "/services/detail/road-freight-when.webp",
+      cards: SHARED_WHEN_TO_CHOOSE.cards,
+    },
   },
   {
     slug: "air-commercial",
     name: "Air Commercial",
     description: "Ship your aircraft on B74 Freighter.",
     image: "/services/air-commercial.webp",
+    detailEyebrow: "OVERVIEW AIR COMMERCIAL",
+    detailHeroTitle: ["Commercial Air Freight Transport Solutions"],
+    detailHeroImage: "/services/detail/air-commercial-hero.webp",
+    detailOverview: {
+      label: "Air Cargo",
+      title: ["Reliable & Flexible", "Commercial Air Cargo", "Transport"],
+      paragraphs: [
+        para([
+          reg(
+            "If you have a flexible or more generous deadline for your shipping journey, then commercial air transportation is an excellent option. Depending on the departure and arrival locations and the carrier flight schedule, door-to-door transit time typically ranges from just 7 to 10 days.",
+          ),
+        ]),
+        para([
+          reg(
+            'Once dismantled, the helicopter is securely positioned on 20" aircraft pallets and loaded on board B747-400F or modern B747-8F aircraft. We arrange transportation with only the most reputable commercial cargo freighters, including Cargolux, Korean Air, Silk Way West Airlines, China Airlines, Cathay Pacific, and Singapore Airlines.',
+          ),
+        ]),
+      ],
+      image: "/services/detail/air-commercial-overview.webp",
+      hasVideoBadge: true,
+    },
+    detailWhenToChoose: {
+      title: SHARED_WHEN_TO_CHOOSE.title,
+      intro: SHARED_WHEN_TO_CHOOSE.intro,
+      image: "/services/detail/air-commercial-when.webp",
+      cards: SHARED_WHEN_TO_CHOOSE.cards,
+    },
   },
   {
     slug: "air-chartering",
@@ -390,5 +805,34 @@ export const SERVICES: readonly Service[] = [
     description:
       "When time is of the essence or to reach places unreachable by 74F, go for the mighty Antonov124-100 or the IL76.",
     image: "/services/air-chartering.webp",
+    detailEyebrow: "OVERVIEW AIR CHARTERING",
+    detailHeroTitle: ["Air Charter Transport for Urgent Shipments"],
+    detailHeroImage: "/services/detail/air-chartering-hero.webp",
+    detailOverview: {
+      label: "Air Charter Transport",
+      title: ["Fast-Response", "Aircraft Charter", "Transport Solutions"],
+      // TODO: confirm Air Chartering overview copy with client — Figma
+      // duplicates the Air Commercial paragraphs (per M4 plan §6.4).
+      paragraphs: [
+        para([
+          reg(
+            "If you have a flexible or more generous deadline for your shipping journey, then commercial air transportation is an excellent option. Depending on the departure and arrival locations and the carrier flight schedule, door-to-door transit time typically ranges from just 7 to 10 days.",
+          ),
+        ]),
+        para([
+          reg(
+            'Once dismantled, the helicopter is securely positioned on 20" aircraft pallets and loaded on board B747-400F or modern B747-8F aircraft. We arrange transportation with only the most reputable commercial cargo freighters, including Cargolux, Korean Air, Silk Way West Airlines, China Airlines, Cathay Pacific, and Singapore Airlines.',
+          ),
+        ]),
+      ],
+      image: "/services/detail/air-chartering-overview.webp",
+      hasVideoBadge: true,
+    },
+    detailWhenToChoose: {
+      title: SHARED_WHEN_TO_CHOOSE.title,
+      intro: SHARED_WHEN_TO_CHOOSE.intro,
+      image: "/services/detail/air-chartering-when.webp",
+      cards: SHARED_WHEN_TO_CHOOSE.cards,
+    },
   },
 ] as const;

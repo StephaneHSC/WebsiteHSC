@@ -15,6 +15,36 @@ Format:
 
 ---
 
+## 2026-05-06 — `ProjectsMosaic` recycles tiles when filtered subset has < 8 entries
+
+**Decision**: When `ProjectsMosaic` is rendered with a `serviceSlug` prop on the M4 service-detail pages, the filtered tile list is padded to a minimum of 8 entries by recycling tiles round-robin. The desktop bento mosaic always shows 8 tiles (4 columns × 2 rows) regardless of how many tiles match the current service.
+
+**Why**: Several M4 services (e.g. Road Freight, Air Chartering) currently map to only 1–3 tiles in the placeholder `relatedServices` mapping. A half-empty bento grid creates jarring whitespace and breaks the brick stagger pattern. Recycling preserves the visual cadence until the client supplies more projects in M7.
+
+**Alternatives considered**:
+
+- Render fewer columns when fewer tiles exist — visually inconsistent across services and would require a second tile-layout pass.
+- Hide the section entirely when fewer than 8 tiles match — felt aggressive given the placeholder data; client may add tiles later.
+
+**Tradeoffs**: A user clicking through related projects may see the same tile twice on a heavily-filtered service page. Acceptable until the M7 audit when `relatedServices` will be revised against the real project catalog. Flagged as a M7 follow-up.
+
+---
+
+## 2026-05-06 — M4 service-detail pages link "Request Quote" CTAs to `#request-quote` anchor on the same page
+
+**Decision**: The black "Request Quote" pill buttons in `ServiceOverview` and `WhenToChoose` link to `#request-quote`, which targets the in-page `QuoteFormShell` wrapper. No separate `/quote` route is involved.
+
+**Why**: The Figma frames don't show a navigation away from the service detail page. Keeping the user on-page preserves context and reduces the funnel by one click. The `scroll-mt-24` utility on the wrapper compensates for the fixed header.
+
+**Alternatives considered**:
+
+- Link to `/quote` (a future M8 page) — out of scope for M4 and would 404 today.
+- Smooth-scroll via JS click handler — adds client-side JS for no functional gain over the native anchor jump.
+
+**Tradeoffs**: When M8 introduces `/quote` as a standalone page, this anchor link can stay or be redirected — both work.
+
+---
+
 ## 2026-05-06 — Value-Added accordion switches to vertical layout at `xl:` (1280px), not `lg:` (1024px)
 
 **Decision**: The Value-Added Services accordion uses Tailwind's `xl:` breakpoint (≥1280px) to gate the desktop horizontal layout (708px thumbnail + label + arrow on one row). Below 1280px the row stacks vertically (thumbnail full-width on top, label row below). The M3 plan (`docs/M3_PLAN.md` §3 §3) implied the `lg:` breakpoint (≥1024px) since Figma's desktop frame is 1600px.

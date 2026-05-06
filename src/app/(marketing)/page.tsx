@@ -6,7 +6,7 @@ import { ServicesTeaser } from "@/components/sections/home/ServicesTeaser";
 import { TeamTeaser } from "@/components/sections/home/TeamTeaser";
 import { PartnersStrip } from "@/components/sections/home/PartnersStrip";
 import { CustomerTestimonials } from "@/components/sections/home/CustomerTestimonials";
-import { ProjectsMosaic } from "@/components/sections/home/ProjectsMosaic";
+import { ProjectsMosaic } from "@/components/sections/_shared/ProjectsMosaic";
 import { MilestonesTimeline } from "@/components/sections/home/MilestonesTimeline";
 import { QuoteFormShell } from "@/components/sections/_shared/QuoteFormShell";
 import { OfficesGlobal } from "@/components/sections/_shared/OfficesGlobal";
@@ -25,9 +25,10 @@ export default function Home() {
       <ProjectsMosaic />
       <MilestonesTimeline />
       <QuoteFormShell
+        tinted
         photo={{
-          src: "/quote/helicopter.webp",
-          alt: "Helicopter cargo loaded for global transport",
+          src: "/quote/home-quote.webp",
+          alt: "Southern Air freight truck and helicopter on the tarmac",
         }}
       />
       <OfficesGlobal />

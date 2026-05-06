@@ -9,6 +9,13 @@ export type QuoteFormShellProps = {
   headline?: { line1: string; line2: string; line3: string };
   /** Optional eyebrow override (defaults to "Request a Quote"). */
   eyebrow?: string;
+  /**
+   * When true, renders the photo with `mix-blend-multiply` against the brand
+   * red so light areas of the image bleed red — matches Figma node 344:3275
+   * (home variant). Service pages don't set this so the photo renders flat
+   * with just the dark overlay.
+   */
+  tinted?: boolean;
 };
 
 const DEFAULT_HEADLINE = {
@@ -37,24 +44,32 @@ export function QuoteFormShell({
   photo,
   headline = DEFAULT_HEADLINE,
   eyebrow = "Request a Quote",
+  tinted = false,
 }: QuoteFormShellProps) {
   return (
-    <section className="relative w-full">
+    <section className="relative w-full md:px-6 md:py-12 lg:px-12 lg:py-16 xl:px-20 xl:py-20">
       <div className="grid grid-cols-1 lg:grid-cols-2">
         {/* Left column — photo + brand red overlay + headline */}
-        <div className="bg-brand-red text-surface relative isolate overflow-hidden">
-          <div aria-hidden="true" className="absolute inset-0 -z-10">
+        <div className="bg-brand-red text-surface relative overflow-hidden">
+          {/*
+            Photo layer. When `tinted` (home variant per Figma node 344:3275),
+            the image uses mix-blend-multiply so light areas of the photo
+            bleed brand-red — needs to share a stacking context with the red
+            bg so we keep the parent un-isolated. Service variants apply a
+            black overlay on top instead so the photo renders flat.
+          */}
+          <div aria-hidden="true" className="absolute inset-0">
             <Image
               src={photo.src}
               alt={photo.alt}
               fill
               sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-cover object-center"
+              className={cn("object-cover object-center", tinted && "mix-blend-multiply")}
             />
-            <span className="bg-ink/30 absolute inset-0" />
+            {!tinted && <span className="bg-ink/30 absolute inset-0" />}
           </div>
 
-          <div className="flex min-h-[450px] flex-col justify-center px-6 py-16 sm:px-10 md:px-16 lg:min-h-[900px] lg:px-[60px] lg:py-[99px]">
+          <div className="relative z-10 flex min-h-[450px] flex-col justify-center px-6 py-16 sm:px-10 md:px-16 lg:min-h-[900px] lg:px-[60px] lg:py-[99px]">
             <Reveal>
               <SectionEyebrow variant="outline-white">{eyebrow}</SectionEyebrow>
             </Reveal>

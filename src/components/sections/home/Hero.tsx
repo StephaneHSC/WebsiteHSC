@@ -9,12 +9,7 @@ import { AppBadgeRow } from "@/components/ui/AppBadge";
 export function Hero() {
   return (
     <section className="bg-surface text-surface relative isolate w-full overflow-hidden">
-      {/* Photo + dark gradient overlay, masked at the bottom so they fade
-          smoothly into the section's white bg (no visible cut line). */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 -z-10 [mask-image:linear-gradient(to_bottom,black_85%,transparent_100%)]"
-      >
+      <div aria-hidden="true" className="absolute inset-0 -z-10">
         <Image
           src="/home/hero-bg.webp"
           alt=""
