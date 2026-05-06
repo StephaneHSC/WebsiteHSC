@@ -15,6 +15,138 @@ Format:
 
 ---
 
+## 2026-05-05 — Quote form: build the visual shell in M3 as a shared component (supersedes part of 2026-04-29)
+
+**Decision**: The quote form's visual shell is built once in Module 3 as a **shared component placed on BOTH the home page and the services page**. The two placements are pixel-identical except for the left-column photo (and optionally the headline copy). Module 8 still wires Formspree + state + validation + Turnstile into the same component — no redesign at that stage, only logic.
+
+**Component**: `src/components/sections/_shared/QuoteFormShell.tsx`. Accepts `photo` and optional `headline` props. M3 hardcodes default headline `START YOUR / GLOBAL TRANSPORT / REQUEST` and disables the submit button (visual shell only).
+
+**Why the change**:
+
+- Per the M3 Figma audit, the embedded quote form on the services page is identical to the one on the home page apart from the photo. Building two separate components (a placeholder CTA on home + a shell on services) would mean immediate code duplication that we'd undo in M8.
+- One shared component means M3 ships one well-styled section and home/services stay in lockstep through M8.
+- M3 is already touching shared infrastructure (`OfficesGlobal` promotion, eyebrow promotion). Promoting the quote form too is consistent.
+
+**Supersedes (in part)**: the 2026-04-29 "Quote form rollout: build once in M8, use CTA placeholders in M2/M3" decision. The "build once" principle is preserved — we still build the form's logic exactly once. The change is _when_ the visual shell ships: now (M3), not M8. The `RequestQuoteCta.tsx` placeholder on home gets replaced during M3.
+
+**Tradeoffs**:
+
+- M3 work grows by one section (the shell on home). Mitigated because the shell is the same component already being built for services — only an import + photo prop on the home page.
+- Home page sees a visual upgrade in M3 ahead of the M8 functional wiring. Acceptable because the submit button is disabled and the form is clearly non-functional; users see a "preview" that becomes interactive in M8.
+
+**How to apply (M3)**:
+
+1. Build `QuoteFormShell.tsx` in `sections/_shared/` per the Figma spec (see `docs/M3_PLAN.md` §4).
+2. Place it on `/services` with the Antonov 124 photo (`345:7746` left column).
+3. Replace `<RequestQuoteCta />` on the home page with `<QuoteFormShell photo={{...home photo}} />`. Verify no visual regression on home at 375 / 768 / 1024 / 1440.
+4. Delete `RequestQuoteCta.tsx` if no other consumer remains.
+5. M8 imports the shell, adds form state, wires Formspree + Turnstile + validation. No template changes.
+
+---
+
+## 2026-05-05 — M3 Services Listing: design audit + locked decisions
+
+**Decision**: Module 3 (Services Listing at `/services`) implementation contract is captured in `docs/M3_PLAN.md`. Read that file at the start of the M3 session — it has the full Figma audit (6 sections × desktop+mobile), pixel-level specs, animation contracts, component map, and Figma frame links. The locked decisions for M3 are summarized below; the plan doc is the source of truth.
+
+**Locked decisions (M3)**:
+
+1. **`ServiceCard` for M3 is its own component**, NOT shared with home `ServicesTeaser`. The two pages use visually different treatments per Figma — M3 uses 470×580 photo cards with full-bleed images and an icon→pill hover morph; the home teaser uses a smaller variant.
+2. **Mobile services grid uses a tap-to-expand accordion**: only one card open at a time. Idle = white card with title + small icon button + decorative thumbnail strip on right; active = full image takeover with description and red "Explore More" pill.
+3. **Mobile offices uses a "featured + tabs" pattern**: only the active country shows full address/phone/email; the others show the country name only and act as tabs. Default active = UAE (matches Figma highlight + brand HQ). **This change applies to home page mobile too** — `OfficesGlobal` will be promoted from `sections/home/` to `sections/_shared/` and the home consumer must be updated to match.
+4. **Quote form in M3 is visual-shell only.** Section 01 (mode of transport radio grid) and Section 02 (origin/destination inputs) are styled to spec; sections 03/04/05 render as collapsed labels only; the submit button is disabled. M8 wires Formspree + state + validation + Turnstile (per the existing 2026-04-29 quote-form rollout decision). Component lives at `sections/_shared/QuoteFormShell.tsx` so M8 can extend it without redesign.
+5. **"Explore More" buttons link to `/services/[slug]`** (M4 routes). M3 ships minimal stub pages at `src/app/(marketing)/services/[slug]/page.tsx` so dev links resolve to a "Coming in M4" placeholder rather than 404.
+6. **Value-Added Services accordion default state**: all 8 rows collapsed; the first row auto-expands once on scroll-into-view (single-shot, doesn't re-trigger). Subsequent taps work as standard single-open accordion.
+
+**How to apply**: open the next session with `read docs/M3_PLAN.md and start Module 3`. The plan doc has the full implementation order, component map, token additions, and acceptance checklist.
+
+---
+
+## 2026-05-05 — M3 token additions: form colors, faint ink, Inter (CTA), Poppins (offices)
+
+**Decision**: M3 introduces several tokens that didn't exist in the M1/M2 brand definition. Add them to `tokens.css` and the Tailwind theme during M3 setup, before building sections that consume them.
+
+**New / changed tokens**:
+
+| Token                       | Value                           | Used by                                                                                                  |
+| --------------------------- | ------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `--color-surface-alt`       | **`#f5f5f5`** (was `#F9F9F9`)   | section backgrounds (services grid, value-added) — Figma uses `#f5f5f5`; correcting the M1 derived value |
+| `--color-input-border`      | `#e4e4e4`                       | quote form input borders (idle)                                                                          |
+| `--color-input-focus`       | `#ff7e8f`                       | quote form input border (active/focus) — light pink                                                      |
+| `--color-input-placeholder` | `#d9d9d9`                       | quote form placeholder text                                                                              |
+| `--color-text-muted-2`      | `#929292`                       | quote form labels                                                                                        |
+| `--color-ink-faint`         | `#c4c4c4`                       | value-added row number prefixes                                                                          |
+| `--font-cta`                | `Inter` (SemiBold 600)          | "Explore More" pill button label — note: Inter, not Inter Tight                                          |
+| `--font-display-alt`        | `Poppins` (Bold 700, Black 900) | Offices section H2 ("ACROSS ALL REGIONS WORLDWIDE")                                                      |
+
+**Why Poppins is added**: the offices H2 in Figma renders in Poppins on both desktop and mobile, while every other H2 on the site uses Inter Tight. Two interpretations were considered: (a) Figma is auto-substituting Poppins because Inter Tight isn't installed in the design workspace (Figma rendering bug), or (b) intentional. User decision: trust the design source — render in Poppins as designed. Adds a third font registered via `next/font/google` with `display: swap`. CLAUDE.md §8 typography section should be updated to list all four fonts (Inter Tight, PT Sans, Inter, Poppins).
+
+**Why Inter (not Inter Tight) on the CTA pill**: Figma exports the "Explore More" pill text as `Inter:Semi_Bold` (not Inter Tight SemiBold). Could be a Figma rendering quirk, but matches across all 6 service cards consistently — treating as intentional.
+
+**Tradeoffs**: 4 font families = 4 network requests. Mitigated by `next/font` preloading and aggressive subsetting. Each font weight used is preloaded only at the weights actually consumed (PT Sans Regular+Bold, Inter Tight Bold+Black, Inter SemiBold, Poppins Bold+Black).
+
+**How to apply**: in the M3 setup commit, edit `tokens.css` + `src/app/layout.tsx` (next/font registrations) + Tailwind theme extension to add all 8 tokens at once. Update CLAUDE.md §8 to match. Verify the surface-alt change doesn't visually regress any M2 section that used `bg-surface-alt`.
+
+---
+
+## 2026-05-04 — Open content questions for client/PM before launch
+
+**Decision**: track these in DECISIONS.md until they're resolved with the client team. Each is launch-blocking content (real values must replace the placeholders) but not technically-blocking — pages render either way.
+
+1. **Office phone numbers** — `OFFICES` in `src/lib/constants.ts` lists `+852 6698 0871` for Hong Kong, USA, **and** Malaysia. The HK number is right; USA + Malaysia look like Figma placeholders that re-use the HK number. Get correct numbers from ops before launch.
+2. **App Store / Google Play URLs** — `APP_LINKS` in `constants.ts` has real-looking IDs (`id1498909837`, `com.heliskycargo`); confirm with client these are the production app IDs and not a sandbox.
+3. **Service descriptions** — five of six services in `SERVICES` use my reasonable-default copy; only `Ocean FCL` has the real Figma blurb. PM/client should review and supply final copy for the other five.
+4. **Testimonial logos** — three placeholder logos (Lufttransport, Mitsui Bussan Aerospace, Sazma Aviation) live in `/public/testimonials/` so the section renders something pre-launch. Once Sanity is populated by the editor, real uploads override the static paths.
+
+**How to apply**: walk this list at the M9 polish review with the PM. Replace each with confirmed values; remove the relevant `TODO` comments and the placeholder asset(s).
+
+---
+
+## 2026-05-04 — Sanity integration: which sections are CMS-driven today
+
+**Decision**: three of the five Sanity schemas are wired into home-page sections that fetch live data and fall back to inline placeholders when the collection is empty. The other two are queryable but not yet consumed on any page.
+
+**Live (home page)**:
+
+- `teamMember` → `TeamTeaser.tsx` (top 4 published members)
+- `testimonial` → `CustomerTestimonials.tsx` (featured + published, top 3)
+- `milestone` → `MilestonesTimeline.tsx` (top 4 by year DESC)
+
+**Wired but unused (no consumer yet)**:
+
+- `quoteFormConfig` — will be consumed in M8 when the multi-step quote form is built
+- `siteStats` — likely consumed by M5 (Why Choose Us page) for the stats band
+
+**Why /studio shows no documents**: the Sanity dataset is empty. Editors need to add documents in `/studio` (Sanity Studio at `localhost:3000/studio` in dev). Once added with `status: published`, they'll appear on the home page automatically (60s ISR cache; force a hard refresh to see immediately).
+
+**How to apply**: when the editor sits down to populate the CMS, point them at the three live schemas first. The placeholder data in `TeamTeaser`/`CustomerTestimonials`/`MilestonesTimeline` will keep the page looking populated during dev, and disappear automatically as soon as real entries arrive.
+
+---
+
+## 2026-05-04 — Pre-launch placeholder data lives inline; remove on M9 sign-off
+
+**Decision**: Three home-page sections (`TeamTeaser`, `CustomerTestimonials`, `MilestonesTimeline`) ship with hardcoded `PLACEHOLDER_*` arrays as a fallback when their Sanity collections are empty. Names/quotes/years are sourced verbatim from the Figma design (real client team and customers). Each block is marked `// TODO(seed):` so it's grep-able.
+
+**Why**: The CMS will be populated by the editor late in the project (M9 polish or after handover). Building sections that render an empty grid pre-launch would look broken in dev and on staging. Hardcoded fallbacks keep the visual consistent until real data arrives.
+
+**How to apply**:
+
+- During M9 polish, after the editor confirms Sanity is populated, search the codebase for `TODO(seed)` and delete each `PLACEHOLDER_*` constant + the empty-fallback branch in the parent component.
+- The Sanity query is the source of truth — components don't need any other change. Removing the fallback just causes empty queries to render an empty grid (which is the correct production behaviour).
+
+**Tradeoffs**: real client names sit in a public git repo until M9 cleanup. Acceptable since they're already on the live HSC site.
+
+---
+
+## 2026-05-04 — Showcase tile data centralised in `constants.ts` for M7 reuse
+
+**Decision**: Project-mosaic tiles (`SHOWCASE_TILES`) and helicopter-client logos (`HELICOPTER_BRANDS`) live in `src/lib/constants.ts` rather than colocated with their consuming home-page sections. Office locations (`OFFICES`) and service offerings (`SERVICES`) follow the same rule.
+
+**Why**: Module 7 (Shipment Showcase listing page) and Module 3 (Services Listing page) consume the same data with different layouts. Centralising in `constants.ts` prevents copy-paste of the source-of-truth list and makes editor-driven content audits a one-file scan.
+
+**How to apply**: Hardcoded site content (per CLAUDE §3.3 — anything not in the 5 CMS schemas) should be added to `constants.ts` with a `Service`-style typed export. Section components import + derive layout from the data.
+
+---
+
 ## 2026-04-29 — Quote form rollout: build once in M8, use CTA placeholders in M2/M3 (Option A)
 
 **Decision**: The Quote form has two visual variants in the Figma — embedded (split layout, used on Home and Services Listing) and full-page (used on /quote). Both share the same form logic. We build the form ONCE in Module 8 and place both variants in the same module. Until M8, Module 2 (Home) and Module 3 (Services Listing) use simple CTA placeholder cards (image + headline + button) that link to /quote, where /quote is a stub until M8.

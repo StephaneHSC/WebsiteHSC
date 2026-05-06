@@ -5,49 +5,17 @@
 
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { APP_LINKS, PARTNERS, SITE, SOCIAL_LINKS } from "@/lib/constants";
+import { PARTNERS, SITE, SOCIAL_LINKS } from "@/lib/constants";
+import { AppBadge } from "@/components/ui/AppBadge";
 
 // ── App download buttons ────────────────────────────────────────────────────
 
 export function AppStoreButton() {
-  return (
-    <a
-      href={APP_LINKS.appStore}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="bg-surface text-ink hover:bg-surface/90 focus-visible:ring-brand-red focus-visible:ring-offset-ink inline-flex items-center gap-3 rounded-full px-5 py-2.5 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
-    >
-      <AppleIcon />
-      <span className="text-left leading-tight">
-        <span className="block text-[10px] font-medium tracking-wide">Download On</span>
-        <span className="font-display block text-base font-bold">App Store</span>
-      </span>
-    </a>
-  );
+  return <AppBadge store="app-store" variant="light" />;
 }
 
 export function GooglePlayButton() {
-  return (
-    <a
-      href={APP_LINKS.googlePlay}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="bg-surface text-ink hover:bg-surface/90 focus-visible:ring-brand-red focus-visible:ring-offset-ink inline-flex items-center gap-3 rounded-full px-5 py-2.5 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
-    >
-      <Image
-        src="/icons/google-play.svg"
-        alt=""
-        width={15}
-        height={16}
-        aria-hidden="true"
-        className="h-[22px] w-auto"
-      />
-      <span className="text-left leading-tight">
-        <span className="block text-[10px] font-medium tracking-wide">Download On</span>
-        <span className="font-display block text-base font-bold">Google Play</span>
-      </span>
-    </a>
-  );
+  return <AppBadge store="google-play" variant="light" />;
 }
 
 // ── Social icons ─────────────────────────────────────────────────────────────
@@ -151,14 +119,6 @@ export function Copyright({ className }: { className?: string }) {
 //
 // Inline so we can theme via `currentColor` (the social icons inherit
 // `text-brand-red` from the SocialLink wrapper).
-
-function AppleIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
-    </svg>
-  );
-}
 
 function XIcon() {
   return (

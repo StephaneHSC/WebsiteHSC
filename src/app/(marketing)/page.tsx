@@ -1,18 +1,31 @@
+import { Hero } from "@/components/sections/home/Hero";
+import { OurSolutions } from "@/components/sections/home/OurSolutions";
+import { VideoSection } from "@/components/sections/home/VideoSection";
+import { SmartTracking } from "@/components/sections/home/SmartTracking";
+import { ServicesTeaser } from "@/components/sections/home/ServicesTeaser";
+import { TeamTeaser } from "@/components/sections/home/TeamTeaser";
+import { PartnersStrip } from "@/components/sections/home/PartnersStrip";
+import { CustomerTestimonials } from "@/components/sections/home/CustomerTestimonials";
+import { ProjectsMosaic } from "@/components/sections/home/ProjectsMosaic";
+import { MilestonesTimeline } from "@/components/sections/home/MilestonesTimeline";
+import { RequestQuoteCta } from "@/components/sections/home/RequestQuoteCta";
+import { OfficesGlobal } from "@/components/sections/home/OfficesGlobal";
+
 export default function Home() {
   return (
-    <main className="flex flex-1 items-center justify-center px-6 py-24">
-      <div className="max-w-2xl space-y-6 text-center">
-        <p className="text-brand-red font-display text-sm font-semibold tracking-widest uppercase">
-          Module 1 · Foundation
-        </p>
-        <h1 className="text-ink font-display text-4xl leading-tight font-bold tracking-tight md:text-6xl">
-          Setup Complete.
-        </h1>
-        <p className="text-ink-soft mx-auto max-w-md text-base md:text-lg">
-          Brand tokens, typography, and base layout are wired. Header, footer, UI primitives, and
-          Sanity scaffold are next.
-        </p>
-      </div>
+    <main className="flex flex-1 flex-col">
+      <Hero />
+      <OurSolutions />
+      <VideoSection />
+      <SmartTracking />
+      <ServicesTeaser />
+      <TeamTeaser />
+      <PartnersStrip />
+      <CustomerTestimonials />
+      <ProjectsMosaic />
+      <MilestonesTimeline />
+      <RequestQuoteCta />
+      <OfficesGlobal />
     </main>
   );
 }

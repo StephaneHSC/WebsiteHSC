@@ -8,6 +8,11 @@ import { NAV } from "@/lib/constants";
 import { buttonVariants } from "@/components/ui/Button";
 import { Logo } from "./Logo";
 
+export type MobileNavProps = {
+  /** White hamburger glyph for use on dark / transparent backgrounds. */
+  inverted?: boolean;
+};
+
 /**
  * Mobile navigation drawer.
  * Logo top-left, X close top-right, expandable Services + Our Team rows,
@@ -16,7 +21,7 @@ import { Logo } from "./Logo";
  * Closes on: X click, ESC, backdrop click, or any link click (including the
  * Logo inside the drawer, which gets `onClick={close}` passed in below).
  */
-export function MobileNav() {
+export function MobileNav({ inverted = false }: MobileNavProps = {}) {
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
 
@@ -49,7 +54,10 @@ export function MobileNav() {
         aria-label="Open menu"
         aria-expanded={open}
         onClick={() => setOpen(true)}
-        className="text-ink hover:bg-surface-alt focus-visible:ring-brand-red inline-flex h-11 w-11 items-center justify-center rounded-full transition-colors focus-visible:ring-2 focus-visible:outline-none"
+        className={cn(
+          "focus-visible:ring-brand-red inline-flex h-11 w-11 items-center justify-center rounded-full transition-colors focus-visible:ring-2 focus-visible:outline-none",
+          inverted ? "text-surface hover:bg-surface/15" : "text-ink hover:bg-surface-alt",
+        )}
       >
         <HamburgerIcon />
       </button>
