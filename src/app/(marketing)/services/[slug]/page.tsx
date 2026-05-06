@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Container } from "@/components/sections/_shared/Container";
-import { SectionEyebrow } from "@/components/sections/_shared/SectionEyebrow";
+import { ServiceDetailHero } from "@/components/sections/service-detail/ServiceDetailHero";
+import { ServiceOverview } from "@/components/sections/service-detail/ServiceOverview";
+import { WhenToChoose } from "@/components/sections/service-detail/WhenToChoose";
+import { ValueAddedGrid } from "@/components/sections/service-detail/ValueAddedGrid";
+import { ProjectsMosaic } from "@/components/sections/_shared/ProjectsMosaic";
+import { QuoteFormShell } from "@/components/sections/_shared/QuoteFormShell";
+import { OfficesGlobal } from "@/components/sections/_shared/OfficesGlobal";
 import { SERVICES } from "@/lib/constants";
 
 type RouteParams = Promise<{ slug: string }>;
@@ -22,9 +26,10 @@ export async function generateMetadata({ params }: { params: RouteParams }): Pro
 }
 
 /**
- * M3 stub for service detail pages — keeps the explore-more links from the
- * services grid resolving instead of 404. M4 replaces this with the full
- * detail template (hero + spec sheet + related services).
+ * Service Detail Page (M4). Hero → Overview → When-to-Choose → Value-Added
+ * grid → Projects Showcase (filtered by service slug) → Quote Form Shell
+ * → Offices. All content driven by the matching `Service` record in
+ * `src/lib/constants.ts`.
  */
 export default async function ServiceDetailPage({ params }: { params: RouteParams }) {
   const { slug } = await params;
@@ -32,26 +37,21 @@ export default async function ServiceDetailPage({ params }: { params: RouteParam
   if (!service) notFound();
 
   return (
-    <main className="bg-surface-alt flex flex-1 flex-col">
-      <Container className="flex flex-1 flex-col items-start gap-6 py-32 md:py-40">
-        <SectionEyebrow variant="gray">Service Detail</SectionEyebrow>
-        <h1 className="font-display text-ink text-4xl leading-tight font-black tracking-tight uppercase md:text-5xl lg:text-6xl">
-          {service.name}
-        </h1>
-        <p className="font-body text-ink-soft max-w-2xl text-base md:text-lg">
-          {service.description}
-        </p>
-        <p className="font-body text-ink-muted max-w-2xl text-sm md:text-base">
-          The full {service.name} detail page is shipping in Module 4. For now, this stub keeps
-          links from the services listing resolving correctly.
-        </p>
-        <Link
-          href="/services"
-          className="font-cta border-ink text-ink hover:bg-ink hover:text-surface mt-2 inline-flex items-center gap-2 rounded-full border px-6 py-3 text-sm font-semibold transition-colors"
-        >
-          Back to all services
-        </Link>
-      </Container>
+    <main className="flex flex-1 flex-col">
+      <ServiceDetailHero service={service} />
+      <ServiceOverview service={service} />
+      <WhenToChoose service={service} />
+      <ValueAddedGrid />
+      <ProjectsMosaic />
+      <div id="request-quote" className="scroll-mt-24">
+        <QuoteFormShell
+          photo={{
+            src: "/quote/services-quote.webp",
+            alt: "Antonov 124 freighter loading helicopter cargo at sunset",
+          }}
+        />
+      </div>
+      <OfficesGlobal />
     </main>
   );
 }

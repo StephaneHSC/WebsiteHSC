@@ -9,18 +9,27 @@ import { cn } from "@/lib/utils";
 import { SHOWCASE_TILES, type ShowcaseTile } from "@/lib/constants";
 
 /**
- * Desktop bento: 4 columns, each with one tall + one short tile. Even columns
- * start with the tall tile, odd columns with the short — creates the offset
- * stagger from Figma.
+ * Project showcase mosaic. Used on the home page AND every service-detail
+ * page — the visual is identical in both contexts. The `serviceSlug` prop is
+ * reserved for M7's Shipment Showcase page (where filter UI will reuse this
+ * same data), but it is currently a no-op so detail pages render the
+ * canonical 8-tile mosaic that matches the home page.
+ *
+ * Desktop: 4 columns × 2 rows of mixed tile heights creating the brick mosaic.
+ * Mobile: first 4 tiles in a 2-column bento that preserves the offset stagger.
  */
-const COLUMNS: readonly (readonly ShowcaseTile[])[] = [
-  SHOWCASE_TILES.slice(0, 2),
-  SHOWCASE_TILES.slice(2, 4),
-  SHOWCASE_TILES.slice(4, 6),
-  SHOWCASE_TILES.slice(6, 8),
-];
-
 export function ProjectsMosaic() {
+  const tiles = SHOWCASE_TILES;
+
+  const columns: readonly (readonly ShowcaseTile[])[] = [
+    tiles.slice(0, 2),
+    tiles.slice(2, 4),
+    tiles.slice(4, 6),
+    tiles.slice(6, 8),
+  ];
+
+  const mobileTiles = tiles.slice(0, 4);
+
   return (
     <Section tone="alt" spacing="loose" className="overflow-hidden">
       <Container>
@@ -38,15 +47,17 @@ export function ProjectsMosaic() {
 
       <Container className="mt-12 lg:mt-16">
         <div className="hidden gap-4 md:grid md:grid-cols-4 lg:gap-6">
-          {COLUMNS.map((column, colIdx) => {
+          {columns.map((column, colIdx) => {
             const startsTall = colIdx % 2 === 0;
-            const colKey = column.map((t) => t.id).join("-");
             return (
-              <div key={colKey} className="flex flex-col gap-4 lg:gap-6">
+              <div key={`col-${colIdx}`} className="flex flex-col gap-4 lg:gap-6">
                 {column.map((tile, tileIdx) => {
                   const isTall = startsTall ? tileIdx === 0 : tileIdx === 1;
                   return (
-                    <Reveal key={tile.id} delay={0.2 + (colIdx * 2 + tileIdx) * 0.05}>
+                    <Reveal
+                      key={`col-${colIdx}-row-${tileIdx}`}
+                      delay={0.2 + (colIdx * 2 + tileIdx) * 0.05}
+                    >
                       <Tile tile={tile} variant={isTall ? "tall" : "short"} />
                     </Reveal>
                   );
@@ -61,18 +72,18 @@ export function ProjectsMosaic() {
         <div className="grid grid-cols-2 gap-3 md:hidden">
           <div className="flex flex-col gap-3">
             <Reveal delay={0.1}>
-              <Tile tile={SHOWCASE_TILES[0]!} variant="tall" />
+              <Tile tile={mobileTiles[0]!} variant="tall" />
             </Reveal>
             <Reveal delay={0.15}>
-              <Tile tile={SHOWCASE_TILES[1]!} variant="short" />
+              <Tile tile={mobileTiles[1]!} variant="short" />
             </Reveal>
           </div>
           <div className="flex flex-col gap-3">
             <Reveal delay={0.2}>
-              <Tile tile={SHOWCASE_TILES[2]!} variant="short" />
+              <Tile tile={mobileTiles[2]!} variant="short" />
             </Reveal>
             <Reveal delay={0.25}>
-              <Tile tile={SHOWCASE_TILES[3]!} variant="tall" />
+              <Tile tile={mobileTiles[3]!} variant="tall" />
             </Reveal>
           </div>
         </div>
