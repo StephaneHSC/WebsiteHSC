@@ -4,6 +4,7 @@ import { useRef } from "react";
 import Image from "next/image";
 import { Reveal } from "@/components/sections/_shared/Reveal";
 import { cn } from "@/lib/utils";
+import { SMART_TRACKING_CARDS } from "@/lib/constants";
 
 /**
  * Horizontal scroll-snap card row with prev/next nav buttons.
@@ -12,37 +13,10 @@ import { cn } from "@/lib/utils";
  * server component. Mobile users get native swipe; desktop gets buttons that
  * programmatically smooth-scroll one card at a time.
  *
- * Cards are full composite assets (title + description + mockup baked into
- * the image). Alt text carries accessibility.
+ * Card data is in `SMART_TRACKING_CARDS` so future "Mobile App" pages can
+ * reuse it. Cards are full composite assets (title + description + mockup
+ * baked into the image); alt text carries accessibility.
  */
-
-const CARDS = [
-  {
-    id: 1,
-    src: "/home/smart-tracking/card-1.webp",
-    alt: "Your helicopter shipment, in real time — desktop and phone tracking dashboards",
-  },
-  {
-    id: 2,
-    src: "/home/smart-tracking/card-2.webp",
-    alt: "Track every stage of your shipment — delivery information screen",
-  },
-  {
-    id: 3,
-    src: "/home/smart-tracking/card-3.webp",
-    alt: "Instant status notifications — push alerts feed",
-  },
-  {
-    id: 4,
-    src: "/home/smart-tracking/card-4.webp",
-    alt: "Shipment documents and media — attachments gallery",
-  },
-  {
-    id: 5,
-    src: "/home/smart-tracking/card-5.webp",
-    alt: "Progress status and updates — full event timeline",
-  },
-] as const;
 
 export function SmartTrackingCards() {
   const scrollerRef = useRef<HTMLDivElement>(null);
@@ -53,8 +27,10 @@ export function SmartTrackingCards() {
     const item = el.querySelector("li");
     if (!item) return;
     const itemWidth = item.getBoundingClientRect().width;
-    // Match the gap utility on <ul> below: gap-4 (16) on mobile, sm:gap-6 (24).
-    const gap = window.innerWidth >= 640 ? 24 : 16;
+    // Read the actual gap from the <ul> so this stays in sync with the
+    // responsive `gap-6 lg:gap-8` utility — no magic numbers.
+    const list = item.parentElement;
+    const gap = list ? parseFloat(getComputedStyle(list).columnGap || "0") : 0;
     el.scrollBy({ left: dir * (itemWidth + gap), behavior: "smooth" });
   };
 
@@ -62,10 +38,13 @@ export function SmartTrackingCards() {
     <Reveal delay={0.4} className="mt-16 lg:mt-24">
       <div
         ref={scrollerRef}
-        className="overflow-x-auto scroll-smooth pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        role="region"
+        aria-label="Smart tracking feature cards"
+        tabIndex={0}
+        className="focus-visible:ring-brand-red overflow-x-auto scroll-smooth pb-2 [-ms-overflow-style:none] [scrollbar-width:none] focus-visible:ring-2 focus-visible:outline-none [&::-webkit-scrollbar]:hidden"
       >
         <ul className="flex snap-x snap-mandatory gap-6 px-4 sm:px-6 lg:gap-8 lg:px-8">
-          {CARDS.map((card) => (
+          {SMART_TRACKING_CARDS.map((card) => (
             <li
               key={card.id}
               className="w-[300px] shrink-0 snap-start sm:w-[400px] lg:w-[520px] xl:w-[580px]"
@@ -91,7 +70,12 @@ export function SmartTrackingCards() {
   );
 }
 
-function NavButton({ direction, onClick }: { direction: "prev" | "next"; onClick: () => void }) {
+type NavButtonProps = {
+  direction: "prev" | "next";
+  onClick: () => void;
+};
+
+function NavButton({ direction, onClick }: NavButtonProps) {
   return (
     <button
       type="button"

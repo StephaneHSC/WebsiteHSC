@@ -1,0 +1,264 @@
+/**
+ * One-shot Sanity seed script — populates the home page CMS with the
+ * placeholder data we currently fall back to in dev. After running this,
+ * the inline PLACEHOLDER_* arrays in the section components should never
+ * fire (Sanity is no longer empty).
+ *
+ * Seeds three schemas:
+ *   - milestone (4 entries with images uploaded to Sanity assets)
+ *   - testimonial (3 featured entries with company logos)
+ *   - teamMember (4 entries; uses a single shared placeholder photo because
+ *     the schema requires `photo` — editor swaps with real headshots later)
+ *
+ * Usage:
+ *   1. Generate a write token at:
+ *      https://www.sanity.io/manage/personal/project/u1hilj5b/api
+ *      (Editor or Deploy Studio role — anything with write permission)
+ *   2. Add to .env.local on its own line:
+ *      SANITY_AUTH_TOKEN=<paste-token-here>
+ *   3. From project root:
+ *      npm run seed:sanity
+ *
+ * Re-running the script will create DUPLICATES (each call adds new
+ * documents). To wipe and re-seed, delete the existing docs in /studio
+ * first or pass `--purge` (see flag below).
+ */
+
+import { createClient } from "next-sanity";
+import { createReadStream } from "node:fs";
+import { resolve, dirname, basename } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const projectRoot = resolve(__dirname, "..");
+
+const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
+const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET ?? "production";
+const token = process.env.SANITY_AUTH_TOKEN;
+
+if (!projectId) {
+  console.error("[seed] NEXT_PUBLIC_SANITY_PROJECT_ID missing in .env.local");
+  process.exit(1);
+}
+if (!token) {
+  console.error("[seed] SANITY_AUTH_TOKEN missing in .env.local");
+  console.error(
+    `       Generate at https://www.sanity.io/manage/personal/project/${projectId}/api`,
+  );
+  process.exit(1);
+}
+
+const purge = process.argv.includes("--purge");
+
+const client = createClient({
+  projectId,
+  dataset,
+  apiVersion: "2024-01-01",
+  token,
+  useCdn: false,
+});
+
+// ── Asset upload helper ─────────────────────────────────────────────────────
+
+const uploadCache = new Map();
+
+async function uploadImage(publicPath) {
+  if (uploadCache.has(publicPath)) return uploadCache.get(publicPath);
+  const fullPath = resolve(projectRoot, "public", publicPath.replace(/^\//, ""));
+  const stream = createReadStream(fullPath);
+  const filename = basename(fullPath);
+  process.stdout.write(`  ↑ uploading ${filename}... `);
+  const asset = await client.assets.upload("image", stream, { filename });
+  console.log(`ok (${asset._id})`);
+  uploadCache.set(publicPath, asset);
+  return asset;
+}
+
+function imageRef(asset) {
+  return { _type: "image", asset: { _type: "reference", _ref: asset._id } };
+}
+
+// ── Seed data ───────────────────────────────────────────────────────────────
+
+const TEAM_MEMBERS = [
+  {
+    full_name: "Stephane Marot",
+    role: "Founder & CEO",
+    department: "Leadership",
+    short_bio: "Captains the HSC mission across global ops.",
+    order: 1,
+    is_featured: true,
+    status: "published",
+    photoPath: "/team/stephane-marot.png",
+  },
+  {
+    full_name: "Daniel Cosico",
+    role: "Deployment & Coordination Executive",
+    department: "Operations",
+    order: 2,
+    is_featured: false,
+    status: "published",
+    photoPath: "/team/daniel-cosico.png",
+  },
+  {
+    full_name: "Adriana Athirah",
+    role: "Sales & Marketing Executive",
+    department: "Commercial",
+    order: 3,
+    is_featured: false,
+    status: "published",
+    photoPath: "/team/adriana-athirah.png",
+  },
+  {
+    full_name: "Daniel Cosico",
+    role: "Customer Logistic Specialist",
+    department: "Operations",
+    order: 4,
+    is_featured: false,
+    status: "published",
+    photoPath: "/team/daniel-cosico.png",
+  },
+];
+
+const MILESTONES = [
+  {
+    year: 2026,
+    headline: "Customer Satisfaction",
+    description:
+      "Global customer satisfaction survey is launched to receive our customers' feedback in the aim to exceed our customer's expectation.",
+    imagePath: "/milestones/2026-customer-satisfaction.webp",
+    order: 4,
+  },
+  {
+    year: 2024,
+    headline: "Global Headquarter Relocates",
+    description: "Heli Skycargo Corporate office and Global Customer Support Center to Dubai, UAE.",
+    imagePath: "/milestones/2024-hq-relocates.webp",
+    order: 3,
+  },
+  {
+    year: 2023,
+    headline: "Customer Support Expansion for Japan",
+    description: "Our Japan desk is opened to cater to our Japanese customers.",
+    imagePath: "/milestones/2023-japan-desk.webp",
+    order: 2,
+  },
+  {
+    year: 2021,
+    headline: "On the Road",
+    description:
+      "Heli Skycargo starts exhibiting at HAI Atlanta, European Rotors in Madrid, Spain and Verticon Anaheim.",
+    imagePath: "/milestones/2021-on-the-road.webp",
+    order: 1,
+  },
+];
+
+const TESTIMONIALS = [
+  {
+    customer_name: "Mr. Morten H.",
+    company: "Lufttransport",
+    quote:
+      "I would also use this oppurtunity to thank you and your team for helping us with the transportation of our AW139. Your service was high level and we will most certainly keep your name in case of future projects.",
+    rating: 5,
+    service_tag: "Air Charter",
+    order: 1,
+    is_featured: true,
+    status: "published",
+    logoPath: "/testimonials/lufttransport.png",
+  },
+  {
+    customer_name: "Mr. Ryosei I.",
+    company: "Mitsui Bussan Aerospace",
+    quote:
+      "Thanks to appropriate and flexible proposals of HSC team depending on the situation for worldwide logistics, import destination and Japan, we could meet the customers' expectations and delivery the Helicopter as scheduled. We are also able to grasp the transportation status in timely through HSC App which is extremely useful for us and our customers.",
+    rating: 5,
+    service_tag: "Air Commercial",
+    order: 2,
+    is_featured: true,
+    status: "published",
+    logoPath: "/testimonials/mitsui-bussan.png",
+  },
+  {
+    customer_name: "Mr. Rodney L.",
+    company: "Sazma Aviation",
+    quote:
+      "Both our AW139 helicopter shipment was handled professionally by your team and safely arrived at Subang, Malaysia. Great to have Heli Skycargo as our transporter for our helicopter transshipment globally.",
+    rating: 5,
+    service_tag: "Ocean RO/RO",
+    order: 3,
+    is_featured: true,
+    status: "published",
+    logoPath: "/testimonials/sazma-aviation.png",
+  },
+];
+
+// ── Mutations ───────────────────────────────────────────────────────────────
+
+async function purgeAll() {
+  for (const type of ["teamMember", "milestone", "testimonial"]) {
+    const ids = await client.fetch(`*[_type == "${type}"]._id`);
+    if (ids.length === 0) continue;
+    console.log(`[seed] purging ${ids.length} ${type} doc(s)...`);
+    await client.delete({ query: `*[_type == "${type}"]` });
+  }
+}
+
+async function seedTeam() {
+  console.log("\n[seed] team members");
+  for (const m of TEAM_MEMBERS) {
+    const photoAsset = await uploadImage(m.photoPath);
+    const { photoPath: _photoPath, ...rest } = m;
+    void _photoPath;
+    const doc = { _type: "teamMember", ...rest, photo: imageRef(photoAsset) };
+    const created = await client.create(doc);
+    console.log(`  ✓ ${m.full_name} → ${created._id}`);
+  }
+}
+
+async function seedMilestones() {
+  console.log("\n[seed] milestones");
+  for (const m of MILESTONES) {
+    const asset = await uploadImage(m.imagePath);
+    const { imagePath: _imagePath, ...rest } = m;
+    void _imagePath;
+    const created = await client.create({
+      _type: "milestone",
+      ...rest,
+      image: imageRef(asset),
+    });
+    console.log(`  ✓ ${m.year} ${m.headline} → ${created._id}`);
+  }
+}
+
+async function seedTestimonials() {
+  console.log("\n[seed] testimonials");
+  for (const t of TESTIMONIALS) {
+    const logoAsset = await uploadImage(t.logoPath);
+    const { logoPath: _logoPath, ...rest } = t;
+    void _logoPath;
+    const created = await client.create({
+      _type: "testimonial",
+      ...rest,
+      logo: imageRef(logoAsset),
+    });
+    console.log(`  ✓ ${t.customer_name} (${t.company}) → ${created._id}`);
+  }
+}
+
+// ── Run ─────────────────────────────────────────────────────────────────────
+
+async function main() {
+  console.log(`[seed] target: project=${projectId} dataset=${dataset}`);
+  if (purge) await purgeAll();
+  await seedTeam();
+  await seedMilestones();
+  await seedTestimonials();
+  console.log(
+    "\n[seed] done. Hard refresh http://localhost:3000/ to see the live data replace placeholders.",
+  );
+}
+
+main().catch((err) => {
+  console.error("\n[seed] error:", err.message ?? err);
+  process.exit(1);
+});

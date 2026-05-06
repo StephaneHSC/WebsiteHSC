@@ -35,9 +35,9 @@ export const featuredTestimonialsQuery = /* groq */ `
   }
 `;
 
-/** All milestones, year ascending then order. */
+/** All milestones, newest year first (display order). */
 export const milestonesQuery = /* groq */ `
-  *[_type == "milestone"] | order(year asc, order asc) {
+  *[_type == "milestone"] | order(year desc, order desc) {
     _id,
     year,
     headline,

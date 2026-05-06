@@ -21,7 +21,7 @@ import { FOOTER } from "@/lib/constants";
  */
 export function Footer() {
   return (
-    <footer className="bg-ink/95 text-surface relative mt-24 backdrop-blur-sm">
+    <footer className="bg-ink/95 text-surface relative backdrop-blur-sm">
       {/* Mobile layout (<md) */}
       <div className="md:hidden">
         <MobileFooter />

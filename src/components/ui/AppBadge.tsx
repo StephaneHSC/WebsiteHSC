@@ -4,16 +4,16 @@ import { cn } from "@/lib/utils";
 type Store = "app-store" | "google-play";
 type BadgeVariant = "dark" | "light";
 
-const STORE_META: Record<Store, { href: string; primary: string; href_aria: string }> = {
+const STORE_META: Record<Store, { href: string; primary: string; ariaLabel: string }> = {
   "app-store": {
     href: APP_LINKS.appStore,
     primary: "App Store",
-    href_aria: "Download on the App Store",
+    ariaLabel: "Download on the App Store",
   },
   "google-play": {
     href: APP_LINKS.googlePlay,
     primary: "Google Play",
-    href_aria: "Get it on Google Play",
+    ariaLabel: "Get it on Google Play",
   },
 };
 
@@ -38,7 +38,7 @@ export function AppBadge({ store, variant = "dark", className }: AppBadgeProps) 
       href={meta.href}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label={meta.href_aria}
+      aria-label={meta.ariaLabel}
       className={cn(
         "focus-visible:ring-brand-red inline-flex items-center gap-3 rounded-full px-5 py-2.5 transition-all duration-200 hover:scale-[1.02] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
         variantClasses[variant],
