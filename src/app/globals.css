@@ -1,19 +1,28 @@
 @import "tailwindcss";
 
 @theme {
-  /* Brand palette (confirmed from Figma brand frame, 2026-04-28) */
+  /* Brand palette (confirmed from Figma brand frame, 2026-04-28; M3 additions 2026-05-05) */
   --color-brand-red: #e40c28;
   --color-brand-red-dark: #b00a1f; /* derived ~10% darker — confirm hover/active in M1 */
   --color-ink: #101820; /* headlines / primary */
   --color-ink-soft: #3d3d3d; /* body paragraphs */
   --color-ink-muted: #4a4e54; /* secondary / captions */
+  --color-ink-faint: #c4c4c4; /* value-added row number prefixes */
   --color-surface: #ffffff;
-  --color-surface-alt: #f9f9f9; /* section backgrounds */
+  --color-surface-alt: #f5f5f5; /* section backgrounds — Figma value */
   --color-border: #e5e7eb;
+
+  /* Form colors (M3 quote form) */
+  --color-input-border: #e4e4e4;
+  --color-input-focus: #ff7e8f;
+  --color-input-placeholder: #d9d9d9;
+  --color-text-muted-2: #929292;
 
   /* Typography (Google Fonts via next/font — see layout.tsx). */
   --font-display: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
+  --font-display-alt: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
   --font-body: var(--font-pt-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-cta: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
   /* Radius — extend Tailwind defaults with a pill token used heavily in this design. */
   --radius-pill: 9999px;

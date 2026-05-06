@@ -8,8 +8,8 @@ import { PartnersStrip } from "@/components/sections/home/PartnersStrip";
 import { CustomerTestimonials } from "@/components/sections/home/CustomerTestimonials";
 import { ProjectsMosaic } from "@/components/sections/home/ProjectsMosaic";
 import { MilestonesTimeline } from "@/components/sections/home/MilestonesTimeline";
-import { RequestQuoteCta } from "@/components/sections/home/RequestQuoteCta";
-import { OfficesGlobal } from "@/components/sections/home/OfficesGlobal";
+import { QuoteFormShell } from "@/components/sections/_shared/QuoteFormShell";
+import { OfficesGlobal } from "@/components/sections/_shared/OfficesGlobal";
 
 export default function Home() {
   return (
@@ -24,7 +24,12 @@ export default function Home() {
       <CustomerTestimonials />
       <ProjectsMosaic />
       <MilestonesTimeline />
-      <RequestQuoteCta />
+      <QuoteFormShell
+        photo={{
+          src: "/quote/helicopter.webp",
+          alt: "Helicopter cargo loaded for global transport",
+        }}
+      />
       <OfficesGlobal />
     </main>
   );

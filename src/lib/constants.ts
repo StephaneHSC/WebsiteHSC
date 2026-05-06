@@ -27,6 +27,7 @@ export const NAV: readonly NavItem[] = [
     label: "Services",
     href: "/services",
     children: [
+      { label: "All Services", href: "/services" },
       { label: "Ocean Ro/Ro", href: "/services/ocean-roro" },
       { label: "Ocean Lo/Lo", href: "/services/ocean-lolo" },
       { label: "Ocean FCL", href: "/services/ocean-fcl" },
@@ -44,7 +45,7 @@ export const NAV: readonly NavItem[] = [
       { label: "Operations", href: "/team#operations" },
     ],
   },
-  { label: "Reviews", href: "/reviews" },
+  { label: "Reviews", href: "/#testimonials" },
 ] as const;
 
 /**
@@ -112,7 +113,7 @@ export const HELICOPTER_BRANDS: readonly HelicopterBrand[] = [
 
 /**
  * Global office locations rendered in the home "Across all regions worldwide"
- * section. UAE is highlighted as the global support HQ. Phone/email values
+ * section. UAE is the featured HQ (red overlay on desktop, default-active tab on mobile). Phone/email values
  * sourced verbatim from Figma node 505:6025; the developer should verify the
  * USA + Malaysia phone numbers (look like placeholders that re-use the HK
  * number) before launch.
@@ -125,8 +126,11 @@ export type Office = {
   address: string;
   phone: string;
   email: string;
-  /** Renders the card on the brand-red highlight overlay (UAE only). */
-  highlighted?: boolean;
+  /**
+   * Marks the headquarters office. Drives the desktop red overlay AND the
+   * mobile "featured + tabs" default-active state.
+   */
+  featured?: boolean;
 };
 
 export const OFFICES: readonly Office[] = [
@@ -145,7 +149,7 @@ export const OFFICES: readonly Office[] = [
     address: "Emaar Business Park, Dubai",
     phone: "+971 558 247 780",
     email: "team@heliskycargo.com",
-    highlighted: true,
+    featured: true,
   },
   {
     id: "usa",
@@ -282,44 +286,109 @@ export type Service = {
   image: string;
 };
 
+/**
+ * Value-Added Services (8 supporting services beyond the 6 main offerings).
+ * Powers the M3 services-listing accordion. Slugs reserved for future
+ * detail pages but no routes ship in M3. The Ferry Flight Clearance row
+ * carries the only `description` + `detail` blurb (the other 7 act as
+ * label-only rows in the Figma design).
+ */
+export type ValueAddedService = {
+  slug: string;
+  label: string;
+  thumb: string;
+  description?: string;
+  detail?: {
+    /** Pre-formatted parts so the bold runs match the Figma typography. */
+    leadBold: string;
+    leadRest: string;
+    midBold: string;
+    tail: string;
+  };
+};
+
+export const VALUE_ADDED_SERVICES: readonly ValueAddedService[] = [
+  {
+    slug: "equipment-rental",
+    label: "Equipment Rental",
+    thumb: "/services/value-added/equipment-rental.webp",
+  },
+  { slug: "aog", label: "AOG", thumb: "/services/value-added/aog.webp" },
+  { slug: "obc", label: "OBC", thumb: "/services/value-added/obc.webp" },
+  {
+    slug: "ferry-flight-clearance",
+    label: "Ferry Flight Clearance",
+    thumb: "/services/value-added/ferry-flight-clearance.webp",
+    description:
+      "For remote locations, helicopters may require a ferry flight to a nearby transport hub.",
+    detail: {
+      leadBold: "Heli Skycargo ",
+      leadRest:
+        "can take care of the administration, instruction, and logistics of the ferry flight clearance on ",
+      midBold: "your behalf to ensure",
+      tail: " that your shipping remains on schedule.",
+    },
+  },
+  {
+    slug: "customs-brokerage",
+    label: "Customs Brokerage",
+    thumb: "/services/value-added/customs-brokerage.webp",
+  },
+  {
+    slug: "crates-manufacturing",
+    label: "Crates Manufacturing",
+    thumb: "/services/value-added/crates-manufacturing.webp",
+  },
+  {
+    slug: "shrink-wrapping",
+    label: "Shrink Wrapping",
+    thumb: "/services/value-added/shrink-wrapping.webp",
+  },
+  {
+    slug: "cargo-insurance",
+    label: "Cargo Insurance",
+    thumb: "/services/value-added/cargo-insurance.webp",
+  },
+] as const;
+
 export const SERVICES: readonly Service[] = [
   {
     slug: "ocean-roro",
     name: "Ocean RO/RO",
-    description:
-      "Roll-on/roll-off shipping for vehicles, helicopters, and oversized cargo aboard specialised vessels.",
+    description: "Transport your aircraft using Ro/Ro vessel, loaded on a MAFI or simply towing.",
     image: "/services/ocean-roro.webp",
   },
   {
     slug: "ocean-lolo",
     name: "Ocean LO/LO",
-    description:
-      "Lift-on/lift-off cargo handling for break-bulk and out-of-gauge helicopter shipments.",
+    description: "Safe Lift-on/Lift-off into cargo load of container vessel or MPV Breakbulk ship.",
     image: "/services/ocean-lolo.webp",
   },
   {
     slug: "ocean-fcl",
     name: "Ocean FCL",
-    description: "Flat Rack is an alternative and cost effective way of shipping.",
+    description:
+      "Save on freight cost by shipping in 40' container High Cube, Open Top or Flat Rack.",
     image: "/services/ocean-fcl.webp",
   },
   {
     slug: "road-freight",
     name: "Road Freight",
-    description: "End-to-end inland logistics for first- and last-mile helicopter haulage.",
+    description:
+      "We deal with assets-own trucking companies providing GPS-equipped Air-ride specialised trailers.",
     image: "/services/road-freight.webp",
   },
   {
     slug: "air-commercial",
     name: "Air Commercial",
-    description: "Scheduled commercial freight on global passenger and cargo airlines.",
+    description: "Ship your aircraft on B74 Freighter.",
     image: "/services/air-commercial.webp",
   },
   {
     slug: "air-chartering",
-    name: "Air Charter",
+    name: "Air Chartering",
     description:
-      "Dedicated chartered aircraft for time-critical and oversized helicopter movements.",
+      "When time is of the essence or to reach places unreachable by 74F, go for the mighty Antonov124-100 or the IL76.",
     image: "/services/air-chartering.webp",
   },
 ] as const;

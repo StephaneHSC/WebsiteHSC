@@ -15,6 +15,23 @@ Format:
 
 ---
 
+## 2026-05-06 — Value-Added accordion switches to vertical layout at `xl:` (1280px), not `lg:` (1024px)
+
+**Decision**: The Value-Added Services accordion uses Tailwind's `xl:` breakpoint (≥1280px) to gate the desktop horizontal layout (708px thumbnail + label + arrow on one row). Below 1280px the row stacks vertically (thumbnail full-width on top, label row below). The M3 plan (`docs/M3_PLAN.md` §3 §3) implied the `lg:` breakpoint (≥1024px) since Figma's desktop frame is 1600px.
+
+**Why**: At 1024–1279px the desktop horizontal layout is too cramped for the 708px thumbnail + 36px label + 73px arrow button — the arrow gets clipped on the right edge and labels wrap awkwardly. Confirmed visually by the developer at 1099px (arrow disappeared off-screen). Switching to vertical stacking from the lg range up to just below xl preserves a usable layout on common laptop widths (1280–1366 mostly OK, 1024–1279 needs the mobile-style stack).
+
+**Alternatives considered**:
+
+- Keep `lg:` and shrink the thumbnail proportionally with the container — would deviate from Figma's 708px contract and add responsive sizing complexity.
+- Use a custom breakpoint like `min-[1221px]:` — same end result as `xl:`, but `xl:` is a standard Tailwind token and easier to reason about.
+
+**Tradeoffs**: Slight design deviation from the 1600px Figma frame's implied breakpoint behavior. Mitigated by the fact that the mobile-style stacked layout still uses the same components and renders cleanly — no jarring transition. Devs reviewing M3 against the plan will see the deviation; this entry is the authoritative explanation.
+
+**How to apply**: `xl:` (≥1280px) for horizontal value-added layout; vertical stack below. See `src/components/sections/services/ValueAddedAccordion.tsx`.
+
+---
+
 ## 2026-05-05 — Quote form: build the visual shell in M3 as a shared component (supersedes part of 2026-04-29)
 
 **Decision**: The quote form's visual shell is built once in Module 3 as a **shared component placed on BOTH the home page and the services page**. The two placements are pixel-identical except for the left-column photo (and optionally the headline copy). Module 8 still wires Formspree + state + validation + Turnstile into the same component — no redesign at that stage, only logic.

@@ -1,9 +1,20 @@
 import { type HTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
-type EyebrowVariant = "filled" | "outline";
+export type EyebrowVariant =
+  | "red"
+  | "gray"
+  | "outline-white"
+  | "outline-ink"
+  // Backwards-compat aliases for M1/M2 consumers.
+  | "filled"
+  | "outline";
 
 const variantClasses: Record<EyebrowVariant, string> = {
+  red: "bg-brand-red text-surface",
+  gray: "bg-ink-muted text-surface",
+  "outline-white": "border border-surface text-surface bg-transparent",
+  "outline-ink": "border border-ink/15 text-ink bg-transparent",
   filled: "bg-brand-red text-surface",
   outline: "border border-ink/15 text-ink",
 };
@@ -13,11 +24,11 @@ export type SectionEyebrowProps = HTMLAttributes<HTMLSpanElement> & {
 };
 
 /**
- * Small label that sits above section headings. "OUR SOLUTIONS" uses `filled`,
- * "MOBILE APP" uses `outline`
+ * Small uppercase label that sits above section headings.
+ * Tracking 0.72 (~6%) and PT Sans Bold per Figma spec across all variants.
  */
 export function SectionEyebrow({
-  variant = "filled",
+  variant = "red",
   className,
   children,
   ...props
@@ -25,7 +36,7 @@ export function SectionEyebrow({
   return (
     <span
       className={cn(
-        "font-display inline-flex items-center rounded-md px-3 py-1 text-xs font-semibold tracking-wider uppercase",
+        "font-body inline-flex items-center px-2 py-2 text-[12px] leading-none font-bold tracking-[0.06em] uppercase",
         variantClasses[variant],
         className,
       )}
