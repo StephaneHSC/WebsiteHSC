@@ -21,9 +21,14 @@ export const teamMembersQuery = /* groq */ `
   }
 `;
 
-/** Featured testimonials for the home page customers section. */
-export const featuredTestimonialsQuery = /* groq */ `
-  *[_type == "testimonial" && status == "published" && is_featured == true] | order(order asc) {
+/**
+ * All published testimonials, featured first. Used by the home testimonials
+ * section's "View All Reviews" expand: initial render shows the top 3 (which
+ * are the featured ones when there are ≥3); clicking the button reveals the
+ * remaining published entries in subsequent rows of 3.
+ */
+export const allTestimonialsQuery = /* groq */ `
+  *[_type == "testimonial" && status == "published"] | order(is_featured desc, order asc) {
     _id,
     customer_name,
     company,

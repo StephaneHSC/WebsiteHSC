@@ -1,16 +1,12 @@
 import Image from "next/image";
-import Link from "next/link";
 import { Container } from "@/components/sections/_shared/Container";
 import { Section } from "@/components/sections/_shared/Section";
 import { SectionEyebrow } from "@/components/sections/_shared/SectionEyebrow";
 import { Reveal } from "@/components/sections/_shared/Reveal";
-import { ScrollSnapRow } from "@/components/sections/_shared/ScrollSnapRow";
 import { fetchWithCmsFallback } from "@/components/sections/_shared/cmsFallback";
-import { featuredTestimonialsQuery } from "@/lib/sanity/queries";
+import { allTestimonialsQuery } from "@/lib/sanity/queries";
 import type { Testimonial } from "@/types/sanity";
-import { urlFor } from "@/lib/sanity/image";
-import { buttonVariants } from "@/components/ui/Button";
-import { cn } from "@/lib/utils";
+import { TestimonialsList, type DisplayTestimonial } from "./TestimonialsList";
 
 // TODO(seed): drop once Sanity is populated.
 type PlaceholderTestimonial = {
@@ -53,19 +49,23 @@ const PLACEHOLDER_TESTIMONIALS: readonly PlaceholderTestimonial[] = [
   },
 ];
 
-function isPlaceholder(t: Testimonial | PlaceholderTestimonial): t is PlaceholderTestimonial {
-  return "placeholderLogo" in t;
-}
-
+/**
+ * Home "Customers Love Heli Skycargo" section.
+ *
+ * Renders the eyebrow + heading + heart divider on the server, then hands off
+ * the testimonial list to a small client subcomponent that owns the "View All
+ * Reviews" expand state. The hamburger menu's Reviews link points at
+ * `#testimonials` so it scrolls here instead of routing to a dedicated page.
+ */
 export async function CustomerTestimonials() {
+  // No `limit` arg → fetch the full list. The slice-to-3 happens client-side.
   const display = await fetchWithCmsFallback<Testimonial, PlaceholderTestimonial>(
-    featuredTestimonialsQuery,
+    allTestimonialsQuery,
     PLACEHOLDER_TESTIMONIALS,
-    3,
   );
 
   return (
-    <Section tone="light" spacing="loose">
+    <Section id="testimonials" tone="light" spacing="loose" className="scroll-mt-20">
       <Container>
         <div className="flex flex-col items-center gap-4 text-center">
           <Reveal>
@@ -105,153 +105,12 @@ export async function CustomerTestimonials() {
         </div>
       </Container>
 
-      {/* Desktop / tablet: 3-col grid with stretched heights so the bottom
-          name strips align across cards regardless of quote length. */}
-      <Container className="mt-16 hidden md:block lg:mt-20">
-        <ul className="grid grid-cols-3 items-stretch gap-6 lg:gap-8">
-          {display.map((t, i) => (
-            <li key={t._id} className="h-full">
-              <Reveal delay={0.3 + i * 0.1} className="h-full">
-                <TestimonialCard testimonial={t} />
-              </Reveal>
-            </li>
-          ))}
-        </ul>
-
-        <Reveal delay={0.7} className="mt-20 flex justify-center lg:mt-24">
-          <Link
-            href="/reviews"
-            className={cn(
-              buttonVariants({ variant: "secondary", size: "md" }),
-              "border-ink border font-bold hover:scale-[1.02]",
-            )}
-          >
-            View All <span className="font-extrabold">Reviews</span>
-          </Link>
-        </Reveal>
-      </Container>
-
-      {/* Mobile: scroll-snap carousel with one card centered + adjacent peek. */}
-      <div className="mt-12 md:hidden">
-        <ScrollSnapRow ariaLabel="Customer testimonials" className="gap-4 px-6 pb-4">
-          {display.map((t, i) => (
-            <li key={t._id} className="w-[85%] shrink-0 snap-center">
-              <Reveal delay={0.2 + i * 0.05}>
-                <TestimonialCard testimonial={t} />
-              </Reveal>
-            </li>
-          ))}
-        </ScrollSnapRow>
-
-        <Reveal delay={0.6} className="mt-16 flex justify-center px-6">
-          <Link
-            href="/reviews"
-            className={cn(
-              buttonVariants({ variant: "secondary", size: "md" }),
-              "border-ink border font-bold hover:scale-[1.02]",
-            )}
-          >
-            View All <span className="font-extrabold">Reviews</span>
-          </Link>
-        </Reveal>
-      </div>
+      <TestimonialsList testimonials={display as readonly DisplayTestimonial[]} />
     </Section>
   );
 }
 
-type TestimonialCardProps = {
-  testimonial: Testimonial | PlaceholderTestimonial;
-};
-
-function TestimonialCard({ testimonial: t }: TestimonialCardProps) {
-  const sanityLogo = !isPlaceholder(t) ? (t.logo ?? null) : null;
-  const placeholderLogoSrc = isPlaceholder(t) ? t.placeholderLogo : null;
-
-  return (
-    <article className="border-brand-red relative mt-[44px] flex h-full flex-col border">
-      {/* Logo circle overlaps the top edge — Figma: 89×89 with 2px red border. */}
-      <div className="absolute top-0 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2">
-        <div className="bg-surface border-brand-red flex h-[89px] w-[89px] items-center justify-center overflow-hidden rounded-full border-2 shadow-md">
-          {sanityLogo ? (
-            <Image
-              src={urlFor(sanityLogo).width(140).height(140).url()}
-              alt={t.company}
-              width={70}
-              height={70}
-              className="object-contain p-3"
-            />
-          ) : placeholderLogoSrc ? (
-            <Image
-              src={placeholderLogoSrc}
-              alt={t.company}
-              width={70}
-              height={70}
-              className="h-auto max-h-12 w-auto max-w-[60px] object-contain"
-            />
-          ) : (
-            <LogoFallback company={t.company} />
-          )}
-        </div>
-      </div>
-
-      {/* Quote body — Figma bg #d6dee1 cool gray; quote 18px PT_Sans Bold Italic. */}
-      <div className="flex flex-1 flex-col items-center bg-[#d6dee1] px-6 pt-14 pb-8 text-center">
-        <Rating value={t.rating} />
-        <p className="font-body text-ink mt-6 text-base leading-[28px] font-bold italic md:text-[18px] md:leading-[32px]">
-          &ldquo;{t.quote}&rdquo;
-        </p>
-      </div>
-
-      {/* Name strip — red bg, customer name 24px Inter Tight Bold capitalize. */}
-      <div className="bg-brand-red text-surface flex flex-col items-center justify-center gap-1 px-6 py-6 text-center">
-        <p className="font-display text-xl font-bold capitalize md:text-[24px] md:leading-[24px]">
-          {t.customer_name}
-        </p>
-        <p className="font-body text-[13px] uppercase opacity-90">{t.company}</p>
-      </div>
-    </article>
-  );
-}
-
-type RatingProps = { value: number };
-
-function Rating({ value }: RatingProps) {
-  const filled = Math.max(0, Math.min(5, Math.round(value)));
-  return (
-    <div className="text-brand-red flex gap-1" role="img" aria-label={`${filled} out of 5 stars`}>
-      {Array.from({ length: 5 }).map((_, i) => (
-        <Star key={i} className={cn("h-[22px] w-[22px]", i >= filled && "text-brand-red/25")} />
-      ))}
-    </div>
-  );
-}
-
-type LogoFallbackProps = { company: string };
-
-function LogoFallback({ company }: LogoFallbackProps) {
-  const initials = company
-    .split(/\s+/)
-    .filter(Boolean)
-    .map((w) => w[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-  return (
-    <span className="font-display text-brand-red text-xl font-extrabold tracking-tight">
-      {initials}
-    </span>
-  );
-}
-
 type GlyphProps = { className?: string };
-
-function Star({ className }: GlyphProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
-      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-    </svg>
-  );
-}
 
 function HeartGlyph({ className }: GlyphProps) {
   return (
