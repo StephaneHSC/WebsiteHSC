@@ -1,0 +1,12 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 30.9379 30.9378" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Group 19">
+<ellipse id="Ellipse 6" opacity="0.1" cx="15.469" cy="15.4689" rx="15.469" ry="15.4689" fill="var(--fill-0, #E40C28)"/>
+<ellipse id="Ellipse 7" cx="15.4699" cy="15.4693" rx="10.3126" ry="10.3126" fill="var(--fill-0, #E40C28)"/>
+<g id="notification-status">
+<path id="Vector" d="M18.3568 13.819C19.0403 13.819 19.5943 13.2649 19.5943 12.5815C19.5943 11.898 19.0403 11.3439 18.3568 11.3439C17.6733 11.3439 17.1193 11.898 17.1193 12.5815C17.1193 13.2649 17.6733 13.819 18.3568 13.819Z" stroke="var(--stroke-0, white)" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_2" d="M13.4074 15.8815H15.4699" stroke="var(--stroke-0, white)" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_3" d="M13.4074 17.5319H17.1199" stroke="var(--stroke-0, white)" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_4" d="M16.2941 11.3439H14.2316C12.169 11.3439 11.344 12.1689 11.344 14.2314V16.7065C11.344 18.769 12.169 19.594 14.2316 19.594H16.7066C18.7691 19.594 19.5941 18.769 19.5941 16.7065V14.6439" stroke="var(--stroke-0, white)" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</svg>

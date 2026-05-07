@@ -1,7 +1,7 @@
-import imageUrlBuilder from "@sanity/image-url";
+import { createImageUrlBuilder } from "@sanity/image-url";
 import { client } from "./client";
 
-const builder = imageUrlBuilder(client);
+const builder = createImageUrlBuilder(client);
 
 /** Derive the input type accepted by `builder.image()` straight from the function signature. */
 type SanityImageSource = Parameters<typeof builder.image>[0];

@@ -153,6 +153,24 @@ const MILESTONES = [
   },
 ];
 
+// Site stats singleton — pinned to `_id: "siteStats"` to match
+// `src/sanity/structure.ts`. createOrReplace is idempotent, so re-running the
+// seed script overwrites without creating duplicates.
+//
+// Each array entry needs a unique `_key` — Sanity Studio refuses to render the
+// list editor without one, since `_key` is the React-style identity used to
+// track reorders/edits.
+const SITE_STATS = {
+  _id: "siteStats",
+  _type: "siteStats",
+  stats: [
+    { _key: "stat-shipments", value: "1000+", label: "Shipments Completed", order: 1 },
+    { _key: "stat-support", value: "24/7", label: "Available Support", order: 2 },
+    { _key: "stat-clients", value: "50+", label: "Clients Worldwide", order: 3 },
+    { _key: "stat-since", value: "2014", label: "Trusted Since", order: 4 },
+  ],
+};
+
 const TESTIMONIALS = [
   {
     customer_name: "Mr. Morten H.",
@@ -195,7 +213,7 @@ const TESTIMONIALS = [
 // ── Mutations ───────────────────────────────────────────────────────────────
 
 async function purgeAll() {
-  for (const type of ["teamMember", "milestone", "testimonial"]) {
+  for (const type of ["teamMember", "milestone", "testimonial", "siteStats"]) {
     const ids = await client.fetch(`*[_type == "${type}"]._id`);
     if (ids.length === 0) continue;
     console.log(`[seed] purging ${ids.length} ${type} doc(s)...`);
@@ -230,6 +248,12 @@ async function seedMilestones() {
   }
 }
 
+async function seedSiteStats() {
+  console.log("\n[seed] site stats");
+  const created = await client.createOrReplace(SITE_STATS);
+  console.log(`  ✓ ${SITE_STATS.stats.length} stats → ${created._id}`);
+}
+
 async function seedTestimonials() {
   console.log("\n[seed] testimonials");
   for (const t of TESTIMONIALS) {
@@ -253,6 +277,7 @@ async function main() {
   await seedTeam();
   await seedMilestones();
   await seedTestimonials();
+  await seedSiteStats();
   console.log(
     "\n[seed] done. Hard refresh http://localhost:3000/ to see the live data replace placeholders.",
   );

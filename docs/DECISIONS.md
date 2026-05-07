@@ -15,6 +15,66 @@ Format:
 
 ---
 
+## 2026-05-06 — M5 stats descriptions are hardcoded in the frontend, not in Sanity
+
+**Decision**: The 4 stat-cell descriptions on `/why-choose-us` (`Air and ocean logistics, fully visible end-to-end.`, etc.) are stored in `STAT_DESCRIPTIONS` in `src/lib/constants.ts`, mapped by the stat's `label` field. The Sanity `siteStats` schema continues to carry only `value / label / icon / order` — no `description` field is added.
+
+**Why**: The descriptions are fixed editorial copy that pairs 1:1 with each stat. Adding a `description` field to the Sanity schema would force a migration and expose copy that the editor isn't expected to vary. Mapping by label keeps the source of truth in code while letting editors still reorder/reword the canonical 4 labels through Studio.
+
+**Alternatives considered**:
+
+- Add a `description` field to the schema — clean but requires schema migration, Studio re-deploy, and exposes editorial copy that should not vary.
+- Use the `order` index as the join key — fragile if editors renumber.
+
+**Tradeoffs**: Editor-added stats (a 5th, etc.) render without a description (graceful degrade). If editors rename a label string, the description disappears until `STAT_DESCRIPTIONS` is updated. Acceptable because the 4 stats are conceptually fixed brand assets, not free-form CMS content.
+
+---
+
+## 2026-05-07 — `OfficesGlobal` is now a clickable interactive — every office can be activated, the bg cityscape cross-fades
+
+**Decision**: `_shared/OfficesGlobal.tsx` was refactored from a "static featured office + per-page bg image override" into a self-contained interactive: each office cell is a button on both desktop (4-up) and mobile (tabs), clicking promotes that office to active, the brand-red highlight slides to the active column (rounded outer corners when the active column is first/last), and the section background cross-fades to that office's own cityscape photo. Pages pick the default-active office via a single `defaultActive?: string` prop (defaults to `"uae"`). The data model gained a per-office `cityscape: { src, alt }` field on `Office` in `src/lib/constants.ts`; the previous `featured?: boolean` flag was removed (it duplicated the per-call `defaultActive` prop). Four cityscape assets ship in `/public/offices/`: `cityscape.webp` (UAE default), `cityscape-hk.webp`, `cityscape-usa.webp`, `cityscape-my.webp`.
+
+**Why**: The Figma file ships four desktop variants of this section (home/UAE-featured, `446:5508` HK-featured, `446:4065` USA-featured, `446:4177` Malaysia-featured) — each with the red strip in a different column AND a different cityscape behind. That's the signature of a clickable interactive, not four static page variants; a static-only design wouldn't bother creating frames for offices nobody can switch to. Bundling cityscapes onto each `Office` keeps the data model honest (each office is the source of truth for its bg) and lets a future Team page reuse the same component with `defaultActive="usa"` without any extra work.
+
+**Alternatives considered**:
+
+- Keep `backgroundSrc` as a per-page prop — forces every page to know each cityscape filename and breaks the mental model "the office _is_ the card AND the bg".
+- Fetch cityscapes from Sanity — out of scope for M5 (offices aren't CMS-managed).
+- Fork into static + interactive sibling components — duplicates ~270 lines of layout for a click handler.
+
+**Tradeoffs**: All four cityscape `<Image>` elements render in the DOM and load. The default-active one carries `priority`; the other three are lazy. Total cold-load weight ~1.4MB across four WebPs; for the GPU-cheap cross-fade behavior we accept this. The previous `featured` flag on `Office` is gone — anyone reading it would have crashed at typecheck (no consumers do).
+
+---
+
+## 2026-05-06 — `StatsBand` is promoted to `_shared/` from day one (used only by /why-choose-us in M5)
+
+**Decision**: The CMS-driven KPI band lives at `src/components/sections/_shared/StatsBand.tsx` even though M5 is its sole consumer at launch. The fall back to `PLACEHOLDER_SITE_STATS` in `src/lib/constants.ts` mirrors the `MilestonesTimeline` placeholder pattern.
+
+**Why**: `docs/CMS_SCHEMAS.md` §5 says `siteStats` is "reusable on Home page". Anticipating the home placement and making the component shared from day one avoids a folder rename + import update later, and makes it obvious to anyone scanning `_shared/` that the building block exists.
+
+**Alternatives considered**:
+
+- Place under `why-choose/` and move later — adds a future migration step and import-path churn.
+
+**Tradeoffs**: A reader might wonder why `_shared/` houses a single-consumer component today. Comment in the file documents the home-page intent.
+
+---
+
+## 2026-05-06 — M5 Stats band order is CMS-driven; mobile 2x2 reading order accepts a small deviation from the Figma mock
+
+**Decision**: The seed populates `siteStats` in desktop-reading order (`1000+, 24/7, 50+, 2014`). Mobile lays out as a 2x2 grid following the same `order asc` query, which means the top row reads `1000+, 24/7` and the bottom row reads `50+, 2014`. The Figma mobile mock shows `50+, 1000+, 24/7, 2014` instead — we accept the deviation to keep a single source of truth.
+
+**Why**: Maintaining two parallel orderings (desktop vs mobile) would require either a second CMS field or hardcoded reordering in the frontend. Both add complexity and a synchronization risk. The 4 numbers are equally weighted brand stats — the order doesn't carry meaning.
+
+**Alternatives considered**:
+
+- Add a `mobileOrder` field to the schema — schema migration + editor confusion.
+- Reorder in the frontend by hand — makes the component a static layout, defeats the CMS purpose.
+
+**Tradeoffs**: Pixel comparison vs the Figma mobile mock will fail on the stat cell positions. Pixel comparison vs the desktop mock + 2x2 wrap will pass.
+
+---
+
 ## 2026-05-06 — `ProjectsMosaic` recycles tiles when filtered subset has < 8 entries
 
 **Decision**: When `ProjectsMosaic` is rendered with a `serviceSlug` prop on the M4 service-detail pages, the filtered tile list is padded to a minimum of 8 entries by recycling tiles round-robin. The desktop bento mosaic always shows 8 tiles (4 columns × 2 rows) regardless of how many tiles match the current service.
