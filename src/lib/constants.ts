@@ -22,7 +22,7 @@ export type NavItem = {
 };
 
 export const NAV: readonly NavItem[] = [
-  { label: "About Heli Skycargo", href: "/about" },
+  { label: "About Heli Skycargo", href: "/why-choose-us" },
   {
     label: "Services",
     href: "/services",
@@ -112,11 +112,15 @@ export const HELICOPTER_BRANDS: readonly HelicopterBrand[] = [
 ] as const;
 
 /**
- * Global office locations rendered in the home "Across all regions worldwide"
- * section. UAE is the featured HQ (red overlay on desktop, default-active tab on mobile). Phone/email values
- * sourced verbatim from Figma node 505:6025; the developer should verify the
- * USA + Malaysia phone numbers (look like placeholders that re-use the HK
- * number) before launch.
+ * Global office locations rendered in the "Across all regions worldwide"
+ * section. Each office carries its own cityscape photo so the section bg
+ * cross-fades when the user clicks/taps a different office. The page hosting
+ * the section picks the default-active office via the `defaultActive` prop
+ * on `<OfficesGlobal />` (defaults to `uae`).
+ *
+ * Phone/email values sourced verbatim from Figma node `505:6025`; the
+ * developer should verify the USA + Malaysia phone numbers (look like
+ * placeholders re-using the HK number) before launch.
  */
 export type Office = {
   id: string;
@@ -126,11 +130,8 @@ export type Office = {
   address: string;
   phone: string;
   email: string;
-  /**
-   * Marks the headquarters office. Drives the desktop red overlay AND the
-   * mobile "featured + tabs" default-active state.
-   */
-  featured?: boolean;
+  /** Cityscape shown as the section bg when this office is the active one. */
+  cityscape: { src: string; alt: string };
 };
 
 export const OFFICES: readonly Office[] = [
@@ -141,6 +142,7 @@ export const OFFICES: readonly Office[] = [
     address: "Suite 409, 87-105 Chatham Road South, TST",
     phone: "+852 6698 0871",
     email: "info@heliskycargo.com",
+    cityscape: { src: "/offices/cityscape-hk.webp", alt: "" },
   },
   {
     id: "uae",
@@ -149,7 +151,7 @@ export const OFFICES: readonly Office[] = [
     address: "Emaar Business Park, Dubai",
     phone: "+971 558 247 780",
     email: "team@heliskycargo.com",
-    featured: true,
+    cityscape: { src: "/offices/cityscape.webp", alt: "" },
   },
   {
     id: "usa",
@@ -158,6 +160,7 @@ export const OFFICES: readonly Office[] = [
     address: "16501 Ventura Blvd, Encino, California",
     phone: "+852 6698 0871",
     email: "commercial@heliskycargo.com",
+    cityscape: { src: "/offices/cityscape-usa.webp", alt: "" },
   },
   {
     id: "my",
@@ -166,6 +169,7 @@ export const OFFICES: readonly Office[] = [
     address: "Kuala Lumpur",
     phone: "+852 6698 0871",
     email: "info@heliskycargo.com",
+    cityscape: { src: "/offices/cityscape-my.webp", alt: "" },
   },
 ] as const;
 
@@ -836,3 +840,129 @@ export const SERVICES: readonly Service[] = [
     },
   },
 ] as const;
+
+// ── M5 — Why Choose Heli Skycargo page content ──────────────────────────────
+
+export const WHY_CHOOSE_HERO = {
+  eyebrow: "Bespoke Helicopter Shipping",
+  // Mobile renders both lines stacked; desktop joins them on a single line.
+  h1Lines: ["Why Choose", "Heli Skycargo"] as const,
+  photo: "/why-choose-us/hero-team.webp",
+  photoAlt: "Heli Skycargo team in front of a Leonardo helicopter",
+} as const;
+
+export const WHY_CHOOSE_GLOBAL_REACH = {
+  eyebrow: "Global Reach",
+  h2: {
+    line1: "Wherever your aircraft needs to go,",
+    line2Pre: "we make it ",
+    line2Highlight: "happen",
+    line2Post: ".",
+  },
+  lede: "No matter from where to where, our experience and expertise in helicopter shipping will deliver a logistical solution catered to your needs and budget. 24/7, we are here for you. Our proven ability to orchestrate helicopter shipping & chartering makes us your partner of choice",
+  ctaLabel: "Request Quote",
+  ctaHref: "#request-quote",
+} as const;
+
+/**
+ * Description text mapped by stat label. The Sanity siteStats schema doesn't
+ * carry descriptions, so the section component looks them up by label after
+ * fetching. Editor-added stats with unmatched labels render without a
+ * description (graceful degrade).
+ */
+export const STAT_DESCRIPTIONS: Record<string, string> = {
+  "Shipments Completed": "Air and ocean logistics, fully visible end-to-end.",
+  "Available Support": "Always ready. Always delivering.",
+  "Clients Worldwide": "Trusted worldwide for reliable freight solutions.",
+  "Trusted Since": "We deliver everywhere, to the farthest reaches.",
+};
+
+/**
+ * Fallback used when the Sanity siteStats query returns null (pre-seed dev).
+ * TODO(seed): drop once Sanity is populated via `npm run seed:sanity`.
+ */
+export type PlaceholderSiteStat = { value: string; label: string; order: number };
+
+export const PLACEHOLDER_SITE_STATS: readonly PlaceholderSiteStat[] = [
+  { value: "1000+", label: "Shipments Completed", order: 1 },
+  { value: "24/7", label: "Available Support", order: 2 },
+  { value: "50+", label: "Clients Worldwide", order: 3 },
+  { value: "2014", label: "Trusted Since", order: 4 },
+];
+
+export const WHY_CHOOSE_INTRO_PHOTO = {
+  src: "/why-choose-us/team-band.webp",
+  alt: "Heli Skycargo team in front of a Leonardo AW189 helicopter",
+} as const;
+
+export type FeatureBlockH2Line = { text: string; weight: "black" | "bold" };
+
+export type FeatureBlockContent = {
+  eyebrow: string;
+  h2Lines: readonly FeatureBlockH2Line[];
+  /** Single intro paragraph above the bullets (Seamless variant). */
+  lede?: string;
+  /** Body paragraphs (Tailored variant). */
+  paragraphs?: readonly string[];
+  /** Bullet list (Seamless variant). */
+  bullets?: readonly string[];
+  photo: { src: string; alt: string };
+  /** Desktop-only image side; mobile is always image-top. */
+  imageSide: "left" | "right";
+  ctaLabel: string;
+  ctaHref: string;
+};
+
+export const WHY_CHOOSE_FEATURE_BLOCKS: readonly FeatureBlockContent[] = [
+  {
+    eyebrow: "Why Choose Us",
+    h2Lines: [
+      { text: "Seamless coordination", weight: "black" },
+      { text: "from planning to", weight: "bold" },
+      { text: "delivery.", weight: "bold" },
+    ],
+    lede: "We combine technical understanding with hands-on logistics experience to deliver reliable, flexible shipping solutions for every mission.",
+    bullets: [
+      "Dedicated specialists in helicopter transport",
+      "Global air and ocean freight coordination",
+      "End-to-end shipment visibility through our bespoke app",
+      "Strong international partner network",
+      "Personal support from planning to delivery",
+    ],
+    photo: {
+      src: "/why-choose-us/seamless-photo.webp",
+      alt: "HSC operations team in safety vests on a vessel deck",
+    },
+    imageSide: "left",
+    ctaLabel: "Request Quote",
+    ctaHref: "#request-quote",
+  },
+  {
+    eyebrow: "Our Approach",
+    h2Lines: [
+      { text: "Tailored logistic", weight: "black" },
+      { text: "solutions built around", weight: "bold" },
+      { text: "your aircraft", weight: "bold" },
+    ],
+    paragraphs: [
+      "Every shipment is different. That's why we design tailored transport strategies based on aircraft type, timeline, destination requirements, and handling needs.",
+      "Our team coordinates each stage of transport — ensuring safe handling, regulatory compliance, and on-time delivery.",
+    ],
+    photo: {
+      src: "/why-choose-us/tailored-photo.webp",
+      alt: "Wrapped helicopter being lifted by ship-side crane",
+    },
+    imageSide: "right",
+    ctaLabel: "Request Quote",
+    ctaHref: "#request-quote",
+  },
+];
+
+export const WHY_CHOOSE_TRACKABILITY = {
+  eyebrow: "Trackability",
+  h2: {
+    line1: "Precision Helicopter",
+    line2: "Shipping. Globally.",
+  },
+  lede: "Access real-time location of your helicopter while in transit, get push notification.",
+} as const;
