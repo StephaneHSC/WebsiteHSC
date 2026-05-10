@@ -1,10 +1,8 @@
 import Image from "next/image";
-import Link from "next/link";
 import { Container } from "@/components/sections/_shared/Container";
 import { Section } from "@/components/sections/_shared/Section";
 import { SectionEyebrow } from "@/components/sections/_shared/SectionEyebrow";
 import { Reveal } from "@/components/sections/_shared/Reveal";
-import { buttonVariants } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { SHOWCASE_TILES, type ShowcaseTile } from "@/lib/constants";
 
@@ -87,18 +85,6 @@ export function ProjectsMosaic() {
             </Reveal>
           </div>
         </div>
-
-        <Reveal delay={0.7} className="mt-12 flex justify-center">
-          <Link
-            href="/showcase"
-            className={cn(
-              buttonVariants({ variant: "secondary", size: "md" }),
-              "border-ink/15 border hover:scale-[1.02]",
-            )}
-          >
-            View All Showcase
-          </Link>
-        </Reveal>
       </Container>
     </Section>
   );

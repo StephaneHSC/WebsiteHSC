@@ -5,7 +5,6 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { NAV } from "@/lib/constants";
-import { buttonVariants } from "@/components/ui/Button";
 import { Logo } from "./Logo";
 
 export type MobileNavProps = {
@@ -161,16 +160,6 @@ export function MobileNav({ inverted = false }: MobileNavProps = {}) {
                 )}
               </ul>
             </nav>
-
-            <div className="p-6">
-              <Link
-                href="/#quote-form"
-                onClick={close}
-                className={cn(buttonVariants({ variant: "primary", size: "lg" }), "w-full")}
-              >
-                Request Quote
-              </Link>
-            </div>
           </motion.aside>
         )}
       </AnimatePresence>

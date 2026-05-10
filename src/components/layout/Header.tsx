@@ -1,11 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Logo } from "./Logo";
 import { MobileNav } from "./MobileNav";
-import { buttonVariants } from "@/components/ui/Button";
 
 // Mobile heroes are shorter, so flip to opaque sooner. Threshold is read on
 // each scroll so window resize / device rotation adapts automatically.
@@ -54,18 +52,7 @@ export function Header() {
       />
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8 lg:py-4">
         <Logo inverted={!scrolled} />
-        <div className="flex items-center gap-3">
-          <Link
-            href="/#quote-form"
-            className={cn(
-              buttonVariants({ variant: scrolled ? "primary" : "secondary", size: "sm" }),
-              "hidden md:inline-flex",
-            )}
-          >
-            Request Quote
-          </Link>
-          <MobileNav inverted={!scrolled} />
-        </div>
+        <MobileNav inverted={!scrolled} />
       </div>
     </header>
   );

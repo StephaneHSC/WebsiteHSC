@@ -1,6 +1,5 @@
 import { Fragment } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { Container } from "@/components/sections/_shared/Container";
 import { Reveal } from "@/components/sections/_shared/Reveal";
 import { SectionEyebrow } from "@/components/sections/_shared/SectionEyebrow";
@@ -59,15 +58,6 @@ export function ServiceOverview({ service }: ServiceOverviewProps) {
                 {o.paragraphs.map((p, i) => (
                   <Paragraph key={i} paragraph={p} />
                 ))}
-              </Reveal>
-
-              <Reveal delay={0.3} className="mt-8 lg:mt-10">
-                <Link
-                  href="#request-quote"
-                  className="font-body bg-ink text-surface focus-visible:ring-brand-red inline-flex items-center justify-center rounded-full px-[20px] py-[14px] text-[14px] font-bold tracking-[0.06em] capitalize transition-colors duration-200 hover:bg-[#2a2f38] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none lg:px-[30px] lg:py-[20px]"
-                >
-                  Request Quote
-                </Link>
               </Reveal>
             </div>
           </div>

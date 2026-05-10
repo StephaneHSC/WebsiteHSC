@@ -1,11 +1,7 @@
 import Image from "next/image";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
 import { Container } from "@/components/sections/_shared/Container";
 import { Section } from "@/components/sections/_shared/Section";
 import { SectionHeading } from "@/components/sections/_shared/SectionHeading";
-import { Reveal } from "@/components/sections/_shared/Reveal";
-import { buttonVariants } from "@/components/ui/Button";
 
 /**
  * Home page · "Our Solutions" intro band.
@@ -42,17 +38,6 @@ export function OurSolutions() {
           lede="We work on solutions and fast response. We bring deep, functional expertise but are known for our flexible and available approach to work."
           uppercase
         />
-        <Reveal delay={0.3} className="mt-8 flex justify-center">
-          <Link
-            href="/#quote-form"
-            className={cn(
-              buttonVariants({ variant: "secondary", size: "md" }),
-              "border-ink/40 hover:border-ink hover:bg-surface border-2",
-            )}
-          >
-            Request Quote
-          </Link>
-        </Reveal>
       </Container>
     </Section>
   );

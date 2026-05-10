@@ -5,7 +5,6 @@ import { ServiceOverview } from "@/components/sections/service-detail/ServiceOve
 import { WhenToChoose } from "@/components/sections/service-detail/WhenToChoose";
 import { ValueAddedGrid } from "@/components/sections/service-detail/ValueAddedGrid";
 import { ProjectsMosaic } from "@/components/sections/_shared/ProjectsMosaic";
-import { QuoteFormShell } from "@/components/sections/_shared/QuoteFormShell";
 import { OfficesGlobal } from "@/components/sections/_shared/OfficesGlobal";
 import { SERVICES } from "@/lib/constants";
 
@@ -43,14 +42,6 @@ export default async function ServiceDetailPage({ params }: { params: RouteParam
       <WhenToChoose service={service} />
       <ValueAddedGrid />
       <ProjectsMosaic />
-      <div id="request-quote" className="scroll-mt-24">
-        <QuoteFormShell
-          photo={{
-            src: "/quote/services-quote.webp",
-            alt: "Antonov 124 freighter loading helicopter cargo at sunset",
-          }}
-        />
-      </div>
       <OfficesGlobal />
     </main>
   );

@@ -8,7 +8,6 @@ import { PartnersStrip } from "@/components/sections/home/PartnersStrip";
 import { CustomerTestimonials } from "@/components/sections/home/CustomerTestimonials";
 import { ProjectsMosaic } from "@/components/sections/_shared/ProjectsMosaic";
 import { MilestonesTimeline } from "@/components/sections/home/MilestonesTimeline";
-import { QuoteFormShell } from "@/components/sections/_shared/QuoteFormShell";
 import { OfficesGlobal } from "@/components/sections/_shared/OfficesGlobal";
 
 export default function Home() {
@@ -24,13 +23,6 @@ export default function Home() {
       <CustomerTestimonials />
       <ProjectsMosaic />
       <MilestonesTimeline />
-      <QuoteFormShell
-        tinted
-        photo={{
-          src: "/quote/home-quote.webp",
-          alt: "Southern Air freight truck and helicopter on the tarmac",
-        }}
-      />
       <OfficesGlobal />
     </main>
   );

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { ServicesHero } from "@/components/sections/services/ServicesHero";
 import { ServicesGrid } from "@/components/sections/services/ServicesGrid";
 import { ValueAddedAccordion } from "@/components/sections/services/ValueAddedAccordion";
-import { QuoteFormShell } from "@/components/sections/_shared/QuoteFormShell";
 import { OfficesGlobal } from "@/components/sections/_shared/OfficesGlobal";
 
 export const metadata: Metadata = {
@@ -17,12 +16,6 @@ export default function ServicesPage() {
       <ServicesHero />
       <ServicesGrid />
       <ValueAddedAccordion />
-      <QuoteFormShell
-        photo={{
-          src: "/quote/services-quote.webp",
-          alt: "Antonov 124 freighter loading helicopter cargo at sunset",
-        }}
-      />
       <OfficesGlobal />
     </main>
   );

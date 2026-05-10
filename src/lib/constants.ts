@@ -43,10 +43,7 @@ export const NAV: readonly NavItem[] = [
  * Mobile collapses these into +/- accordion sections; desktop shows them side-by-side.
  */
 export const FOOTER = {
-  company: [
-    { label: "Services", href: "/services" },
-    { label: "Request Quote", href: "/#quote-form" },
-  ],
+  company: [{ label: "Services", href: "/services" }],
   legal: [
     { label: "Standard Trading Terms and Conditions", href: "/terms" },
     { label: "Privacy Statement", href: "/privacy" },

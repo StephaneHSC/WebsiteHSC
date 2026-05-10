@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { Container } from "@/components/sections/_shared/Container";
 import { Section } from "@/components/sections/_shared/Section";
 import { SectionHeading } from "@/components/sections/_shared/SectionHeading";
@@ -9,7 +8,6 @@ import { fetchWithCmsFallback } from "@/components/sections/_shared/cmsFallback"
 import { teamMembersQuery } from "@/lib/sanity/queries";
 import { urlFor } from "@/lib/sanity/image";
 import type { TeamMember } from "@/types/sanity";
-import { buttonVariants } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
 // TODO(seed): drop once Sanity is populated.
@@ -93,15 +91,6 @@ export async function TeamTeaser() {
               </li>
             ))}
           </ScrollSnapRow>
-        </Reveal>
-
-        <Reveal delay={0.5} className="mt-12 flex justify-center">
-          <Link
-            href="/team"
-            className={cn(buttonVariants({ variant: "primary", size: "md" }), "hover:scale-[1.02]")}
-          >
-            Meet the entire team
-          </Link>
         </Reveal>
       </Container>
     </Section>
