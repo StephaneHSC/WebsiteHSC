@@ -44,7 +44,7 @@ export function OurSolutions() {
         />
         <Reveal delay={0.3} className="mt-8 flex justify-center">
           <Link
-            href="/quote"
+            href="/#quote-form"
             className={cn(
               buttonVariants({ variant: "secondary", size: "md" }),
               "border-ink/40 hover:border-ink hover:bg-surface border-2",

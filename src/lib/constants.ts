@@ -22,7 +22,6 @@ export type NavItem = {
 };
 
 export const NAV: readonly NavItem[] = [
-  { label: "About Heli Skycargo", href: "/why-choose-us" },
   {
     label: "Services",
     href: "/services",
@@ -36,15 +35,6 @@ export const NAV: readonly NavItem[] = [
       { label: "Air Chartering", href: "/services/air-chartering" },
     ],
   },
-  { label: "Shipment Showcase", href: "/showcase" },
-  {
-    label: "Our Team",
-    href: "/team",
-    children: [
-      { label: "Leadership", href: "/team#leadership" },
-      { label: "Operations", href: "/team#operations" },
-    ],
-  },
   { label: "Reviews", href: "/#testimonials" },
 ] as const;
 
@@ -54,11 +44,8 @@ export const NAV: readonly NavItem[] = [
  */
 export const FOOTER = {
   company: [
-    { label: "Why Choose Us", href: "/why-choose-us" },
     { label: "Services", href: "/services" },
-    { label: "Shipment Showcase", href: "/showcase" },
-    { label: "Our Team", href: "/team" },
-    { label: "Request Quote", href: "/quote" },
+    { label: "Request Quote", href: "/#quote-form" },
   ],
   legal: [
     { label: "Standard Trading Terms and Conditions", href: "/terms" },

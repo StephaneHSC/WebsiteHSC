@@ -47,7 +47,10 @@ export function QuoteFormShell({
   tinted = false,
 }: QuoteFormShellProps) {
   return (
-    <section className="relative w-full md:px-6 md:py-12 lg:px-12 lg:py-16 xl:px-20 xl:py-20">
+    <section
+      id="quote-form"
+      className="relative w-full scroll-mt-24 md:px-6 md:py-12 lg:px-12 lg:py-16 xl:px-20 xl:py-20"
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2">
         {/* Left column — photo + brand red overlay + headline */}
         <div className="bg-brand-red text-surface relative overflow-hidden">

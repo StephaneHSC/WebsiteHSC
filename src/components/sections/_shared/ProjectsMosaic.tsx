@@ -128,15 +128,6 @@ function Tile({ tile, variant }: TileProps) {
             aria-hidden="true"
             className="from-ink/0 via-ink/20 to-ink/65 absolute inset-0 bg-gradient-to-b"
           />
-          {tile.showFlag ? (
-            <Image
-              src="/showcase/japan-flag.svg"
-              alt=""
-              width={113}
-              height={113}
-              className="absolute top-4 right-4 h-12 w-12 rounded-full md:top-6 md:right-6 md:h-16 md:w-16"
-            />
-          ) : null}
           <div className="text-surface absolute inset-x-4 bottom-4 md:inset-x-6 md:bottom-6">
             <p className="font-display text-base leading-[1.1] font-extrabold tracking-tight uppercase sm:text-lg md:text-2xl lg:text-3xl xl:text-4xl">
               {(tile.label ?? []).map((line) => (

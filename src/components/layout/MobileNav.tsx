@@ -164,7 +164,7 @@ export function MobileNav({ inverted = false }: MobileNavProps = {}) {
 
             <div className="p-6">
               <Link
-                href="/quote"
+                href="/#quote-form"
                 onClick={close}
                 className={cn(buttonVariants({ variant: "primary", size: "lg" }), "w-full")}
               >
