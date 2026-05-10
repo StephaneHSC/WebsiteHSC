@@ -15,6 +15,60 @@ Format:
 
 ---
 
+## 2026-05-10 — Sanity seed `_id` format: `team-<slug>` not `team.<slug>` (dot in prefix is a private namespace)
+
+**Decision**: All seeded teamMember documents use `_id: "team-<slug>"` (hyphen separator). The earlier seed used `team.<slug>` (dot) per the M6 plan suggestion; that pattern silently breaks public reads.
+
+**Why**: Sanity treats any `_id` whose first path segment contains a `.` as a **private namespace**, visible only to authenticated requests. Documents created with `_id: "team.stephane-marot"` succeed at write time and are queryable with the seed token, but the public CDN-backed Sanity client (`useCdn: true`, no token, used by all Server Components per `src/lib/sanity/client.ts`) sees them as `[]`. The result: the website's `fetchWithCmsFallback` always hit the empty branch, and the team page rendered `PLACEHOLDER_TEAM_MEMBERS` from `constants.ts` even after a "successful" seed. Confirmed 2026-05-10 by direct unauthenticated API probe — `count(*[_type=="teamMember"])` returned `0`, while the same query with a Bearer token returned `9`.
+
+**Why we hadn't hit this in M2 / M5**: Earlier seed entries used `client.create()` with auto-generated random IDs (e.g. `khNwn...`, `3MdJ16JZ...`) — none of those contained dots, so all were public. Only `team.<slug>` and `siteStats` had explicit IDs. `siteStats` is fine because it's a single-token name with no dot.
+
+**Fix applied**: Renamed all 9 entries in `TEAM_MEMBERS` (`scripts/seed-sanity.mjs`) from `team.X` → `team-X`, then ran `npm run seed:sanity -- --purge` to clean up the unreachable docs and re-create them under public IDs. Verified post-seed that the unauthenticated count is `9`.
+
+**Alternatives considered**:
+
+- Drop `useCdn: true` and use a write/read token — defeats the CDN performance benefit and embeds a token in client-readable env (only `SANITY_AUTH_TOKEN` is server-only; `useCdn: false` would still hit the read API but slower).
+- Use auto-generated IDs (`client.create()`) — loses idempotency on re-seed (each run creates 9 new docs) without writing custom dedup logic. Hyphen-IDs preserve idempotency without the privacy gotcha.
+
+**Tradeoffs**: ID readability is slightly worse with `team-X` than `team.X` because the dot grouping reads more naturally. Acceptable for a non-cosmetic API contract.
+
+**How to apply**: Any future Sanity seed entry that wants stable/idempotent IDs should use a separator that is NOT a dot — hyphen, underscore, slash all work. Reserve dot prefixes for `drafts.X`, `versions.X`, and any deliberate private-namespace use case.
+
+---
+
+## 2026-05-07 — M6 Our Team — locked decisions
+
+**Decision**: Module 6 (`/team`) ships with the layout and content defaults captured below. Each item is a deliberate departure from the expectation a reader of M3/M4/M5 would carry in.
+
+**Decisions**:
+
+1. **Eyebrow color split**: hero (`OUR TEAM`) uses `red` variant — matches the user's reference screenshots. The spotlight section (`EXPERTS YOU CAN TRUST`) uses `gray` (`bg-ink-muted text-surface`). The earlier draft of the M6 plan had both as gray; corrected post-implementation review against the actual design screenshots.
+2. **Desktop role text is canonical** when desktop and mobile Figma frames disagree. The mobile frame had additional/different role text and an extra "Tim Walsh" entry that does NOT appear on desktop — those are stale. We render 9 members in desktop role wording on every viewport.
+3. **Lorem-ipsum bios for non-CEO members** with `// TODO(content): client to provide bio for {full_name}` next to each entry in `PLACEHOLDER_TEAM_MEMBERS` and the seed dataset. CEO bio is verbatim Figma copy. Replace when client supplies real bios — likely M9 or post-launch.
+4. **Spotlight photo changes per active member**. The CEO (`is_featured: true`) renders the Figma-supplied wide trade-booth photo with `object-cover` (the canonical `imgImage60`). Every other member renders their card portrait PNG with `object-contain object-bottom` (mobile) / `object-left-bottom` (desktop) on a `bg-ink` backdrop, so the full body reads cleanly without an upscale crop. The user's expectation — "photo should change when I switch team member in view" — is satisfied because the rendered image swap is immediately visible. Replace per-member portraits with proper wide candids when the client delivers them.
+5. **Section DOM order**: heading → 9-card slider → spotlight composite (photo + content). The slider is intentionally above the spotlight so the user sees the full team first and clicks a card to drill into that person's photo + bio below. (The original M6 plan placed the slider after the spotlight, mirroring Figma's absolute-positioned overlap — but the user clarified the cards-above order during pixel review.)
+6. **Mobile spotlight = vertical stack on dark band** below the photo. Figma's mobile frame has a taller dark gradient overlay (818px) that extends past the photo (500px) so the bio reads on a dark ground. Our implementation: photo at top with `aspect-[430/500]`, then content stacks below in a `bg-ink` band, with a `from-ink/0 to-ink` gradient at the bottom of the photo to soften the seam. Desktop (`lg+`) keeps the single 1600×900 composite with content overlay on the upper-right.
+7. **Mobile offices = Malaysia featured** (consistent with desktop). Figma mobile frame shows UAE highlighted; treat as stale. User confirmed (2026-05-07).
+8. **`OfficesGlobal` API note (retroactive)** — the M5 plan mentioned `featuredOverride/backgroundSrc/backgroundAlt` props, but the actual M5 implementation refactored to a cleaner `defaultActive?: string` prop with per-office cityscapes baked into the `OFFICES` constant. M6 just calls `<OfficesGlobal defaultActive="my" />`. (See the 2026-05-07 OfficesGlobal entry below for the full rationale.)
+9. **`PLACEHOLDER_TEAM_MEMBERS` is promoted to `constants.ts`** and extended from 4 to 9 entries. Both home (`TeamTeaser` slice 0..4) and `/team` (all 9) consume the same source. The shape gained `bioParagraphs`, `social_links`, `is_featured`, and an optional `spotlightPhoto` field (alongside the existing `placeholderPhoto`).
+10. **Bio renders as plain `<p>` paragraphs** — not Portable Text. We extract `block.children[].text` from each Sanity `long_bio` block and render concatenated text per block. Avoids pulling `@portabletext/react` for what is currently a 2-paragraph bio. Revisit if rich formatting (lists, links, marks) becomes a content requirement.
+11. **`seedTeamMembers()` now uses `createOrReplace` keyed on `team.<slug>` ids** (matching the singleton `siteStats` pattern) so re-running the seed updates rather than appending. The `bioParagraphs` arrays in the seed data are converted to Portable Text on the fly via a small `paragraphsToPortableText()` helper.
+
+**Why these are non-obvious**:
+
+- The eyebrow color deviation will trip up anyone reading the M3/M4/M5 components first — the variant is a deliberate Figma signal.
+- The desktop-canonical rule for text mismatches makes future role-edits unambiguous.
+- The lorem-ipsum + spotlight-photo placeholders are launch-blocking content tasks; without `// TODO(content):` markers they could ship to production unnoticed.
+- The mobile spotlight restructure is invisible from the desktop frame but is the only way the bio paragraphs read on a dark ground at sub-`lg` widths.
+
+**How to apply**:
+
+- When the client supplies real bios + per-member spotlight photos, search for `TODO(content):` in `src/lib/constants.ts` and `scripts/seed-sanity.mjs`, replace each, and remove the marker. Update the spotlight photo source per-member by populating `spotlightPhoto` on each `TeamMemberPlaceholder` and (on the CMS path) extending `resolveSpotlightPhoto()` to read from a new Sanity field.
+- When sibling pages need a Malaysia-featured offices section, use `<OfficesGlobal defaultActive="my" />`. Other office ids: `hk`, `uae`, `usa`.
+- The `paragraphsToPortableText()` helper in `scripts/seed-sanity.mjs` is a candidate for promotion to a shared `scripts/lib/portable-text.mjs` if a future module needs it.
+
+---
+
 ## 2026-05-06 — M5 stats descriptions are hardcoded in the frontend, not in Sanity
 
 **Decision**: The 4 stat-cell descriptions on `/why-choose-us` (`Air and ocean logistics, fully visible end-to-end.`, etc.) are stored in `STAT_DESCRIPTIONS` in `src/lib/constants.ts`, mapped by the stat's `label` field. The Sanity `siteStats` schema continues to carry only `value / label / icon / order` — no `description` field is added.

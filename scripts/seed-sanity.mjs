@@ -80,45 +80,142 @@ function imageRef(asset) {
 
 // ── Seed data ───────────────────────────────────────────────────────────────
 
+// 9-entry team seed — mirrors `PLACEHOLDER_TEAM_MEMBERS` in src/lib/constants.ts.
+// `_id` derives from a slug of `full_name` so re-runs createOrReplace cleanly.
+// `long_bio` is Portable Text (one block per paragraph) since the schema typed
+// it as `array of block`. Non-CEO bios are lorem-ipsum until client supplies.
+const LOREM_BIO_1 =
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+const LOREM_BIO_2 =
+  "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore.";
+
+const STEPHANE_BIO_1 =
+  "With 25+ years in global freight forwarding across Europe, USA, Asia and Middle East. Stephane brings deep industry expertise and a strong customer-focused approach.";
+const STEPHANE_BIO_2 =
+  "Having accompanied helicopter shipments onboard aircraft such as the AN-124 and IL-76, he has built a trusted worldwide network and remains closely involved in supporting clients across the globe.";
+
 const TEAM_MEMBERS = [
   {
+    _id: "team-stephane-marot",
     full_name: "Stephane Marot",
     role: "Founder & CEO",
     department: "Leadership",
     short_bio: "Captains the HSC mission across global ops.",
+    bioParagraphs: [STEPHANE_BIO_1, STEPHANE_BIO_2],
+    social_links: {
+      linkedin: "https://linkedin.com/in/stephanemarot",
+      email: "stephane@heliskycargo.com",
+    },
     order: 1,
     is_featured: true,
     status: "published",
     photoPath: "/team/stephane-marot.png",
   },
   {
+    _id: "team-daniel-cosico",
     full_name: "Daniel Cosico",
-    role: "Deployment & Coordination Executive",
+    role: "Deployment & Lead Coordinator",
     department: "Operations",
+    bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
     order: 2,
     is_featured: false,
     status: "published",
     photoPath: "/team/daniel-cosico.png",
   },
   {
+    _id: "team-adriana-athirah",
     full_name: "Adriana Athirah",
     role: "Sales & Marketing Executive",
     department: "Commercial",
+    bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
     order: 3,
     is_featured: false,
     status: "published",
     photoPath: "/team/adriana-athirah.png",
   },
   {
-    full_name: "Daniel Cosico",
-    role: "Customer Logistic Specialist",
+    _id: "team-rica-mae-cortez",
+    full_name: "Rica Mae Cortez",
+    role: "Logistic Specialist",
     department: "Operations",
+    bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
     order: 4,
     is_featured: false,
     status: "published",
-    photoPath: "/team/daniel-cosico.png",
+    photoPath: "/team/rica-mae-cortez.webp",
+  },
+  {
+    _id: "team-alfredo-dinglasan",
+    full_name: "Alfredo Dinglasan",
+    role: "Logistic Specialist",
+    department: "Operations",
+    bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
+    order: 5,
+    is_featured: false,
+    status: "published",
+    photoPath: "/team/alfredo-dinglasan.webp",
+  },
+  {
+    _id: "team-nikhitha-manuel",
+    full_name: "Nikhitha Manuel",
+    role: "RFQ",
+    department: "Commercial",
+    bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
+    order: 6,
+    is_featured: false,
+    status: "published",
+    photoPath: "/team/nikhitha-manuel.webp",
+  },
+  {
+    _id: "team-remi-hachisuka",
+    full_name: "Remi Hachisuka",
+    role: "Japan Desk Manager",
+    department: "Commercial",
+    bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
+    order: 7,
+    is_featured: false,
+    status: "published",
+    photoPath: "/team/remi-hachisuka.webp",
+  },
+  {
+    _id: "team-anjelimo-mulati",
+    full_name: "Anjelimo Mulati",
+    role: "Accounting",
+    department: "Operations",
+    bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
+    order: 8,
+    is_featured: false,
+    status: "published",
+    photoPath: "/team/anjelimo-mulati.webp",
+  },
+  {
+    _id: "team-mia-juliet-marot",
+    full_name: "Mia Juliet Marot",
+    role: "Junior Sales & Marketing",
+    department: "Commercial",
+    bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
+    order: 9,
+    is_featured: false,
+    status: "published",
+    photoPath: "/team/mia-juliet-marot.webp",
   },
 ];
+
+let blockKeyCounter = 0;
+function nextKey(prefix) {
+  blockKeyCounter += 1;
+  return `${prefix}-${blockKeyCounter.toString(36)}`;
+}
+
+function paragraphsToPortableText(paragraphs) {
+  return paragraphs.map((text) => ({
+    _key: nextKey("blk"),
+    _type: "block",
+    style: "normal",
+    markDefs: [],
+    children: [{ _key: nextKey("span"), _type: "span", marks: [], text }],
+  }));
+}
 
 const MILESTONES = [
   {
@@ -225,10 +322,17 @@ async function seedTeam() {
   console.log("\n[seed] team members");
   for (const m of TEAM_MEMBERS) {
     const photoAsset = await uploadImage(m.photoPath);
-    const { photoPath: _photoPath, ...rest } = m;
+    const { photoPath: _photoPath, bioParagraphs: _bioParagraphs, ...rest } = m;
     void _photoPath;
-    const doc = { _type: "teamMember", ...rest, photo: imageRef(photoAsset) };
-    const created = await client.create(doc);
+    const doc = {
+      _type: "teamMember",
+      ...rest,
+      photo: imageRef(photoAsset),
+      long_bio: paragraphsToPortableText(m.bioParagraphs),
+    };
+    // createOrReplace keys on `_id` so re-running the seed updates rather
+    // than creating duplicates. Matches the singleton siteStats pattern.
+    const created = await client.createOrReplace(doc);
     console.log(`  ✓ ${m.full_name} → ${created._id}`);
   }
 }

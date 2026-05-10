@@ -11,51 +11,16 @@ import { urlFor } from "@/lib/sanity/image";
 import type { TeamMember } from "@/types/sanity";
 import { buttonVariants } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import { PLACEHOLDER_TEAM_MEMBERS, type TeamMemberPlaceholder } from "@/lib/constants";
 
-// TODO(seed): drop once Sanity is populated.
-type PlaceholderMember = {
-  _id: string;
-  full_name: string;
-  role: string;
-  /** Static portrait PNG used while Sanity is empty. */
-  placeholderPhoto: string;
-};
-
-const PLACEHOLDER_MEMBERS: readonly PlaceholderMember[] = [
-  {
-    _id: "p1",
-    full_name: "Stephane Marot",
-    role: "Founder & CEO",
-    placeholderPhoto: "/team/stephane-marot.png",
-  },
-  {
-    _id: "p2",
-    full_name: "Daniel Cosico",
-    role: "Deployment & Coordination Executive",
-    placeholderPhoto: "/team/daniel-cosico.png",
-  },
-  {
-    _id: "p3",
-    full_name: "Adriana Athirah",
-    role: "Sales & Marketing Executive",
-    placeholderPhoto: "/team/adriana-athirah.png",
-  },
-  {
-    _id: "p4",
-    full_name: "Daniel Cosico",
-    role: "Customer Logistic Specialist",
-    placeholderPhoto: "/team/daniel-cosico.png",
-  },
-];
-
-function isPlaceholder(m: TeamMember | PlaceholderMember): m is PlaceholderMember {
+function isPlaceholder(m: TeamMember | TeamMemberPlaceholder): m is TeamMemberPlaceholder {
   return "placeholderPhoto" in m;
 }
 
 export async function TeamTeaser() {
-  const display = await fetchWithCmsFallback<TeamMember, PlaceholderMember>(
+  const display = await fetchWithCmsFallback<TeamMember, TeamMemberPlaceholder>(
     teamMembersQuery,
-    PLACEHOLDER_MEMBERS,
+    PLACEHOLDER_TEAM_MEMBERS,
     4,
   );
 
@@ -124,15 +89,19 @@ function LogoCard() {
 }
 
 type TeamCardProps = {
-  member: TeamMember | PlaceholderMember;
+  member: TeamMember | TeamMemberPlaceholder;
   active?: boolean;
 };
 
 function TeamCard({ member, active = false }: TeamCardProps) {
   const sanityPhoto = !isPlaceholder(member) ? (member.photo ?? null) : null;
   const placeholderPhotoSrc = isPlaceholder(member) ? member.placeholderPhoto : null;
+  // Preserve source aspect; the card's `object-cover object-top` crops to
+  // the head naturally. Locking a fixed height (.height(720)) center-crops
+  // tall portraits around the hotspot — if the hotspot covers the whole
+  // body, the crop centers on the torso and removes the head.
   const photoSrc = sanityPhoto
-    ? urlFor(sanityPhoto).width(500).height(720).format("webp").quality(82).url()
+    ? urlFor(sanityPhoto).width(500).fit("max").format("webp").quality(82).url()
     : placeholderPhotoSrc;
 
   return (

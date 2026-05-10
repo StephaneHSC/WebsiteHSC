@@ -37,14 +37,7 @@ export const NAV: readonly NavItem[] = [
     ],
   },
   { label: "Shipment Showcase", href: "/showcase" },
-  {
-    label: "Our Team",
-    href: "/team",
-    children: [
-      { label: "Leadership", href: "/team#leadership" },
-      { label: "Operations", href: "/team#operations" },
-    ],
-  },
+  { label: "Our Team", href: "/team" },
   { label: "Reviews", href: "/#testimonials" },
 ] as const;
 
@@ -966,3 +959,148 @@ export const WHY_CHOOSE_TRACKABILITY = {
   },
   lede: "Access real-time location of your helicopter while in transit, get push notification.",
 } as const;
+
+// ── M6 — Our Team page content ──────────────────────────────────────────────
+
+export const TEAM_HERO = {
+  eyebrow: "Our Team",
+  // Mobile renders 3 lines; desktop wraps naturally inside max-w-[633px] to 2.
+  h1Lines: ["Meet the People", "Behind Every", "Shipment"] as const,
+  photo: "/team/hero-team.webp",
+  photoAlt: "Heli Skycargo team behind the scenes",
+} as const;
+
+export const TEAM_INTRO = {
+  eyebrow: "Experts You Can Trust",
+  // 3-line mixed-weight headline. Mobile re-wraps to 4 lines via component.
+  h2Lines: [
+    { text: "At Heli Skycargo,", weight: "black" },
+    { text: "our team is fueled by passion to deliver", weight: "bold" },
+    { text: "BEST-IN-CLASS service.", weight: "bold" },
+  ],
+} as const;
+
+/**
+ * Spotlight composite imagery — the per-member wide candid photo + the
+ * dark gradient overlay that sits on top. M6_PLAN §6.6: only the CEO has a
+ * Figma-supplied portrait today, so all 9 members reuse Stephane's spotlight
+ * photo as a placeholder until the client supplies the rest.
+ */
+export const TEAM_SPOTLIGHT_OVERLAY = {
+  src: "/team/spotlight/overlay.svg",
+  alt: "",
+} as const;
+
+export const TEAM_SPOTLIGHT_PLACEHOLDER_PHOTO = {
+  src: "/team/spotlight/stephane.webp",
+  alt: "Heli Skycargo team member",
+} as const;
+
+export type TeamMemberPlaceholder = {
+  _id: string;
+  full_name: string;
+  role: string;
+  /** Static portrait PNG used while Sanity is empty. Card slot. */
+  placeholderPhoto: string;
+  /** Wide candid photo behind the spotlight content. */
+  spotlightPhoto?: { src: string; alt: string };
+  /** Lorem-ipsum-style placeholder bio paragraphs. CEO uses verbatim Figma copy. */
+  bioParagraphs?: readonly string[];
+  social_links?: { linkedin?: string; email?: string };
+  /** Default-active flag; only ONE member should be true at a time. */
+  is_featured?: boolean;
+};
+
+const LOREM_BIO_1 =
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+const LOREM_BIO_2 =
+  "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore.";
+
+/**
+ * Source of truth for the placeholder team list. Both `home/TeamTeaser`
+ * (slice 0..4) and `/team` (all 9) consume this array. Display order is
+ * canonical desktop order per M6_PLAN §3.2.3 — mobile-only role variants and
+ * the extra "Tim Walsh" entry from the mobile mock are intentionally dropped.
+ */
+export const PLACEHOLDER_TEAM_MEMBERS: readonly TeamMemberPlaceholder[] = [
+  {
+    _id: "team.stephane-marot",
+    full_name: "Stephane Marot",
+    role: "Founder & CEO",
+    placeholderPhoto: "/team/stephane-marot.png",
+    spotlightPhoto: TEAM_SPOTLIGHT_PLACEHOLDER_PHOTO,
+    bioParagraphs: [
+      "With 25+ years in global freight forwarding across Europe, USA, Asia and Middle East. Stephane brings deep industry expertise and a strong customer-focused approach.",
+      "Having accompanied helicopter shipments onboard aircraft such as the AN-124 and IL-76, he has built a trusted worldwide network and remains closely involved in supporting clients across the globe.",
+    ],
+    social_links: {
+      linkedin: "https://linkedin.com/in/stephanemarot",
+      email: "stephane@heliskycargo.com",
+    },
+    is_featured: true,
+  },
+  {
+    _id: "team.daniel-cosico",
+    full_name: "Daniel Cosico",
+    role: "Deployment & Lead Coordinator",
+    placeholderPhoto: "/team/daniel-cosico.png",
+    // TODO(content): client to provide bio for Daniel Cosico.
+    bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
+  },
+  {
+    _id: "team.adriana-athirah",
+    full_name: "Adriana Athirah",
+    role: "Sales & Marketing Executive",
+    placeholderPhoto: "/team/adriana-athirah.png",
+    // TODO(content): client to provide bio for Adriana Athirah.
+    bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
+  },
+  {
+    _id: "team.rica-mae-cortez",
+    full_name: "Rica Mae Cortez",
+    role: "Logistic Specialist",
+    placeholderPhoto: "/team/rica-mae-cortez.webp",
+    // TODO(content): client to provide bio for Rica Mae Cortez.
+    bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
+  },
+  {
+    _id: "team.alfredo-dinglasan",
+    full_name: "Alfredo Dinglasan",
+    role: "Logistic Specialist",
+    placeholderPhoto: "/team/alfredo-dinglasan.webp",
+    // TODO(content): client to provide bio for Alfredo Dinglasan.
+    bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
+  },
+  {
+    _id: "team.nikhitha-manuel",
+    full_name: "Nikhitha Manuel",
+    role: "RFQ",
+    placeholderPhoto: "/team/nikhitha-manuel.webp",
+    // TODO(content): client to provide bio for Nikhitha Manuel.
+    bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
+  },
+  {
+    _id: "team.remi-hachisuka",
+    full_name: "Remi Hachisuka",
+    role: "Japan Desk Manager",
+    placeholderPhoto: "/team/remi-hachisuka.webp",
+    // TODO(content): client to provide bio for Remi Hachisuka.
+    bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
+  },
+  {
+    _id: "team.anjelimo-mulati",
+    full_name: "Anjelimo Mulati",
+    role: "Accounting",
+    placeholderPhoto: "/team/anjelimo-mulati.webp",
+    // TODO(content): client to provide bio for Anjelimo Mulati.
+    bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
+  },
+  {
+    _id: "team.mia-juliet-marot",
+    full_name: "Mia Juliet Marot",
+    role: "Junior Sales & Marketing",
+    placeholderPhoto: "/team/mia-juliet-marot.webp",
+    // TODO(content): client to provide bio for Mia Juliet Marot.
+    bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
+  },
+];
