@@ -111,7 +111,13 @@ export function AppBadgeRow({
 function AppleIcon({ size = "md" }: { size?: BadgeSize }) {
   const d = size === "sm" ? 16 : 22;
   return (
-    <svg width={d} height={d} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <svg
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      className="origin-center scale-[1.2]"
+      fill="currentColor"
+    >
       <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
     </svg>
   );
@@ -121,7 +127,14 @@ function PlayIcon({ size = "md" }: { size?: BadgeSize }) {
   const w = size === "sm" ? 14 : 20;
   const h = size === "sm" ? 16 : 22;
   return (
-    <svg width={w} height={h} viewBox="0 0 20 22" fill="currentColor" aria-hidden="true">
+    <svg
+      className="h-5 w-5"
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
       <path d="M.6.5C.22.92 0 1.55 0 2.38v17.24c0 .83.22 1.46.6 1.88l.06.06L10.6 11.6v-.2L.66.44.6.5z" />
       <path d="M14.13 14.93l-3.53-3.53v-.2l3.53-3.53.08.05 4.18 2.38c1.2.68 1.2 1.79 0 2.47l-4.18 2.38-.08.04z" />
       <path d="M14.21 14.89L10.6 11.3.6 21.3c.39.42 1.04.47 1.77.06l11.84-6.47" />

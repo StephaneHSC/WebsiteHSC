@@ -24,8 +24,8 @@ export function SmartTracking() {
               <SectionEyebrow variant="outline">Mobile App</SectionEyebrow>
             </Reveal>
             <Reveal delay={0.1}>
-              <h2 className="font-display text-4xl leading-[1.05] font-extrabold tracking-tight uppercase md:text-5xl lg:text-6xl">
-                Smart Tracking Powered By Our Bespoke App.
+              <h2 className="font-display text-[27px] leading-[1.05] font-bold tracking-tight uppercase md:text-[33px] lg:text-[43px]">
+                <span className="font-extrabold"> Smart Tracking Powered</span> By Our Bespoke App.
               </h2>
             </Reveal>
           </div>
