@@ -121,7 +121,7 @@ function TeamCard({ member, active = false }: TeamCardProps) {
   const sanityPhoto = !isPlaceholder(member) ? (member.photo ?? null) : null;
   const placeholderPhotoSrc = isPlaceholder(member) ? member.placeholderPhoto : null;
   const photoSrc = sanityPhoto
-    ? urlFor(sanityPhoto).width(500).height(720).format("webp").quality(82).url()
+    ? urlFor(sanityPhoto).width(500).fit("max").format("webp").quality(82).url()
     : placeholderPhotoSrc;
 
   return (
