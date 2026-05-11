@@ -25,7 +25,7 @@ export function Hero() {
         <div className="flex min-h-[560px] items-center md:min-h-[640px] lg:min-h-[720px]">
           <div className="max-w-2xl space-y-6 py-20 md:space-y-8 md:py-28">
             <Reveal>
-              <h1 className="font-display text-3xl leading-[1.1] font-bold tracking-tight md:text-5xl lg:text-6xl">
+              <h1 className="font-display text-3xl leading-[1.1] font-medium tracking-tight md:text-5xl lg:text-6xl">
                 Innovative Global Helicopter Freight Forwarder
               </h1>
             </Reveal>

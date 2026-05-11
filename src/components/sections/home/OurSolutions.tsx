@@ -39,7 +39,17 @@ export function OurSolutions() {
               <span className="font-medium md:block">Logistic Solutions</span>
             </>
           }
-          lede="We work on solutions and fast response. We bring deep, functional expertise but are known for our flexible and available approach to work."
+          lede={
+            <>
+              <p className="text-ink text-lg font-medium md:text-xl">
+                We work on solutions and fast response.
+              </p>
+              <p className="md:text-md text-ink-soft mt-2 text-base">
+                We bring deep, functional expertise but are known for our flexible and available
+                approach to work.
+              </p>
+            </>
+          }
           uppercase
         />
         <Reveal delay={0.3} className="mt-8 flex justify-center">
