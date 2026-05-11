@@ -7,6 +7,7 @@ import { TeamTeaser } from "@/components/sections/home/TeamTeaser";
 import { PartnersStrip } from "@/components/sections/home/PartnersStrip";
 import { CustomerTestimonials } from "@/components/sections/home/CustomerTestimonials";
 import { ProjectsMosaic } from "@/components/sections/_shared/ProjectsMosaic";
+import { SHOWCASE_TILES } from "@/lib/constants";
 import { MilestonesTimeline } from "@/components/sections/home/MilestonesTimeline";
 import { QuoteFormShell } from "@/components/sections/_shared/QuoteFormShell";
 import { OfficesGlobal } from "@/components/sections/_shared/OfficesGlobal";
@@ -22,7 +23,7 @@ export default function Home() {
       <TeamTeaser />
       <PartnersStrip />
       <CustomerTestimonials />
-      <ProjectsMosaic />
+      <ProjectsMosaic tiles={SHOWCASE_TILES.slice(0, 8)} />
       <MilestonesTimeline />
       <QuoteFormShell
         tinted

@@ -97,15 +97,9 @@ export const quoteFormConfig = defineType({
     }),
 
     // ── Path B: custom React form ───────────────────────────────────
-    defineField({
-      name: "form_endpoint",
-      title: "Form provider endpoint URL",
-      type: "url",
-      description:
-        "POST endpoint for form submissions (e.g. https://formspree.io/f/xxxxx). Used by the custom React form.",
-      fieldset: "custom",
-      hidden: ({ document }) => document?.form_mode !== "custom",
-    }),
+    // (form_endpoint removed 2026-05-11 — Resend + /api/quote replaces the
+    // editor-configurable endpoint URL; the recipient is now driven by
+    // `recipient_email` and delivery routing is hardcoded to Resend.)
     defineField({
       name: "transport_modes",
       title: "Mode of Transport options (Step 1)",

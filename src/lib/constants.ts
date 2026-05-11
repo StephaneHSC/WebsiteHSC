@@ -167,39 +167,77 @@ export const OFFICES: readonly Office[] = [
 ] as const;
 
 /**
- * Past-shipment showcase tiles, used by the home "Some of OUR PROJECTS and
- * More" bento mosaic AND the future M7 (Shipment Showcase) listing page.
- * Order is the canonical desktop bento order — the mosaic component slices
- * this into four 2-tile columns and applies the alternating tall/short
- * pattern; the M7 page is free to reflow as a flat grid.
+ * Past-shipment showcase tiles. Used by the home "Some of OUR PROJECTS and
+ * More" bento mosaic, every service-detail page, AND the M7 `/showcase`
+ * listing page. The mosaic component groups tiles by `desktopColumn` /
+ * `mobileColumn` and renders 4 (desktop) or 2 (mobile) flex-col stacks of
+ * mixed-height tiles per the `shape` field.
  *
- * Tiles with a `label` array overlay the route text; pure photo tiles omit
- * it. `showFlag` is the Japan-flag corner badge for the "Our Japan Desk" tile.
+ * Home consumes the first 8 entries (4 columns × 2 rows brick); /showcase
+ * consumes all 14 with a Load More batch on mobile (4 → +4 → +4 → +4).
  */
+export type TileShape = "tall" | "medium" | "short" | "extra-short";
+
+/**
+ * A single carousel slot in the project lightbox — either a photo or a video.
+ * The modal renders prev/next arrows + a dot indicator across all media items
+ * regardless of type. Photo items render via `next/image`; video items render
+ * as an HTML5 `<video controls>` with the optional `poster` shown until play.
+ */
+export type ShowcaseMedia =
+  | { type: "photo"; src: string }
+  | { type: "video"; src: string; poster?: string };
+
 export type ShowcaseTile = {
   id: string;
+  /** Primary photo for the tile thumbnail (used in the mosaic, not the modal). */
   src: string;
-  alt: string;
-  label?: readonly string[];
-  showFlag?: boolean;
   /**
-   * M4 addition — service slugs this project applies to. Detail pages render
-   * a filtered subset (`tile.relatedServices?.includes(serviceSlug) ?? true`).
-   * When undefined, the tile shows on every detail page.
+   * Ordered carousel of mixed photos + videos shown inside the modal. When
+   * absent, the modal falls back to the legacy `photos` + `videoUrl` fields.
+   * If none of the three are set, the modal shows just `src` as a single
+   * static photo with no arrows / dots.
+   */
+  media?: readonly ShowcaseMedia[];
+  /** @deprecated Use `media` instead. Auto-translated when `media` is unset. */
+  photos?: readonly string[];
+  alt: string;
+  /** Overlay route text on the tile (one array entry per visual line). Optional → pure-photo tile. */
+  label?: readonly string[];
+  /**
+   * M7 — explicit video-tile flag on the mosaic. Renders the red play-circle
+   * icon over the tile thumbnail. The modal media path is controlled by
+   * `media` / `videoUrl` separately. Replaces the M2 `showFlag` Japan-flag
+   * overlay (the Figma intent was always a play icon — see DECISIONS.md).
+   */
+  hasPlayIcon?: boolean;
+  /** @deprecated Use `media` instead. Auto-translated when `media` is unset. */
+  videoUrl?: string;
+  /**
+   * Service slugs this project applies to. Detail pages render a filtered
+   * subset (`tile.relatedServices?.includes(serviceSlug) ?? true`). When
+   * undefined, the tile shows on every detail page.
    */
   relatedServices?: readonly string[];
   /**
-   * M4 placeholder shape — drives the desktop tall/short bento offset. Home
-   * page already infers this from the column index, so the field is optional
-   * for now and reserved for the M7 showcase page.
+   * M7 — drives the per-tile aspect ratio in the masonry. `tall` 340/560,
+   * `medium` 340/494, `short` 340/300, `extra-short` 340/270 (desktop). Mobile
+   * collapses `short` and `extra-short` to the same 186/160 aspect.
    */
-  shape?: "tall" | "short";
+  shape: TileShape;
+  /** Column index in the desktop 4-column masonry (0..3). */
+  desktopColumn: 0 | 1 | 2 | 3;
+  /** Column index in the mobile 2-column masonry (0..1). */
+  mobileColumn: 0 | 1;
   /**
-   * M4 — modal payload populated for M7's project lightbox. M4 stores the
-   * data; M7 reads it. M4 ships placeholder copy where unknown.
-   * TODO: client review of project modal copy in M7.
+   * Modal payload — populated for the M7 project lightbox. Tiles without a
+   * confirmed story still get a placeholder payload (carrying lorem-ipsum
+   * challenge/solution/result with `// TODO(content):` markers) so every
+   * tile is clickable. Replace placeholders when the client supplies copy.
    */
   modal?: {
+    /** Pre-formatted uppercase header line, e.g. "FROM ITALY TO GABON". */
+    title: string;
     aircraft: string;
     route: string;
     transportMode: string;
@@ -210,17 +248,46 @@ export type ShowcaseTile = {
   };
 };
 
+/**
+ * Lorem-ipsum placeholder copy used for tiles without confirmed client copy.
+ * Replace each `// TODO(content):` marker when the project narrative is signed off.
+ */
+const PLACEHOLDER_CHALLENGE =
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit — coordination, customs, and timing aligned to the shipment's specific constraints.";
+const PLACEHOLDER_SOLUTION =
+  "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua — bespoke routing, partner network, and on-the-ground supervision delivered the plan.";
+const PLACEHOLDER_RESULT =
+  "Ut enim ad minim veniam — delivered safely, on time, and ready for operational handover.";
+
 // TODO: PM/client to confirm per-project relatedServices mapping. Initial
 // guesses below are inferred from the route hints (e.g. Khalifa Port → ocean,
-// Switzerland → likely air); modal copy is placeholder until content review.
+// Switzerland → likely air); placeholder modal copy carries TODO(content):
+// markers until content review.
+//
+// Order matters — home renders the first 8 entries in a 4×2 brick, with
+// `desktopColumn` 0,0,1,1,2,2,3,3 producing the legacy bento. /showcase
+// renders all 14 driven by `desktopColumn` (0..3) and `mobileColumn` (0..1).
 export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
+  // 1 — col0 / tall — switzerland-india (label). Ships with a 3-photo
+  // demo `media` carousel (using existing assets) so the modal's prev/next
+  // arrows + dot indicator can be exercised end-to-end. Replace with the
+  // real per-project media list when the client supplies.
   {
     id: "switzerland-india",
     src: "/showcase/switzerland-to-india.webp",
+    media: [
+      { type: "photo", src: "/showcase/switzerland-to-india.webp" },
+      { type: "photo", src: "/showcase/myanmar-to-gabon.webp" },
+      { type: "photo", src: "/showcase/khalifa-port.webp" },
+    ],
     alt: "Helicopter shipment from Switzerland to India",
     label: ["From", "Switzer-", "land to", "India"],
+    shape: "tall",
+    desktopColumn: 0,
+    mobileColumn: 0,
     relatedServices: ["air-commercial", "air-chartering"],
     modal: {
+      title: "From Switzerland to India",
       aircraft: "Airbus H125",
       route: "Switzerland → India",
       transportMode: "Air Commercial",
@@ -233,19 +300,53 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
         "The aircraft arrived in India within the agreed timeline, fully traceable through Heli Skycargo's tracking platform.",
     },
   },
+  // 2 — col0 / short — pure-photo loading shot.
   {
     id: "loading-1",
     src: "/showcase/project-2.webp",
     alt: "Helicopter loading operations",
+    shape: "short",
+    desktopColumn: 0,
+    mobileColumn: 0,
     relatedServices: ["ocean-roro", "ocean-lolo", "ocean-fcl"],
+    modal: {
+      // TODO(content): real modal copy for Loading shot 1.
+      title: "Helicopter Loading",
+      aircraft: "Various",
+      route: "Multi-port",
+      transportMode: "Ocean Freight",
+      timeline: "Project-based",
+      challenge: PLACEHOLDER_CHALLENGE,
+      solution: PLACEHOLDER_SOLUTION,
+      result: PLACEHOLDER_RESULT,
+    },
   },
+  // 3 — col1 / short — japan-desk (label + play icon, video-ready). Ships
+  // with a 2-item demo `media` carousel: video FIRST (so the modal opens on
+  // the idle video state — poster + play overlay) + a contrasting photo
+  // second (using a different showcase asset so the user can tell the two
+  // slides apart at a glance). Replace the sample MP4 / placeholder photo
+  // with the real client-supplied assets (or a YouTube unlisted embed, per
+  // the 2026-04-28 hosting decision in docs/DECISIONS.md).
   {
     id: "japan-desk",
     src: "/showcase/japan-desk.webp",
+    media: [
+      {
+        type: "video",
+        src: "/showcase/sample-video.mp4",
+        poster: "/showcase/japan-desk.webp",
+      },
+      { type: "photo", src: "/showcase/khalifa-port.webp" },
+    ],
     alt: "HSC Japan office team",
     label: ["Our", "Japan", "Desk"],
-    showFlag: true,
+    hasPlayIcon: true,
+    shape: "short",
+    desktopColumn: 1,
+    mobileColumn: 1,
     modal: {
+      title: "Our Japan Desk",
       aircraft: "Multiple Models",
       route: "Tokyo, Japan",
       transportMode: "Local Coordination",
@@ -258,13 +359,18 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
         "Faster response times, cleaner customs paperwork, and a single accountable contact for every Japan-origin shipment.",
     },
   },
+  // 4 — col1 / tall — belgium-cameroon (label).
   {
     id: "belgium-cameroon",
     src: "/showcase/belgium-to-cameroon.webp",
     alt: "Helicopter shipment from Belgium to Cameroon",
     label: ["From", "Belgium", "to", "Cameroon"],
+    shape: "tall",
+    desktopColumn: 1,
+    mobileColumn: 1,
     relatedServices: ["ocean-roro", "ocean-lolo"],
     modal: {
+      title: "From Belgium to Cameroon",
       aircraft: "Airbus H145",
       route: "Antwerp → Douala",
       transportMode: "Ocean Freight (RoRo)",
@@ -276,13 +382,18 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
       result: "Delivered fully assembled, on schedule, with zero handling damage.",
     },
   },
+  // 5 — col2 / tall — myanmar-gabon (label).
   {
     id: "myanmar-gabon",
     src: "/showcase/myanmar-to-gabon.webp",
     alt: "Helicopter shipment from Myanmar to Gabon",
     label: ["From", "Myanmar", "to Gabon"],
+    shape: "tall",
+    desktopColumn: 2,
+    mobileColumn: 0,
     relatedServices: ["ocean-roro", "ocean-fcl"],
     modal: {
+      title: "From Myanmar to Gabon",
       aircraft: "Bell 412",
       route: "Yangon → Libreville",
       transportMode: "Ocean Freight (FCL)",
@@ -294,19 +405,39 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
       result: "Cost-efficient delivery with full visibility through every transshipment leg.",
     },
   },
+  // 6 — col2 / short — pure-photo dockside cargo.
   {
     id: "loading-2",
     src: "/showcase/project-6.webp",
     alt: "Helicopter cargo on the dock",
+    shape: "short",
+    desktopColumn: 2,
+    mobileColumn: 1,
     relatedServices: ["ocean-roro", "ocean-lolo"],
+    modal: {
+      // TODO(content): real modal copy for Loading shot 2.
+      title: "Dockside Loading",
+      aircraft: "Various",
+      route: "Multi-port",
+      transportMode: "Ocean Freight",
+      timeline: "Project-based",
+      challenge: PLACEHOLDER_CHALLENGE,
+      solution: PLACEHOLDER_SOLUTION,
+      result: PLACEHOLDER_RESULT,
+    },
   },
+  // 7 — col3 / short — khalifa-port (label).
   {
     id: "khalifa-port",
     src: "/showcase/khalifa-port.webp",
     alt: "Loading at Khalifa Port",
     label: ["Loading", "at Khalifa", "Port"],
+    shape: "short",
+    desktopColumn: 3,
+    mobileColumn: 1,
     relatedServices: ["ocean-roro", "ocean-lolo", "ocean-fcl"],
     modal: {
+      title: "Loading at Khalifa Port",
       aircraft: "Sikorsky S-92",
       route: "Khalifa Port, UAE",
       transportMode: "Ocean Freight (LoLo)",
@@ -318,13 +449,21 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
       result: "Vessel sailed on schedule with the helicopter safely lashed for ocean transit.",
     },
   },
+  // 8 — col3 / tall — china-guatemala (label). Figma /showcase frame draws
+  // this tile at 340×494 (`medium`); we ship it as `tall` (340×560) so the
+  // home page mosaic renders unchanged. /showcase col3 sums ~60px taller
+  // than the other columns — see DECISIONS.md 2026-05-10.
   {
     id: "china-guatemala",
     src: "/showcase/china-to-guatemala.webp",
     alt: "Helicopter shipment from China to Guatemala",
     label: ["From", "China to", "Guatemala"],
+    shape: "tall",
+    desktopColumn: 3,
+    mobileColumn: 1,
     relatedServices: ["air-commercial", "air-chartering", "ocean-fcl"],
     modal: {
+      title: "From China to Guatemala",
       aircraft: "Airbus H225",
       route: "Shanghai → Guatemala City",
       transportMode: "Air Charter (AN-124)",
@@ -336,7 +475,169 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
       result: "Delivered five days from booking confirmation — operationally ready on arrival.",
     },
   },
+  // ── Tiles 9-14 below are /showcase-only (home slices the first 8). ────────
+  // 9 — col3 / short — pure-photo with play icon (video-ready). Ships
+  // with a single-item `media` array containing ONLY a video, so the
+  // modal video-only path can be exercised (no carousel arrows; just the
+  // poster + play overlay → play → stop).
+  {
+    id: "tile-video-1",
+    src: "/showcase/tile-8-video.webp",
+    media: [
+      {
+        type: "video",
+        src: "/showcase/sample-video.mp4",
+        poster: "/showcase/tile-8-video.webp",
+      },
+    ],
+    alt: "HSC ground crew preparing helicopter for transport",
+    hasPlayIcon: true,
+    shape: "short",
+    desktopColumn: 3,
+    mobileColumn: 0,
+    modal: {
+      // TODO(content): client to provide narrative + real video file.
+      title: "Ground Operations",
+      aircraft: "Various",
+      route: "Worldwide",
+      transportMode: "Multi-modal",
+      timeline: "Project-based",
+      challenge: PLACEHOLDER_CHALLENGE,
+      solution: PLACEHOLDER_SOLUTION,
+      result: PLACEHOLDER_RESULT,
+    },
+  },
+  // 10 — col0 / tall — pure-photo.
+  {
+    id: "tile-9",
+    src: "/showcase/tile-9.webp",
+    alt: "Helicopter wrapped for ocean transit",
+    shape: "tall",
+    desktopColumn: 0,
+    mobileColumn: 0,
+    modal: {
+      // TODO(content): client to provide narrative for Tile 9.
+      title: "Ocean Transit Wrap",
+      aircraft: "Various",
+      route: "Worldwide",
+      transportMode: "Ocean Freight",
+      timeline: "Project-based",
+      challenge: PLACEHOLDER_CHALLENGE,
+      solution: PLACEHOLDER_SOLUTION,
+      result: PLACEHOLDER_RESULT,
+    },
+  },
+  // 11 — col1 / extra-short — pure-photo with play icon (video-ready).
+  {
+    id: "tile-video-2",
+    src: "/showcase/tile-10.webp",
+    alt: "Heli Skycargo coordination footage",
+    hasPlayIcon: true,
+    shape: "extra-short",
+    desktopColumn: 1,
+    mobileColumn: 0,
+    modal: {
+      // TODO(content): client to provide narrative + real video file.
+      title: "Coordination Footage",
+      aircraft: "Various",
+      route: "Worldwide",
+      transportMode: "Multi-modal",
+      timeline: "Project-based",
+      challenge: PLACEHOLDER_CHALLENGE,
+      solution: PLACEHOLDER_SOLUTION,
+      result: PLACEHOLDER_RESULT,
+    },
+  },
+  // 12 — col2 / tall — pure-photo.
+  {
+    id: "tile-11",
+    src: "/showcase/tile-11.webp",
+    alt: "Helicopter pre-flight on the apron",
+    shape: "tall",
+    desktopColumn: 2,
+    mobileColumn: 1,
+    modal: {
+      // TODO(content): client to provide narrative for Tile 11.
+      title: "Pre-flight Preparation",
+      aircraft: "Various",
+      route: "Worldwide",
+      transportMode: "Ground/Air",
+      timeline: "Project-based",
+      challenge: PLACEHOLDER_CHALLENGE,
+      solution: PLACEHOLDER_SOLUTION,
+      result: PLACEHOLDER_RESULT,
+    },
+  },
+  // 13 — col3 / short — pure-photo with play icon (video-ready).
+  {
+    id: "tile-video-3",
+    src: "/showcase/tile-12.webp",
+    alt: "Heli Skycargo road transport footage",
+    hasPlayIcon: true,
+    shape: "short",
+    desktopColumn: 3,
+    mobileColumn: 0,
+    modal: {
+      // TODO(content): client to provide narrative + real video file.
+      title: "Road Transport",
+      aircraft: "Various",
+      route: "Worldwide",
+      transportMode: "Road Freight",
+      timeline: "Project-based",
+      challenge: PLACEHOLDER_CHALLENGE,
+      solution: PLACEHOLDER_SOLUTION,
+      result: PLACEHOLDER_RESULT,
+    },
+  },
+  // 14 — col1 / extra-short — pure-photo.
+  {
+    id: "tile-13",
+    src: "/showcase/tile-13.webp",
+    alt: "Helicopter ground handling crew at work",
+    shape: "extra-short",
+    desktopColumn: 1,
+    mobileColumn: 1,
+    modal: {
+      // TODO(content): client to provide narrative for Tile 13.
+      title: "Ground Handling",
+      aircraft: "Various",
+      route: "Worldwide",
+      transportMode: "Ground",
+      timeline: "Project-based",
+      challenge: PLACEHOLDER_CHALLENGE,
+      solution: PLACEHOLDER_SOLUTION,
+      result: PLACEHOLDER_RESULT,
+    },
+  },
 ] as const;
+
+/**
+ * /showcase — hero copy + photo. Mobile splits the H1 into 3 lines via
+ * forced `<span className="block">` per line; desktop wraps to 2.
+ */
+export const SHOWCASE_HERO = {
+  eyebrow: "Shipment Showcase",
+  // Desktop wraps to 2 lines: "Heli Skycargo Shipment / Highlight and More".
+  // Mobile renders 3 lines: "Heli Skycargo Shipment / Highlight / and More".
+  h1Desktop: ["Heli Skycargo Shipment", "Highlight and More"] as const,
+  h1Mobile: ["Heli Skycargo Shipment", "Highlight", "and More"] as const,
+  photo: "/showcase/hero-showcase.webp",
+  photoAlt: "Heli Skycargo helicopter ready for transit at the loading dock",
+} as const;
+
+/**
+ * /showcase — gallery heading copy. Desktop trailing copy reads " and More",
+ * mobile reads " & More" — match each Figma frame exactly per breakpoint.
+ */
+export const SHOWCASE_GALLERY = {
+  eyebrow: "Case Visuals",
+  h2: {
+    pre: "Some of ",
+    emphasis: "Our Projects",
+    postDesktop: " and More",
+    postMobile: " & More",
+  },
+} as const;
 
 /**
  * Smart Tracking app feature cards (5 composite illustrations baked into the

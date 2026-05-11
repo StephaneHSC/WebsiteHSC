@@ -7,7 +7,7 @@ import { ValueAddedGrid } from "@/components/sections/service-detail/ValueAddedG
 import { ProjectsMosaic } from "@/components/sections/_shared/ProjectsMosaic";
 import { QuoteFormShell } from "@/components/sections/_shared/QuoteFormShell";
 import { OfficesGlobal } from "@/components/sections/_shared/OfficesGlobal";
-import { SERVICES } from "@/lib/constants";
+import { SERVICES, SHOWCASE_TILES } from "@/lib/constants";
 
 type RouteParams = Promise<{ slug: string }>;
 
@@ -42,7 +42,13 @@ export default async function ServiceDetailPage({ params }: { params: RouteParam
       <ServiceOverview service={service} />
       <WhenToChoose service={service} />
       <ValueAddedGrid />
-      <ProjectsMosaic />
+      {/*
+        Pre-M7 legacy: service-detail renders the canonical 8-tile mosaic (no
+        serviceSlug filter). The filter mechanism on `ProjectsMosaic` exists
+        but wiring it on per service requires curated `relatedServices` data
+        — punt to M9 polish.
+      */}
+      <ProjectsMosaic tiles={SHOWCASE_TILES.slice(0, 8)} />
       <div id="request-quote" className="scroll-mt-24">
         <QuoteFormShell
           photo={{

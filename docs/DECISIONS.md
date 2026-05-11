@@ -15,6 +15,49 @@ Format:
 
 ---
 
+## 2026-05-10 — M7 Shipment Showcase — locked decisions
+
+**Decision**: `/showcase` ships with the data model, layout, and page-level deviations from Figma captured below. Each item is something a reader of M2-M6 wouldn't infer from the code or the brief.
+
+**Decisions**:
+
+1. **`ProjectsMosaic` is now reused across home + service-detail + /showcase** as a single client component. The legacy `4×2 fixed bento` layout is replaced by **column-based masonry driven by per-tile `desktopColumn` (0..3) + `mobileColumn` (0..1) + `shape` ("tall" | "medium" | "short" | "extra-short")**. Home and service-detail pass `tiles={SHOWCASE_TILES.slice(0, 8)}` so the visible 8-tile output is byte-equivalent to the M2 brick. /showcase passes all 14 tiles + `showLoadMore` + `initialDesktop=8` + `initialMobile=4` + `ctaHref={null}` (we're already on /showcase).
+2. **Modal lives inside the mosaic** as a single client island. Every consumer (home, service-detail, /showcase) gets clickable tiles + lightbox for free. The modal is `_shared/ShowcaseModal.tsx`, wraps `ui/Modal` with the new `size="xl"` + `bare` props, and routes its "Request Quote" pill to `#request-quote` on the current page (with a `/quote` fallback that's currently unreachable since every consumer renders `QuoteFormShell`).
+3. **Showcase remains hardcoded** — no Sanity schemas, queries, or seeds touched (per the 2026-05-04 decision below). The page is `revalidate: 60` only for parity with `/team` / `/why-choose-us` / `/services`.
+4. **No filter chips** on /showcase. The PDF brief said "filterable" but Figma `344:4887` ships only the masonry + Load More — no filter UI. Trust Figma. Service-specific filtering remains available via the existing `relatedServices` field + `serviceSlug` prop on `ProjectsMosaic`, but is not surfaced as a tile-page UI in M7.
+5. **Every tile is clickable, including pure-photo tiles**. Tiles without confirmed client copy carry a placeholder `modal` payload with lorem-ipsum challenge/solution/result and `// TODO(content):` markers (search `constants.ts`). The Figma modal frame doesn't disambiguate which tiles open it; the simplest mental model is "every tile drills into a project detail" — anything else leaves half the gallery feeling dead.
+6. **Modal photo carousel paginates within a single project** (not between projects). `tile.photos: string[]` data field; if `photos.length <= 1`, arrows + dots are hidden. ArrowLeft/ArrowRight cycle photos when the dialog is focused. Today every tile ships with a single photo (`tile.photos` undefined), so the carousel UI is dormant until the client supplies extra angles.
+7. **Video-tile asymmetry is intentional**. The 4 tiles with `hasPlayIcon: true` (japan-desk + 3 unlabeled) carry a red play-circle icon as a pre-click affordance — meaning "this story has a video version; the lightbox photo area becomes a playable video instead of stills." Until the client supplies real video files (`videoUrl`), the modal opens with the static photo + the play icon overlaid for the look. Search `// TODO(content): video file` markers when the assets land.
+8. **Japan tile play icon migration** — site-wide, including home. M2 shipped `showFlag: true` on the Japan Desk tile rendering `/showcase/japan-flag.svg` in the corner. The Figma intent was always a centered play icon (the source frames `344:4072`, `643:35` are red play circles, not flags). M7 renames the data field to `hasPlayIcon: true`, replaces the asset with `/showcase/icon-play.svg`, deletes `/public/showcase/japan-flag.svg`, and the home page now renders the play icon instead of the flag — a one-time visual correction. Document so a reviewer doesn't flag it as a regression.
+9. **Modal `size` prop on `ui/Modal`**. Adds `size?: "sm" | "lg" | "xl"` (default `sm` preserves the 2026-04-29 Modal API) + `bare?: boolean` for square corners and zero panel padding. M7 lightbox passes `size="xl" bare`. No other consumer touches the new fields.
+10. **Modal close X button** is added at panel top-right (NOT in Figma). Reason: backdrop-click discoverability is poor on mobile, and `<dialog>` ESC alone isn't enough for touch users. Use a 32×32 circular `<button>` with a thin × icon, ink color, `bg-white/80 hover:bg-white border border-ink/10`. Documented as an accessibility deviation from Figma.
+11. **Mobile hero subhead is dropped**. Figma mobile `505:6096` shows "Access real-time location of your helicopter while in transit, get push notification" — this is a stale carry-over from the smart-tracking page hero. Desktop has no subhead. Render no subhead on either viewport.
+12. **Hero overlay 0.36 at all viewports** (NOT 0.40 desktop / 0.36 mobile per M6). The single `bg-ink/[0.36]` layer reads correctly on the showcase hero photo at every width.
+13. **Hero eyebrow is RED variant** (not gray). M5/M6 used different splits — for M7 both desktop and mobile show the red eyebrow. The gallery section keeps the gray eyebrow for visual hierarchy.
+14. **H2 mobile vs desktop copy** — desktop reads " and More", mobile reads " & More". Implemented via responsive `<span className="md:hidden">` / `<span className="hidden md:inline">` inside the mixed-weight H2 — added a `postMobile?: string` field to the `ProjectsMosaic` heading prop so /showcase can opt into the split without affecting home.
+15. **Modal mobile drops the route header line**. Figma mobile `505:6768` only shows `Aircraft: …` as the modal H1; desktop shows both `<route>` (32px) + `Aircraft: …` (40px). Mobile route is implicit via the meta strip (Route: France → Brazil etc.).
+16. **Load More cadence — different per breakpoint**. Desktop: 8 initial tiles → one click reveals all 14, button hides. Mobile: 4 initial → +4 per click → +4 → +4, button hides at 14. Implemented as **two separate buttons** (one `md:hidden`, one `hidden md:flex`) so each viewport's button disappears as soon as that viewport's count reaches `total` — without this, clicking one breakpoint's button left the other breakpoint's "Loading More" pill stranded in the layout.
+17. **China-Guatemala tile keeps `shape: "tall"` (340×560), not `medium` (340×494)**. Figma `344:4887` draws this tile at 494px so col3 lines up flush with col0/col2. We ship it as `tall` so the home 4×2 mosaic renders identically to pre-M7 — this means /showcase col3 sums ~60px taller than the other columns (1300px vs 1241px). Acceptable visual deviation in the rightmost column; alternative was a per-page shape override which adds complexity for no real win. Revisit if the client flags the ragged column bottom.
+18. **Tablet (768-1023) gallery stays 4-column**. Figma only frames mobile (430) and desktop (1600). At md (768) the mosaic snaps to 4-col masonry (each tile ~180px wide) — slightly tight but readable; cleaner than introducing a 3-col-only intermediate breakpoint for a window that's rarely used.
+19. **Tile photos for tiles 9-14** were pulled from Figma `344:4887` and saved as `/public/showcase/tile-{8-video,9,10,11,12,13}.webp`. Re-encoded via ffmpeg from PNG → WebP at quality 78–80 (the Figma-shipped PNGs are 1.5MB+ each; final WebPs are 80-270KB). Hero image was downsized to 2400px wide before encoding.
+20. **Home page tile click now opens the modal** (M2 didn't have one). `relatedServices` filtering on service-detail pages is intentionally NOT enabled in M7 — punted to M9 polish since the per-service tile mapping in `constants.ts` is still a placeholder.
+
+**Why these are non-obvious**:
+
+- The Japan flag → play icon swap is a visible home-page change that's easy to mistake for a bug.
+- The /showcase col3 ragged bottom (china=tall) trades a Figma deviation for home byte-equivalence; without this entry a reviewer auditing against `344:4887` would file a bug.
+- The two-button Load More pattern looks redundant in the JSX but solves a real cross-breakpoint stranding bug.
+- The "every tile is clickable" rule — a reviewer expecting "only labeled tiles open the lightbox" will instead find pure-photo tiles drilling into placeholder copy. The TODO(content) markers are the launch-blocking signal.
+- The mobile-only route-header drop in the modal is surprising if you only audited desktop.
+
+**How to apply**:
+
+- When the client supplies real per-tile narrative + video files, search `// TODO(content):` in `src/lib/constants.ts` and replace each placeholder modal payload + add `videoUrl` for the 4 video tiles.
+- When a future page needs the project mosaic without the modal (unlikely), pass `ctaHref={null}` and skip the click handler — the modal is already gated by `tile !== null`, so no consumer changes are needed.
+- When a future page wants service-filtered tiles, pass `<ProjectsMosaic serviceSlug="ocean-roro" tiles={SHOWCASE_TILES} />` — the recycle-to-8 logic from the 2026-05-06 entry still applies.
+
+---
+
 ## 2026-05-10 — Sanity seed `_id` format: `team-<slug>` not `team.<slug>` (dot in prefix is a private namespace)
 
 **Decision**: All seeded teamMember documents use `_id: "team-<slug>"` (hyphen separator). The earlier seed used `team.<slug>` (dot) per the M6 plan suggestion; that pattern silently breaks public reads.
