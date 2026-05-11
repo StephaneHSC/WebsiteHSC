@@ -65,7 +65,6 @@ export const quoteFormConfigQuery = /* groq */ `
     success_message,
     form_enabled,
     form_embed_code,
-    form_endpoint,
     transport_modes,
     helicopter_models,
     transaction_types,

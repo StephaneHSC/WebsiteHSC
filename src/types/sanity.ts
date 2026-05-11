@@ -56,7 +56,6 @@ export type QuoteFormConfig = {
   form_embed_code?: string;
 
   // Path B — custom React form
-  form_endpoint?: string;
   transport_modes?: string[];
   helicopter_models?: string[];
   transaction_types?: string[];
