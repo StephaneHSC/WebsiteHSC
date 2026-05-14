@@ -218,9 +218,7 @@ export function ProjectsMosaic({
             <SectionEyebrow variant="gray">{headingCopy.eyebrow}</SectionEyebrow>
           </Reveal>
           <Reveal delay={0.1}>
-            {/* Mobile uses a smaller H2 size + nowrap so the line fits in 375px
-                (Figma 505:6417 — width 384, ~17px tall). md/lg unchanged. */}
-            <h2 className="font-display text-ink text-[20px] leading-[1.1] font-bold tracking-tight whitespace-nowrap uppercase md:text-4xl md:whitespace-normal lg:text-5xl">
+            <h2 className="font-display text-ink text-3xl leading-[1.1] font-semibold tracking-tight uppercase md:text-4xl lg:text-5xl">
               {headingCopy.title.pre}
               <span className="font-extrabold">{headingCopy.title.emphasis}</span>
               {headingCopy.title.postMobile ? (
@@ -326,7 +324,7 @@ export function ProjectsMosaic({
               href={ctaHref}
               className={cn(
                 buttonVariants({ variant: "secondary", size: "md" }),
-                "border-ink/15 border hover:scale-[1.02]",
+                "border-ink/15 border font-light hover:scale-[1.02]",
               )}
             >
               {ctaLabel}

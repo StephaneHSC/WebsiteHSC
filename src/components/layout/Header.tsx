@@ -52,7 +52,7 @@ export function Header() {
             : "border-transparent bg-transparent",
         )}
       />
-      <div className="mx-auto flex max-w-[1600px] items-center justify-between px-4 py-3 sm:px-6 lg:px-12 lg:py-4 xl:px-20">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 sm:px-6 lg:px-8 lg:py-6">
         <Logo inverted={!scrolled} />
         <div className="flex items-center gap-3">
           <Link

@@ -36,7 +36,7 @@ export function OurSolutions() {
           title={
             <>
               We Deliver Tailored Helicopter{" "}
-              <span className="font-medium md:block">Logistic Solutions</span>
+              <span className="font-semibold md:block">Logistic Solutions</span>
             </>
           }
           lede={
@@ -57,7 +57,7 @@ export function OurSolutions() {
             href="/quote"
             className={cn(
               buttonVariants({ variant: "secondary", size: "md" }),
-              "border-ink/40 hover:border-ink hover:bg-surface border-2",
+              "border-ink hover:border-ink hover:bg-surface border-[1.5px] font-semibold",
             )}
           >
             Request Quote
