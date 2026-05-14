@@ -8,7 +8,7 @@ import { AppBadgeRow } from "@/components/ui/AppBadge";
  */
 export function Hero() {
   return (
-    <section className="bg-surface text-surface relative isolate w-full overflow-hidden">
+    <section className="bg-surface text-surface relative isolate w-full overflow-hidden p-2">
       <div aria-hidden="true" className="absolute inset-0 -z-10">
         <Image
           src="/home/hero-bg.webp"
@@ -23,14 +23,14 @@ export function Hero() {
 
       <Container>
         <div className="flex min-h-[560px] items-center md:min-h-[640px] lg:min-h-[720px]">
-          <div className="max-w-2xl space-y-6 py-20 md:space-y-8 md:py-28">
+          <div className="max-w-3xl space-y-6 py-20 md:space-y-8 md:py-28">
             <Reveal>
-              <h1 className="font-display text-3xl leading-[1.1] font-medium tracking-tight md:text-5xl lg:text-6xl">
+              <h1 className="font-display text-3xl leading-[1.1] font-semibold tracking-tight md:text-5xl lg:text-6xl">
                 Innovative Global Helicopter Freight Forwarder
               </h1>
             </Reveal>
             <Reveal delay={0.1}>
-              <p className="font-body text-surface max-w-xl text-base leading-relaxed md:text-lg">
+              <p className="font-body text-surface max-w-xl text-base leading-relaxed md:text-xl">
                 Full-Service Air and Ocean Freight Forwarder. Providing End-To-End Visibility and
                 Control Over Your Helicopter Shipments Through Bespoke Application.
               </p>

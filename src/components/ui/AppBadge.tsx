@@ -40,15 +40,15 @@ export function AppBadge({ store, variant = "dark", className }: AppBadgeProps) 
       rel="noopener noreferrer"
       aria-label={meta.ariaLabel}
       className={cn(
-        "focus-visible:ring-brand-red inline-flex items-center gap-3 rounded-full px-5 py-2.5 transition-all duration-200 hover:scale-[1.02] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
+        "focus-visible:ring-brand-red inline-flex items-center gap-3 rounded-full px-5 py-1.5 transition-all duration-200 hover:scale-[1.02] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none md:px-5 md:py-2.5",
         variantClasses[variant],
         className,
       )}
     >
       {store === "app-store" ? <AppleIcon /> : <PlayIcon />}
       <span className="text-left leading-tight">
-        <span className="block text-[10px] font-medium tracking-wide opacity-80">Download On</span>
-        <span className="font-display block text-base font-bold">{meta.primary}</span>
+        <span className="block text-[10px] font-medium tracking-wide">Download On</span>
+        <span className="font-display block text-[14px] font-semibold">{meta.primary}</span>
       </span>
     </a>
   );
