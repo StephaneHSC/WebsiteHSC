@@ -193,6 +193,14 @@ export type ShowcaseTile = {
   /** Primary photo for the tile thumbnail (used in the mosaic, not the modal). */
   src: string;
   /**
+   * Per-tile CSS `object-position` override for the thumbnail (e.g. `"70% center"`
+   * to shift the visible window toward the right side of the photo). Applies to
+   * both desktop and mobile mosaics. Default = browser default (`50% 50%`).
+   * Increase the X% to slide the photo content leftward in the tile, decrease
+   * to slide it rightward.
+   */
+  objectPosition?: string;
+  /**
    * Ordered carousel of mixed photos + videos shown inside the modal. When
    * absent, the modal falls back to the legacy `photos` + `videoUrl` fields.
    * If none of the three are set, the modal shows just `src` as a single
@@ -552,6 +560,11 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
   {
     id: "tile-11",
     src: "/showcase/tile-11.webp",
+    // Shift the visible window leftward so the wrapped helicopter on the
+    // photo's left isn't cropped off and the man-with-back subject stays
+    // framed per Figma. Tune by adjusting the X% (lower = photo content
+    // moves right; higher = moves left).
+    objectPosition: "70% 50%",
     alt: "Helicopter pre-flight on the apron",
     shape: "tall",
     desktopColumn: 2,
@@ -618,9 +631,14 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
 export const SHOWCASE_HERO = {
   eyebrow: "Shipment Showcase",
   // Desktop wraps to 2 lines: "Heli Skycargo Shipment / Highlight and More".
-  // Mobile renders 3 lines: "Heli Skycargo Shipment / Highlight / and More".
+  // Mobile renders 3 lines: "Heli Skycargo / Shipment Highlight / and More" (Figma 505:6096).
   h1Desktop: ["Heli Skycargo Shipment", "Highlight and More"] as const,
-  h1Mobile: ["Heli Skycargo Shipment", "Highlight", "and More"] as const,
+  h1Mobile: ["Heli Skycargo", "Shipment Highlight", "and More"] as const,
+  // TODO(content): copy lifted verbatim from Figma 505:6096 — text appears
+  // carried over from the smart-tracking section. Confirm/replace with
+  // showcase-appropriate copy at PM review.
+  subtitleMobile:
+    "Access real-time location of your helicopter while in transit, get push notification.",
   photo: "/showcase/hero-showcase.webp",
   photoAlt: "Heli Skycargo helicopter ready for transit at the loading dock",
 } as const;
