@@ -10,6 +10,9 @@ import { useState } from "react";
 
 export function ServicesTeaser() {
   const [rowHovered, setRowHovered] = useState(false);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
+  const activeIndex = rowHovered ? hoveredIndex : 2;
 
   return (
     <Section tone="light" spacing="loose" className="overflow-hidden">
@@ -34,17 +37,20 @@ export function ServicesTeaser() {
         {SERVICES_TEASER.map((service, i) => (
           <li
             key={service.slug}
+            onMouseEnter={() => setHoveredIndex(i)}
+            onMouseLeave={() => setHoveredIndex(null)}
+            data-active={activeIndex === i ? "true" : undefined}
             className={[
               "group relative h-[460px] overflow-hidden sm:h-[520px] lg:h-[600px] xl:h-[640px]",
               "w-72 shrink-0 snap-start sm:w-80",
               "md:w-auto md:flex-1 md:shrink md:basis-0",
               "md:transition-[flex-grow] md:duration-500 md:ease-[cubic-bezier(0.16,1,0.3,1)]",
-              "md:focus-within:grow-[2.5] md:hover:grow-[2.5]",
               !rowHovered && i === 2 ? "md:grow-[2.5]" : "",
+              rowHovered && i === hoveredIndex ? "md:grow-[2.5]" : "",
             ].join(" ")}
           >
             <Reveal delay={0.2 + i * 0.06} className="h-full">
-              <ServiceCard service={service} number={i + 1} />
+              <ServiceCard service={service} number={i + 1} active={activeIndex === i} />
             </Reveal>
           </li>
         ))}
