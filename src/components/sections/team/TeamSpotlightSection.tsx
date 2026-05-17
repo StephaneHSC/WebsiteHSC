@@ -49,7 +49,7 @@ export function TeamSpotlightSection({ members }: TeamSpotlightSectionProps) {
   if (!active) return null;
 
   return (
-    <section className="bg-surface relative w-full overflow-hidden pt-16 pb-12 md:pt-24 md:pb-16 lg:pt-32 lg:pb-24">
+    <section className="bg-surface relative w-full overflow-hidden pt-10 pb-12 md:pt-14 md:pb-16 lg:pt-20 lg:pb-24">
       {/* §3.2.1 — Heading */}
       <Container>
         <div className="mx-auto flex max-w-[1167px] flex-col items-center text-center">
@@ -101,15 +101,26 @@ function SpotlightHeadline() {
   return (
     <h2
       className={cn(
-        "font-display text-ink mt-12 uppercase",
-        "text-[24px] leading-[34px]",
-        "md:mt-12 md:text-[36px] md:leading-[48px]",
+        // Mobile spacing matches Figma `505:7076` (eyebrow→H2 gap ≈ 24px).
+        "font-display text-ink mt-6 uppercase",
+        // Mobile font is 22/30 (Figma spec is 24/34, but 24 wraps "OUR TEAM
+        // IS FUELED BY PASSION" at iPhone-SE widths — 22 keeps it on one
+        // line so the headline reads as 4 clean lines).
+        "text-[22px] leading-[30px]",
+        "md:mt-8 md:text-[36px] md:leading-[48px]",
         "lg:text-[54px] lg:leading-[66px]",
       )}
     >
-      <span className="block font-black">{TEAM_INTRO.h2Lines[0]!.text}</span>
-      <span className="block font-bold">{TEAM_INTRO.h2Lines[1]!.text}</span>
-      <span className="block font-bold">{TEAM_INTRO.h2Lines[2]!.text}</span>
+      <span className="block font-black">{TEAM_INTRO.h2Lines[0]}</span>
+      <span className="block font-bold">{TEAM_INTRO.h2Lines[1]}</span>
+      {/* Line 3 + 4: each its own line on mobile (Figma `505:7076`); on
+          desktop lines 3 and 4 collapse to a single line. `{" "}` makes the
+          inter-line space load-bearing so Prettier / a refactor can't eat it. */}
+      <span className="block font-bold">
+        {TEAM_INTRO.h2Lines[2]}
+        <span className="hidden lg:inline"> {TEAM_INTRO.h2Lines[3]}</span>
+      </span>
+      <span className="block font-bold lg:hidden">{TEAM_INTRO.h2Lines[3]}</span>
     </h2>
   );
 }
@@ -136,20 +147,15 @@ function SpotlightComposite({ member }: SpotlightCompositeProps) {
   return (
     <div className="relative w-full">
       {/*
-        Mobile (<lg): photo at top (430×500-ish), content stacks below in a
-        dark band. Desktop (lg+): single 1600×900 photo with content
-        absolute-positioned over the upper-right per Figma `344:5593`.
+        Mobile (<lg): photo at top (430×500 per Figma `505:7077`); content
+        (name + bio) overlaps the bottom ~43% of the photo via a -mt offset
+        and extends below onto the dark `bg-ink` band where the slider lives.
+        Desktop (lg+): single 1600×900 photo with content absolute-positioned
+        over the upper-right per Figma `344:5593`.
       */}
       <div className="relative w-full lg:aspect-[1600/900]">
-        {/* Photo wrapper — fixed mobile aspect, fills entire frame on lg+ */}
+        {/* Photo wrapper — Figma mobile aspect (430/500), absolute fill on lg+. */}
         <div className="relative aspect-[430/500] w-full lg:absolute lg:inset-0 lg:aspect-auto lg:h-full">
-          {/* Photo bg — keyed on `photo.src` so React swaps the <img> when
-              the active member changes; CSS opacity transition smooths the
-              swap. Wide-candid members use `cover`; cutout portraits use
-              `contain`. Mobile left-anchors both so the subject sits in
-              the left half of the frame, leaving room on the right for the
-              dark gradient. Desktop reverts to the Figma framing (centered
-              candid / left-bottom cutouts). */}
           <Image
             key={photo.src}
             src={photo.src}
@@ -164,13 +170,7 @@ function SpotlightComposite({ member }: SpotlightCompositeProps) {
                 : "object-contain object-left-bottom",
             )}
           />
-          {/* Dark gradient overlay (SVG from Figma). Decorative. Desktop-
-              only — the overlay is a right-anchored vignette designed to
-              darken the right side of the candid where the spotlight
-              content reads. On mobile the subject is left-anchored and
-              content stacks below, so the right-side shadow becomes a
-              floating dark patch with nothing behind it. Hide it on
-              mobile/tablet, restore on lg+. */}
+          {/* Desktop-only right-vignette overlay (Figma `344:5593`). */}
           <Image
             src={TEAM_SPOTLIGHT_OVERLAY.src}
             alt=""
@@ -179,25 +179,33 @@ function SpotlightComposite({ member }: SpotlightCompositeProps) {
             aria-hidden="true"
             className="pointer-events-none hidden object-cover lg:block"
           />
-          {/* Mobile-only fade so the bottom of the photo bleeds into the
-              dark content band below — keeps the seam from looking abrupt. */}
+          {/* Mobile-only bottom darkener — Figma `505:7078` (image 64 is the
+              818-tall dark gradient that sits over the photo bottom + extends
+              below). Here we just darken the bottom ~60% of the photo so the
+              overlaid name+bio reads cleanly against any photo. */}
           <span
             aria-hidden="true"
-            className="from-ink/0 to-ink pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-b lg:hidden"
+            className="from-ink/0 via-ink/70 to-ink pointer-events-none absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-b lg:hidden"
           />
         </div>
 
-        {/* Content layer */}
-        <Container className="pointer-events-none lg:absolute lg:inset-0">
+        {/* Content layer — mobile uses -mt to overlap the photo's bottom
+            ~43% (matches Figma `505:7079/7080` where the name sits at 57%
+            into the photo). Content extends below the photo into the
+            parent's bg-ink band. Desktop keeps the absolute upper-right
+            placement.
+            margin-top with a % is relative to container width, so -50% of
+            ~430 = -215 px lifts content's top onto the photo's lower half. */}
+        <Container className="pointer-events-none relative z-10 -mt-[50%] lg:absolute lg:inset-0 lg:mt-0">
           <div className="relative h-full w-full">
             <div
               className={cn(
-                "pointer-events-auto py-8",
+                "pointer-events-auto pb-10",
                 // Desktop: anchor the content block to the right side of the
                 // photo per Figma `344:5593` (left:929 ≈ 58% from left at the
                 // 1600px design width). The 540px max-width keeps bio lines
                 // tight; the right-[40px] inset hugs the viewport edge.
-                "lg:absolute lg:top-[19.7%] lg:right-[40px] lg:max-w-[540px] lg:py-0 xl:right-[60px]",
+                "lg:absolute lg:top-[19.7%] lg:right-[40px] lg:max-w-[540px] lg:pb-0 xl:right-[60px]",
               )}
             >
               <div className="flex items-start justify-between gap-4">
@@ -399,18 +407,22 @@ const TeamCard = forwardRef<HTMLButtonElement, TeamCardProps>(function TeamCard(
         )}
       />
 
-      {/* Radial gradient bg behind the portrait — sits inside the plate */}
+      {/* Radial gradient bg behind the portrait — Figma `505:7097` is a
+          128×128 SQUARE with a radial gradient fill (not a circle). The
+          radial paint gives a soft halo within the square outline. */}
       <span
         aria-hidden="true"
-        className="absolute top-[19.5px] left-1/2 h-[128px] w-[129px] -translate-x-1/2 rounded-full"
+        className="absolute top-[19.5px] left-1/2 h-[128px] w-[129px] -translate-x-1/2"
         style={{
           background: "radial-gradient(circle, #ffffff 0%, #e4e4e4 100%)",
         }}
       />
 
-      {/* Portrait — top:0, height 148, ~120px wide centered. Mirrors Figma's
-          per-member crop frame so the head extends 11px above the plate. */}
-      <span className="absolute top-0 left-1/2 z-10 block h-[148px] w-[120px] -translate-x-1/2 overflow-visible">
+      {/* Portrait — top:0, height 140, ~120px wide centered. Shorter than
+          Figma's 148px so there's an extra ~8 px breathing room between the
+          portrait's bottom edge and the name label below. Head still extends
+          above the plate (plate starts at top:11). */}
+      <span className="absolute top-0 left-1/2 z-10 block h-[140px] w-[120px] -translate-x-1/2 overflow-visible">
         {photoSrc ? (
           <Image
             src={photoSrc}
@@ -422,9 +434,11 @@ const TeamCard = forwardRef<HTMLButtonElement, TeamCardProps>(function TeamCard(
         ) : null}
       </span>
 
-      {/* Labels — absolute pinned to the bottom of the card so they stay
-          inside the 195px frame regardless of role-string length. */}
-      <span className="absolute inset-x-0 bottom-2 z-10 block px-2 text-center">
+      {/* Labels — absolute pinned to the bottom of the card. `bottom-1`
+          (4 px) instead of `bottom-2` so 2-line roles (e.g. "Deployment &
+          Lead Coordinator") have room to grow downward instead of squeezing
+          the name up against the portrait. */}
+      <span className="absolute inset-x-0 bottom-1 z-10 block px-2 text-center">
         <span
           className={cn(
             "font-display block text-[12px] leading-[14px] font-bold capitalize uppercase",

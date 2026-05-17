@@ -1283,19 +1283,29 @@ export const WHY_CHOOSE_TRACKABILITY = {
 
 export const TEAM_HERO = {
   eyebrow: "Our Team",
-  // Mobile renders 3 lines; desktop wraps naturally inside max-w-[633px] to 2.
+  // Mobile: 3 explicit `block` lines (one per array entry, Figma `505:6782`).
+  // Desktop (lg+): the three spans become `inline`, so the headline reflows
+  // inside `max-w-[633px]` at 64 px — the browser picks the wrap point.
   h1Lines: ["Meet the People", "Behind Every", "Shipment"] as const,
+  // Two crops of the same source candid (Figma `505:6782` mobile / `344:4891`
+  // desktop): wide 16:7 for tablet+, near-square 0.91 for mobile so the team
+  // fills the portrait frame instead of getting horizontally cropped.
   photo: "/team/hero-team.webp",
+  photoMobile: "/team/hero-team-mobile.webp",
   photoAlt: "Heli Skycargo team behind the scenes",
 } as const;
 
 export const TEAM_INTRO = {
   eyebrow: "Experts You Can Trust",
-  // 3-line mixed-weight headline. Mobile re-wraps to 4 lines via component.
+  // 4-line mixed-weight headline on mobile per Figma `505:7076`. On desktop
+  // lines 3 + 4 visually collapse to a single line ("to deliver BEST-IN-CLASS
+  // service.") via responsive class swap in SpotlightHeadline. Weight is
+  // hardcoded per line in the component — line 0 is black, the rest bold.
   h2Lines: [
-    { text: "At Heli Skycargo,", weight: "black" },
-    { text: "our team is fueled by passion to deliver", weight: "bold" },
-    { text: "BEST-IN-CLASS service.", weight: "bold" },
+    "At Heli Skycargo,",
+    "our team is fueled by passion",
+    "to deliver BEST-IN-CLASS",
+    "service.",
   ],
 } as const;
 
@@ -1346,7 +1356,7 @@ export const PLACEHOLDER_TEAM_MEMBERS: readonly TeamMemberPlaceholder[] = [
     _id: "team.stephane-marot",
     full_name: "Stephane Marot",
     role: "Founder & CEO",
-    placeholderPhoto: "/team/stephane-marot.png",
+    placeholderPhoto: "/team/stephane-marot.webp",
     spotlightPhoto: TEAM_SPOTLIGHT_PLACEHOLDER_PHOTO,
     bioParagraphs: [
       "With 25+ years in global freight forwarding across Europe, USA, Asia and Middle East. Stephane brings deep industry expertise and a strong customer-focused approach.",
@@ -1362,7 +1372,7 @@ export const PLACEHOLDER_TEAM_MEMBERS: readonly TeamMemberPlaceholder[] = [
     _id: "team.daniel-cosico",
     full_name: "Daniel Cosico",
     role: "Deployment & Lead Coordinator",
-    placeholderPhoto: "/team/daniel-cosico.png",
+    placeholderPhoto: "/team/daniel-cosico.webp",
     // TODO(content): client to provide bio for Daniel Cosico.
     bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
   },
