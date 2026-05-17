@@ -70,7 +70,10 @@ export function ServiceCard({
                 // Desktop with a hover-capable pointer: collapse, expand on
                 // hover or focus-within. Gating with @media(hover:hover)
                 // prevents iPad users from seeing permanently collapsed cards.
-                "mt-3 max-h-48 opacity-100 [@media(hover:hover)]:md:mt-0 [@media(hover:hover)]:md:max-h-0 [@media(hover:hover)]:md:overflow-hidden [@media(hover:hover)]:md:opacity-0 [@media(hover:hover)]:md:group-focus-within:mt-3 [@media(hover:hover)]:md:group-focus-within:max-h-48 [@media(hover:hover)]:md:group-focus-within:opacity-100 [@media(hover:hover)]:md:group-hover:mt-3 [@media(hover:hover)]:md:group-hover:max-h-48 [@media(hover:hover)]:md:group-hover:opacity-100",
+                "mt-3 max-h-48 opacity-100 [@media(hover:hover)]:md:mt-0 [@media(hover:hover)]:md:max-h-0 [@media(hover:hover)]:md:overflow-hidden [@media(hover:hover)]:md:opacity-0" +
+                  " [@media(hover:hover)]:md:group-focus-within:mt-3 [@media(hover:hover)]:md:group-focus-within:max-h-48 [@media(hover:hover)]:md:group-focus-within:opacity-100" +
+                  " [@media(hover:hover)]:md:group-hover:mt-3 [@media(hover:hover)]:md:group-hover:max-h-48 [@media(hover:hover)]:md:group-hover:opacity-100" +
+                  " [@media(hover:hover)]:md:[li[data-active=true]_&]:mt-3 [@media(hover:hover)]:md:[li[data-active=true]_&]:max-h-48 [@media(hover:hover)]:md:[li[data-active=true]_&]:opacity-100",
           )}
         >
           <p className="font-body text-surface/85 text-sm md:text-base">{service.description}</p>
