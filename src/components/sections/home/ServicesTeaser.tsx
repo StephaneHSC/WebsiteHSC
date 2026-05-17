@@ -5,7 +5,7 @@ import { SectionHeading } from "@/components/sections/_shared/SectionHeading";
 import { Reveal } from "@/components/sections/_shared/Reveal";
 import { ScrollSnapRow } from "@/components/sections/_shared/ScrollSnapRow";
 import { ServiceCard } from "@/components/sections/ServiceCard";
-import { SERVICES } from "@/lib/constants";
+import { SERVICES_TEASER } from "@/lib/constants";
 import { useState } from "react";
 
 export function ServicesTeaser() {
@@ -31,7 +31,7 @@ export function ServicesTeaser() {
         onMouseEnter={() => setRowHovered(true)}
         onMouseLeave={() => setRowHovered(false)}
       >
-        {SERVICES.map((service, i) => (
+        {SERVICES_TEASER.map((service, i) => (
           <li
             key={service.slug}
             className={[
