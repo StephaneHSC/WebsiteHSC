@@ -99,7 +99,7 @@ export async function MilestonesTimeline() {
             <SectionEyebrow variant="outline">Our Journey</SectionEyebrow>
           </Reveal>
           <Reveal delay={0.1}>
-            <h2 className="font-display text-ink text-3xl leading-[1.1] font-bold tracking-tight uppercase md:text-4xl lg:text-[54px] lg:leading-[64px] lg:tracking-[1.08px]">
+            <h2 className="font-display text-ink text-3xl leading-[1.1] font-semibold tracking-tight uppercase md:text-4xl lg:text-[54px] lg:leading-[64px] lg:tracking-[1.08px]">
               <span className="font-extrabold">Heli Skycargo</span> Milestones
             </h2>
           </Reveal>

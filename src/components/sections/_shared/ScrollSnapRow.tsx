@@ -4,6 +4,8 @@ type ScrollSnapRowProps = {
   ariaLabel: string;
   children: React.ReactNode;
   className?: string;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
 };
 
 /**
@@ -14,7 +16,13 @@ type ScrollSnapRowProps = {
  * scrollbar, and snap-x behaviour. Per-section gap, padding, and breakpoint
  * overrides (e.g. `md:grid` to swap to a desktop grid) come in via `className`.
  */
-export function ScrollSnapRow({ ariaLabel, children, className }: ScrollSnapRowProps) {
+export function ScrollSnapRow({
+  ariaLabel,
+  children,
+  className,
+  onMouseEnter,
+  onMouseLeave,
+}: ScrollSnapRowProps) {
   return (
     <ul
       role="region"
@@ -27,6 +35,8 @@ export function ScrollSnapRow({ ariaLabel, children, className }: ScrollSnapRowP
         "focus-visible:ring-brand-red focus-visible:ring-2 focus-visible:outline-none",
         className,
       )}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       {children}
     </ul>

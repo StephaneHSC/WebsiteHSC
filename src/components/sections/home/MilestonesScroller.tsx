@@ -50,8 +50,46 @@ export function MilestonesScroller({ milestones }: Props) {
         style={{ scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}
       >
         <div className="inline-flex flex-col px-8 pb-4 md:px-12 lg:px-20">
+          {/* Row — timeline line + dots + helicopter */}
+          <div className="relative mt-[2rem]">
+            {/* Helicopter sits in normal flow above the line */}
+            <div
+              className="flex w-full"
+              style={{
+                paddingLeft: `calc(${100 / Math.max(milestones.length, 1)}% + 40px - 48px)`,
+              }}
+            >
+              <Image
+                src="/milestones/helicopter.svg"
+                alt=""
+                width={99}
+                height={42}
+                aria-hidden="true"
+                className="mb-2 h-auto w-24 -scale-x-100 lg:w-28"
+              />
+            </div>
+
+            {/* The actual line */}
+            <span aria-hidden="true" className="bg-ink/15 block h-px w-full" />
+
+            {/* Dots */}
+            <div className="absolute inset-x-0 top-[calc(100%-1px)] flex gap-4 lg:gap-6">
+              {milestones.map((m, i) => (
+                <div key={m._id} className={cn("flex shrink-0 justify-center", cardW)}>
+                  <span
+                    aria-hidden="true"
+                    className={cn(
+                      "block h-3 w-3 -translate-y-1/2 rounded-full",
+                      i === 0 ? "bg-brand-red" : "bg-ink-muted",
+                    )}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Row 1 — years */}
-          <div className="flex gap-4 lg:gap-6">
+          <div className="mt-[3rem] flex gap-4 lg:gap-6">
             {milestones.map((m, i) => (
               <div key={m._id} className={cn("flex shrink-0 justify-center", cardW)}>
                 <Reveal delay={0.2 + i * 0.05}>
@@ -68,35 +106,8 @@ export function MilestonesScroller({ milestones }: Props) {
             ))}
           </div>
 
-          {/* Row 2 — timeline line + dots + helicopter */}
-          <div className="relative mt-6">
-            <span aria-hidden="true" className="bg-ink/15 block h-px w-full" />
-            <Image
-              src="/milestones/helicopter.svg"
-              alt=""
-              width={99}
-              height={42}
-              aria-hidden="true"
-              style={{ left: `calc(${100 / Math.max(milestones.length, 1)}% + 40px)` }}
-              className="pointer-events-none absolute top-1/2 h-auto w-24 -translate-x-1/2 -translate-y-full -scale-x-100 lg:w-28"
-            />
-            <div className="absolute inset-x-0 top-1/2 flex gap-4 lg:gap-6">
-              {milestones.map((m, i) => (
-                <div key={m._id} className={cn("flex shrink-0 justify-center", cardW)}>
-                  <span
-                    aria-hidden="true"
-                    className={cn(
-                      "block h-3 w-3 -translate-y-1/2 rounded-full",
-                      i === 0 ? "bg-brand-red" : "bg-ink-muted",
-                    )}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* Row 3 — cards */}
-          <div className="mt-12 flex items-stretch gap-4 self-stretch lg:gap-6">
+          <div className="mt-[4rem] flex items-stretch gap-4 self-stretch lg:gap-6">
             {milestones.map((m, i) => (
               <div
                 key={m._id}
