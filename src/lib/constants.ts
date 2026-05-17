@@ -1448,3 +1448,183 @@ export const PLACEHOLDER_TEAM_MEMBERS: readonly TeamMemberPlaceholder[] = [
     bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
   },
 ];
+
+export const SERVICES_TEASER: readonly Service[] = [
+  {
+    slug: "ocean-roro",
+    name: "Ocean RO/RO",
+    description: "Transport your aircraft using Ro/Ro vessel, loaded on a MAFI or simply towing.",
+    image: "/home/services-teaser/ser-1.png",
+    detailEyebrow: "OVERVIEW OCEAN RO/RO",
+    detailHeroTitle: ["Roll-On/Roll-Off", "Ocean Transport"],
+    detailHeroImage: "/home/services-teaser/ser-1.png",
+    detailOverview: {
+      label: "Roll-On/Roll-Off Ocean Transport",
+      title: ["Fast, Secure", "Helicopter Transport", "Using RoRo Vessels."],
+      paragraphs: [
+        para([
+          reg("Shipped on a "),
+          bold("MAFI Roll Trailer"),
+          reg(" or "),
+          bold("towed inside the vessel"),
+          reg(
+            ", helicopters are stowed and transported safely under deck. With Ro/Ro vessels, loading and unloading is fast and efficient, saving valuable time on the transportation journey.",
+          ),
+        ]),
+        para([
+          reg(
+            "Heli Skycargo contracts with the very best global Ro/Ro carriers, including NYK, Höegh Autoliners, Wallenius Wilhelmsen, ",
+          ),
+          bold("MOL (Mitsui O.S.K. Lines)"),
+          reg(", K Line, Armacup, "),
+          bold("EUKOR"),
+          reg(", the Grimaldi Group, Bahri Shipping and many others."),
+        ]),
+      ],
+      image: "/services/detail/ocean-roro-overview.webp",
+      hasVideoBadge: true,
+    },
+    detailWhenToChoose: {
+      title: SHARED_WHEN_TO_CHOOSE.title,
+      intro: SHARED_WHEN_TO_CHOOSE.intro,
+      image: "/services/detail/ocean-roro-when.webp",
+      cards: SHARED_WHEN_TO_CHOOSE.cards,
+    },
+  },
+  {
+    slug: "ocean-lolo",
+    name: "Ocean LO/LO",
+    description: "Safe Lift-on/Lift-off into cargo load of container vessel or MPV Breakbulk ship.",
+    image: "/home/services-teaser/ser-2.png",
+    detailEyebrow: "OVERVIEW OCEAN LO/LO",
+    detailHeroTitle: ["Ocean Lift-On / Lift-Off", "Transport Method"],
+    detailHeroImage: "/home/services-teaser/ser-2.png",
+    detailOverview: {
+      label: "Lift-on / Lift-off Shipping",
+      title: ["Container & Heavy", "Lift Shipping Options"],
+      paragraphs: [
+        para([
+          reg("Alternatively, helicopters can be transported using a "),
+          bold("Lift-On/Lift-Off method"),
+          reg(" – either via container ships or a multipurpose "),
+          bold("heavy lift vessel"),
+          reg(
+            ". The cargo is lifted on and off the shipping vessel by crane, before being safely stored and secured for travel.",
+          ),
+        ]),
+        para([
+          reg(
+            "Though this method adds some time to your transportation schedule to account for loading and unloading, it is ideal for situations where the destination or departure port is not served by Ro/Ro carriers, or where the Ro/Ro carrier schedule does not meet your requirements.",
+          ),
+        ]),
+      ],
+      image: "/services/detail/ocean-lolo-overview.webp",
+      hasVideoBadge: true,
+    },
+    detailWhenToChoose: {
+      title: SHARED_WHEN_TO_CHOOSE.title,
+      intro: SHARED_WHEN_TO_CHOOSE.intro,
+      image: "/services/detail/ocean-lolo-when.webp",
+      cards: SHARED_WHEN_TO_CHOOSE.cards,
+    },
+  },
+  {
+    slug: "ocean-fcl",
+    name: "Ocean FCL",
+    description:
+      "Save on freight cost by shipping in 40' container High Cube, Open Top or Flat Rack.",
+    image: "/home/services-teaser/ser-3.png",
+    detailEyebrow: "OVERVIEW OCEAN FCL",
+    detailHeroTitle: ["Ocean FCL - Container Transport"],
+    detailHeroImage: "/home/services-teaser/ser-3.png",
+    detailOverview: {
+      // TODO: client review of FCL eyebrow text — replaced "Lift-on / Lift-off
+      // Shipping" Figma value with "Full Container Load Shipping" pending
+      // content review (per M4 plan §6.4).
+      label: "Full Container Load Shipping",
+      title: ["Dedicated & Secure", "Full Container Ocean", "Solutions"],
+      paragraphs: [
+        para([
+          reg(
+            "Whether partially or fully disassembled, helicopters can be transported using 40' high cube, 40' open-top, or 40' flat rack containers.",
+          ),
+        ]),
+      ],
+      image: "/services/detail/ocean-fcl-overview.webp",
+      hasVideoBadge: true,
+    },
+    detailWhenToChoose: {
+      title: SHARED_WHEN_TO_CHOOSE.title,
+      intro: SHARED_WHEN_TO_CHOOSE.intro,
+      image: "/services/detail/ocean-fcl-when.webp",
+      cards: SHARED_WHEN_TO_CHOOSE.cards,
+    },
+  },
+  {
+    slug: "road-freight",
+    name: "Road Freight",
+    description:
+      "We deal with assets-own trucking companies providing GPS-equipped Air-ride specialised trailers.",
+    image: "/home/services-teaser/ser-4.png",
+    detailEyebrow: "OVERVIEW ROAD FREIGHT",
+    detailHeroTitle: ["Helicopter Road Freight Solutions"],
+    detailHeroImage: "/home/services-teaser/ser-4.png",
+    detailOverview: {
+      label: "Road Freight Transport",
+      title: ["End-to-End", "Road Freight Services"],
+      paragraphs: [
+        para([
+          reg(
+            "Whether the helicopter is being exclusively transported by road, or it is just a small part of the wider journey, Heli Skycargo can arrange road freight solutions including road survey and road permit application to meet your exact requirements.",
+          ),
+        ]),
+        para([
+          reg(
+            "Our carefully selected trucking and haulage companies are on standby ready to serve, and we have exclusive contracts around the world with specialist freight companies offering exceptional transports using air ride and hydraulic trucks.",
+          ),
+        ]),
+      ],
+      image: "/services/detail/road-freight-overview.webp",
+      hasVideoBadge: true,
+    },
+    detailWhenToChoose: {
+      title: SHARED_WHEN_TO_CHOOSE.title,
+      intro: SHARED_WHEN_TO_CHOOSE.intro,
+      image: "/services/detail/road-freight-when.webp",
+      cards: SHARED_WHEN_TO_CHOOSE.cards,
+    },
+  },
+  {
+    slug: "air-commercial",
+    name: "Air Commercial",
+    description: "Ship your aircraft on B74 Freighter.",
+    image: "/home/services-teaser/ser-5.png",
+    detailEyebrow: "OVERVIEW AIR COMMERCIAL",
+    detailHeroTitle: ["Commercial Air Freight Transport Solutions"],
+    detailHeroImage: "/home/services-teaser/ser-5.png",
+    detailOverview: {
+      label: "Air Cargo",
+      title: ["Reliable & Flexible", "Commercial Air Cargo", "Transport"],
+      paragraphs: [
+        para([
+          reg(
+            "If you have a flexible or more generous deadline for your shipping journey, then commercial air transportation is an excellent option. Depending on the departure and arrival locations and the carrier flight schedule, door-to-door transit time typically ranges from just 7 to 10 days.",
+          ),
+        ]),
+        para([
+          reg(
+            'Once dismantled, the helicopter is securely positioned on 20" aircraft pallets and loaded on board B747-400F or modern B747-8F aircraft. We arrange transportation with only the most reputable commercial cargo freighters, including Cargolux, Korean Air, Silk Way West Airlines, China Airlines, Cathay Pacific, and Singapore Airlines.',
+          ),
+        ]),
+      ],
+      image: "/services/detail/air-commercial-overview.webp",
+      hasVideoBadge: true,
+    },
+    detailWhenToChoose: {
+      title: SHARED_WHEN_TO_CHOOSE.title,
+      intro: SHARED_WHEN_TO_CHOOSE.intro,
+      image: "/services/detail/air-commercial-when.webp",
+      cards: SHARED_WHEN_TO_CHOOSE.cards,
+    },
+  },
+] as const;
