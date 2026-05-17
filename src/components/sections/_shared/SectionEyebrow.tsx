@@ -28,7 +28,7 @@ export type SectionEyebrowProps = HTMLAttributes<HTMLSpanElement> & {
  * Tracking 0.72 (~6%) and PT Sans Bold per Figma spec across all variants.
  */
 export function SectionEyebrow({
-  variant = "#E40C28",
+  variant = "red",
   className,
   children,
   ...props
