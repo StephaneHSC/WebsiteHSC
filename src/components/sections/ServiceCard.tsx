@@ -17,6 +17,7 @@ export type ServiceCardProps = {
   className?: string;
   /** `sizes` for the Next.js Image. Defaults to a sensible value for the home teaser. */
   imageSizes?: string;
+  active?: boolean;
 };
 
 /**
@@ -31,6 +32,7 @@ export function ServiceCard({
   number,
   alwaysExpanded = false,
   className,
+  active,
   imageSizes = "(min-width: 1280px) 25vw, (min-width: 768px) 20vw, 320px",
 }: ServiceCardProps) {
   const numberLabel = number.toString().padStart(2, "0");
@@ -76,7 +78,14 @@ export function ServiceCard({
                   " [@media(hover:hover)]:md:[li[data-active=true]_&]:mt-3 [@media(hover:hover)]:md:[li[data-active=true]_&]:max-h-48 [@media(hover:hover)]:md:[li[data-active=true]_&]:opacity-100",
           )}
         >
-          <p className="font-body text-surface/85 text-sm md:text-base">{service.description}</p>
+          <div
+            className={cn(
+              "transition-all duration-500",
+              active ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0",
+            )}
+          >
+            <p>{service.description}</p>
+          </div>{" "}
           <Link
             href={`/services/${service.slug}`}
             className={cn(
