@@ -28,7 +28,7 @@ export function Footer() {
       </div>
 
       {/* Desktop layout (≥md) */}
-      <div className="mx-auto hidden max-w-7xl px-6 py-16 md:block lg:px-8">
+      <div className="mx-auto hidden max-w-[1600px] px-6 py-16 md:block lg:px-12 xl:px-20">
         <div className="grid grid-cols-12 gap-8">
           {/* Col 1: Logo + tagline (in Logo) + VAI partner */}
           <div className="col-span-3 flex flex-col items-start gap-12">

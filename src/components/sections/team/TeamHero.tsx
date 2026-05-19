@@ -32,7 +32,7 @@ export function TeamHero() {
           fill
           priority
           sizes="(max-width: 1023px) 0px, 100vw"
-          className="hidden object-cover object-center lg:block"
+          className="hidden object-cover object-[center_65%] lg:block"
         />
         <span className="bg-ink/[0.36] md:bg-ink/40 absolute inset-0" />
       </div>
