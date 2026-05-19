@@ -20,9 +20,13 @@ export function GlobalReachCallout() {
 
   return (
     <Section tone="light" spacing="standard" className="relative overflow-hidden">
+      {/* World-map flourish — anchored lower than the visual middle so it
+          sits behind the lede/CTA rather than the headline (matches Figma
+          466:6063 where the dotted map's horizontal centerline aligns with
+          the lede). */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 flex items-center justify-center"
+        className="pointer-events-none absolute inset-x-0 bottom-0 flex translate-y-[6%] justify-center"
       >
         <Image
           src="/home/world-map.svg"
@@ -43,9 +47,16 @@ export function GlobalReachCallout() {
           </Reveal>
           <Reveal delay={0.1}>
             <h2 className="font-display text-ink mt-6 text-[24px] leading-[34px] uppercase md:text-[40px] md:leading-[52px] lg:mt-8 lg:text-[50px] lg:leading-[64px]">
-              <span className="block font-black">{h2.line1}</span>
-              {/* Mobile renders this line as SemiBold per Figma; desktop is Bold. */}
-              <span className="block font-semibold lg:font-bold">
+              {/* Mobile forces the break between "AIRCRAFT" and "NEEDS"; desktop
+                  joins inline so the line reads "WHEREVER YOUR AIRCRAFT NEEDS
+                  TO GO,". */}
+              <span className="block font-black">
+                Wherever your aircraft
+                <br className="lg:hidden" />
+                <span className="hidden lg:inline"> </span>
+                needs to go,
+              </span>
+              <span className="block font-bold">
                 {h2.line2Pre}
                 <span className="text-[#292d32]">{h2.line2Highlight}</span>
                 {h2.line2Post}
@@ -53,11 +64,11 @@ export function GlobalReachCallout() {
             </h2>
           </Reveal>
           <Reveal delay={0.2}>
-            <p className="font-body text-ink-soft mx-auto mt-6 max-w-[791px] text-[14px] leading-[26px] md:text-[15px] md:leading-[30px] lg:mt-8 lg:text-[16px] lg:leading-[30px]">
+            <p className="font-body text-ink-soft mx-auto mt-6 max-w-[820px] text-[14px] leading-[26px] md:text-[15px] md:leading-[30px] lg:mt-8 lg:max-w-[830px] lg:text-[16px] lg:leading-[30px]">
               {lede}
             </p>
           </Reveal>
-          <Reveal delay={0.3} className="mt-8 lg:mt-10">
+          <Reveal delay={0.3} className="mt-6 lg:mt-6">
             {/* Mobile: outline pill (white bg, ink text). */}
             <Link
               href={ctaHref}

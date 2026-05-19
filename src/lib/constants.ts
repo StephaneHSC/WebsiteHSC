@@ -1182,11 +1182,17 @@ export const WHY_CHOOSE_GLOBAL_REACH = {
  * fetching. Editor-added stats with unmatched labels render without a
  * description (graceful degrade).
  */
-export const STAT_DESCRIPTIONS: Record<string, string> = {
-  "Shipments Completed": "Air and ocean logistics, fully visible end-to-end.",
-  "Available Support": "Always ready. Always delivering.",
-  "Clients Worldwide": "Trusted worldwide for reliable freight solutions.",
-  "Trusted Since": "We deliver everywhere, to the farthest reaches.",
+/**
+ * Two-line descriptions for each stat. Breaks are FIXED to match Figma's
+ * mobile counts frame (505:7491 / 674:721 etc.) — same break points at every
+ * viewport so the cards read consistently across desktop + mobile. The
+ * `StatsBand` component renders each entry as `line1<br/>line2`.
+ */
+export const STAT_DESCRIPTIONS: Record<string, readonly [string, string]> = {
+  "Shipments Completed": ["Air and ocean logistics,", "fully visible end-to-end."],
+  "Available Support": ["Always ready.", "Always delivering."],
+  "Clients Worldwide": ["Trusted worldwide for reliable", "freight solutions."],
+  "Trusted Since": ["We deliver everywhere, to the", "farthest reaches."],
 };
 
 /**
@@ -1218,7 +1224,13 @@ export type FeatureBlockContent = {
   paragraphs?: readonly string[];
   /** Bullet list (Seamless variant). */
   bullets?: readonly string[];
-  photo: { src: string; alt: string };
+  photo: {
+    src: string;
+    alt: string;
+    /** Optional mobile-only override (<lg). Set when Figma uses a different
+     *  shot on the mobile frame than on desktop. */
+    mobileSrc?: string;
+  };
   /** Desktop-only image side; mobile is always image-top. */
   imageSide: "left" | "right";
   ctaLabel: string;
@@ -1243,7 +1255,7 @@ export const WHY_CHOOSE_FEATURE_BLOCKS: readonly FeatureBlockContent[] = [
     ],
     photo: {
       src: "/why-choose-us/seamless-photo.webp",
-      alt: "HSC operations team in safety vests on a vessel deck",
+      alt: "Three HSC specialists in hardhats and safety vests posing on a vessel deck beside a container ship",
     },
     imageSide: "left",
     ctaLabel: "Request Quote",
@@ -1263,6 +1275,9 @@ export const WHY_CHOOSE_FEATURE_BLOCKS: readonly FeatureBlockContent[] = [
     photo: {
       src: "/why-choose-us/tailored-photo.webp",
       alt: "Wrapped helicopter being lifted by ship-side crane",
+      // Mobile-only override (Figma 505:7539): wider shot of the wrapped
+      // helicopter on a trailer being rolled onto the "Grande Torino" RoRo.
+      mobileSrc: "/why-choose-us/tailored-photo-mobile.webp",
     },
     imageSide: "right",
     ctaLabel: "Request Quote",
