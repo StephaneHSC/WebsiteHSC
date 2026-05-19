@@ -52,7 +52,7 @@ export function ServiceOverview({ service }: ServiceOverviewProps) {
                 </SectionEyebrow>
               </Reveal>
               <Reveal delay={0.1}>
-                <h2 className="font-display text-ink mt-6 text-[24px] leading-[34px] tracking-tight uppercase md:text-[36px] md:leading-[44px] lg:mt-8 lg:text-[54px] lg:leading-[60px]">
+                <h2 className="font-display text-ink mt-3 text-[24px] leading-[34px] tracking-tight uppercase md:text-[36px] md:leading-[44px] lg:mt-3 lg:text-[45px] lg:leading-[56px]">
                   {o.title.map((line, i) => (
                     <span
                       key={`${i}-${line}`}
@@ -73,7 +73,7 @@ export function ServiceOverview({ service }: ServiceOverviewProps) {
               <Reveal delay={0.3} className="mt-8 lg:mt-10">
                 <Link
                   href="#request-quote"
-                  className="font-body bg-ink text-surface focus-visible:ring-brand-red inline-flex items-center justify-center rounded-full px-[20px] py-[14px] text-[14px] font-bold tracking-[0.06em] capitalize transition-colors duration-200 hover:bg-[#2a2f38] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none lg:px-[30px] lg:py-[20px]"
+                  className="font-body bg-ink text-surface focus-visible:ring-brand-red inline-flex items-center justify-center rounded-full px-[20px] py-[14px] text-[14px] font-medium tracking-[0.06em] capitalize transition-colors duration-200 hover:bg-[#2a2f38] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none lg:px-[30px] lg:py-[20px]"
                 >
                   Request Quote
                 </Link>
