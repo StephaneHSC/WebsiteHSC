@@ -99,7 +99,7 @@ function BenefitChip({ benefit }: { benefit: ServiceBenefit }) {
         // Bumped overlay alpha from 0.31 → 0.55 so the white label hits
         // WCAG AA contrast (4.5:1) over typical photo backgrounds; the
         // backdrop-blur preserves the chip's frosted-glass look.
-        "bg-[rgba(0,0,0,0.55)] backdrop-blur-[16.8px]",
+        "bg-[rgba(22, 22, 22, 0.55)] backdrop-blur-[20px]",
       )}
     >
       <Image src={benefit.icon} alt="" width={22} height={22} className="size-[22px] shrink-0" />
