@@ -76,8 +76,14 @@ export function SectionHeading({
       {animated ? (
         <>
           {eyebrowEl ? <Reveal>{eyebrowEl}</Reveal> : null}
-          <Reveal delay={0.1}>{titleEl}</Reveal>
-          {ledeEl ? <Reveal delay={0.2}>{ledeEl}</Reveal> : null}
+          <Reveal direction="up" delay={0.1}>
+            {titleEl}
+          </Reveal>
+          {ledeEl ? (
+            <Reveal direction="up" delay={0.2}>
+              {ledeEl}
+            </Reveal>
+          ) : null}
         </>
       ) : (
         <>
