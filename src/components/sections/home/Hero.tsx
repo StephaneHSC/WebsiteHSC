@@ -33,17 +33,24 @@ export function Hero() {
           <div className="max-w-3xl space-y-6 py-20 md:space-y-8 md:py-28">
             <Reveal>
               <h1 className="font-display text-3xl leading-[1.1] font-semibold tracking-tight md:text-5xl lg:text-6xl">
-                Innovative Global Helicopter Freight Forwarder
+                Innovative Global
+                <br className="md:hidden" /> Helicopter
+                <br className="hidden md:inline" /> Freight
+                <br className="md:hidden" /> Forwarder
               </h1>
             </Reveal>
             <Reveal delay={0.1}>
-              <p className="font-body text-surface max-w-xl text-base leading-relaxed md:text-xl">
-                Full-Service Air and Ocean Freight Forwarder. Providing End-To-End Visibility and
-                Control Over Your Helicopter Shipments Through Bespoke Application.
+              <p className="font-body text-surface max-w-2xl text-base leading-relaxed md:text-2xl">
+                Full-Service Air and Ocean Freight
+                <br className="md:hidden" /> Forwarder. Providing
+                <br className="hidden md:inline" /> End-To-End Visibility
+                <br className="md:hidden" /> and Control Over Your Helicopter
+                <br /> Shipments Through Bespoke Application.
               </p>
             </Reveal>
             <Reveal delay={0.2}>
-              <AppBadgeRow variant="light" />
+              <AppBadgeRow variant="light" size="sm" className="md:hidden" />
+              <AppBadgeRow variant="light" className="hidden md:flex" />
             </Reveal>
           </div>
         </div>

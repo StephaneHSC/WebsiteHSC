@@ -17,7 +17,7 @@ export function VideoSection() {
 
   return (
     <section className="bg-ink relative isolate w-full overflow-hidden">
-      <div className="relative aspect-[4/3] w-full md:aspect-video">
+      <div className="relative aspect-[430/603] w-full md:aspect-video">
         {!playing ? (
           <button
             type="button"
@@ -30,7 +30,7 @@ export function VideoSection() {
               alt=""
               fill
               sizes="100vw"
-              className="object-cover object-center"
+              className="object-cover object-[15%_center] md:object-center"
             />
             {/* Subtle dim so the play button reads cleanly against any photo */}
             <span
@@ -39,7 +39,9 @@ export function VideoSection() {
             />
             {/* Play button */}
             <span aria-hidden="true" className="absolute inset-0 flex items-center justify-center">
-              <span className="bg-brand-red shadow-brand-red/40 flex h-16 w-16 items-center justify-center rounded-full shadow-2xl transition-transform duration-300 group-hover:scale-110 sm:h-20 sm:w-20 md:h-24 md:w-24">
+              {/* Soft red halo — blurred glow behind the button, scales on hover */}
+              <span className="bg-brand-red/40 absolute h-32 w-32 rounded-full blur-2xl transition-transform duration-300 group-hover:scale-110 sm:h-40 sm:w-40 md:h-56 md:w-56" />
+              <span className="bg-brand-red shadow-brand-red/40 relative flex h-16 w-16 items-center justify-center rounded-full shadow-2xl transition-transform duration-300 group-hover:scale-110 sm:h-20 sm:w-20 md:h-24 md:w-24">
                 <PlayIcon className="text-surface ml-1 h-7 w-7 sm:h-9 sm:w-9 md:ml-1.5 md:h-11 md:w-11" />
               </span>
             </span>

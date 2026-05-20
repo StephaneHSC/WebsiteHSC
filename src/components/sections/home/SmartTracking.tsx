@@ -17,7 +17,7 @@ export function SmartTracking() {
   return (
     <Section tone="light" spacing="loose" className="overflow-hidden">
       <Container className="max-w-[1440px] lg:px-12">
-        <div className="grid items-end gap-10 md:grid-cols-2 md:gap-16">
+        <div className="grid items-end gap-6 md:grid-cols-2 md:gap-16">
           {/* Left: eyebrow + heading */}
           <div className="flex flex-col items-start gap-5">
             <Reveal>
@@ -25,7 +25,7 @@ export function SmartTracking() {
             </Reveal>
             <Reveal delay={0.1}>
               <h2 className="font-display text-[27px] leading-[1.05] font-bold tracking-tight uppercase md:text-[33px] lg:text-[43px]">
-                <span className="font-extrabold"> Smart Tracking Powered</span> By Our Bespoke App.
+                <span className="font-black"> Smart Tracking Powered</span> By Our Bespoke App.
               </h2>
             </Reveal>
           </div>
@@ -39,7 +39,17 @@ export function SmartTracking() {
               </p>
             </Reveal>
             <Reveal delay={0.3}>
-              <AppBadgeRow variant="light" badgeClassName="border border-ink" />
+              <AppBadgeRow
+                variant="light"
+                size="sm"
+                badgeClassName="border border-ink"
+                className="md:hidden"
+              />
+              <AppBadgeRow
+                variant="light"
+                badgeClassName="border border-ink"
+                className="hidden md:flex"
+              />
             </Reveal>
           </div>
         </div>
