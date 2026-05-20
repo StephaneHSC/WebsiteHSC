@@ -21,18 +21,21 @@ import {
 export function MobileFooter() {
   return (
     <div className="px-6 py-10">
-      {/* Top row: brand + partner */}
+      {/* Top row: brand + partner. VaiBadge runs inline (label left of logo)
+          to match the Figma mobile frame `352:17257`. Logo size is dialled
+          down on mobile so it doesn't dwarf the VAI badge beside it. */}
       <div className="flex items-center justify-between gap-4">
-        <Logo inverted />
-        <VaiBadge />
+        <Logo inverted imageClassName="h-9" />
+        <VaiBadge inline />
       </div>
 
       <Divider />
 
-      {/* App download buttons — centered, side by side */}
+      {/* App download buttons — centered, side by side. `sm` size matches the
+          tighter mobile pills in Figma. */}
       <div className="flex flex-wrap items-center justify-center gap-3">
-        <AppStoreButton />
-        <GooglePlayButton />
+        <AppStoreButton size="sm" />
+        <GooglePlayButton size="sm" />
       </div>
 
       <Divider />
@@ -115,7 +118,10 @@ function PlusMinusIcon({ open }: { open: boolean }) {
   return (
     <span
       aria-hidden="true"
-      className="border-surface/40 text-surface inline-flex h-7 w-7 items-center justify-center rounded-full border"
+      className={cn(
+        "inline-flex h-7 w-7 items-center justify-center rounded-full transition-colors",
+        open ? "bg-surface text-ink" : "border-surface/40 text-surface border",
+      )}
     >
       <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
         <line

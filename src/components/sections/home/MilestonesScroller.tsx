@@ -43,10 +43,11 @@ export function MilestonesScroller({ milestones }: Props) {
 
   return (
     <>
-      {/* Scroll track */}
+      {/* Scroll track — capped at the Container max-width and centered so the
+          left edge aligns with the heading at every viewport. */}
       <div
         ref={scrollRef}
-        className="mt-12 w-full cursor-grab overflow-x-auto [scrollbar-width:none] active:cursor-grabbing lg:mt-16 [&::-webkit-scrollbar]:hidden"
+        className="mx-auto mt-12 w-full max-w-[1600px] cursor-grab overflow-x-auto [scrollbar-width:none] active:cursor-grabbing lg:mt-16 [&::-webkit-scrollbar]:hidden"
         style={{ scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}
       >
         <div className="inline-flex flex-col px-8 pb-4 md:px-12 lg:px-20">
