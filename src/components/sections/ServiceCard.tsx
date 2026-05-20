@@ -44,14 +44,17 @@ export function ServiceCard({
         alt=""
         fill
         sizes={imageSizes}
-        className="object-cover object-center"
+        className="object-cover"
+        style={{ objectPosition: service.imageObjectPosition ?? "center" }}
       />
 
       {/* Top-to-bottom dim — keeps the corner number readable on bright photos
-          and the bottom title block legible regardless of image content. */}
+          and the bottom title block legible regardless of image content. Top
+          is nearly transparent so the photo stays vivid; bottom darkens to
+          carry the text. */}
       <span
         aria-hidden="true"
-        className="from-ink/25 via-ink/15 to-ink/85 absolute inset-0 bg-gradient-to-b"
+        className="from-ink/5 via-ink/10 to-ink/80 absolute inset-0 bg-gradient-to-b"
       />
 
       <span className="font-display text-surface absolute top-4 left-4 text-2xl font-bold md:top-6 md:left-6 md:text-3xl">
@@ -81,7 +84,9 @@ export function ServiceCard({
           <div
             className={cn(
               "transition-all duration-500",
-              active ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0",
+              active
+                ? "translate-y-0 opacity-100"
+                : "pointer-events-none translate-y-4 opacity-0 [@media(hover:none)]:pointer-events-auto [@media(hover:none)]:translate-y-0 [@media(hover:none)]:opacity-100",
             )}
           >
             <p>{service.description}</p>

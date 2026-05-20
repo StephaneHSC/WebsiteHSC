@@ -54,7 +54,6 @@ export function SmartTrackingCards() {
                 alt={card.alt}
                 width={1172}
                 height={1114}
-                quality={90}
                 className="h-auto w-full"
                 sizes="(min-width: 1280px) 580px, (min-width: 1024px) 520px, (min-width: 640px) 400px, 300px"
               />

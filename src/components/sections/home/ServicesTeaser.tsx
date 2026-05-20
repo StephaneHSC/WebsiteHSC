@@ -1,17 +1,18 @@
 "use client";
+import { useState } from "react";
 import { Container } from "@/components/sections/_shared/Container";
 import { Section } from "@/components/sections/_shared/Section";
 import { SectionHeading } from "@/components/sections/_shared/SectionHeading";
 import { Reveal } from "@/components/sections/_shared/Reveal";
-import { ScrollSnapRow } from "@/components/sections/_shared/ScrollSnapRow";
 import { ServiceCard } from "@/components/sections/ServiceCard";
 import { SERVICES_TEASER } from "@/lib/constants";
-import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 export function ServicesTeaser() {
   const [rowHovered, setRowHovered] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
+  // Default-active = 3rd card (Ocean FCL). On hover, the hovered card takes over.
   const activeIndex = rowHovered ? hoveredIndex : 2;
 
   return (
@@ -20,41 +21,60 @@ export function ServicesTeaser() {
         <SectionHeading
           eyebrow="Our Services"
           eyebrowVariant="outline"
-          title="Explore Our Flexible Helicopter"
+          title={
+            <>
+              Explore Our Flexible Helicopter
+              <br className="hidden md:inline" />
+            </>
+          }
           subtitle="Transport Solutions Worldwide."
-          lede="Enables end-to-end visibility on your helicopter shipments for you and your team"
+          lede={
+            <>
+              Enables end-to-end visibility on your helicopter <br className="md:hidden" />
+              shipments for you and your team
+            </>
+          }
           align="left"
           uppercase
         />
       </Container>
 
-      <ScrollSnapRow
-        ariaLabel="Helicopter transport service offerings"
-        className="mt-12 gap-3 px-4 sm:px-6 md:snap-none md:gap-1 md:overflow-visible md:px-4 lg:mt-16 lg:px-6"
-        onMouseEnter={() => setRowHovered(true)}
-        onMouseLeave={() => setRowHovered(false)}
+      <div
+        role="region"
+        aria-label="Helicopter transport service offerings"
+        tabIndex={0}
+        className="focus-visible:ring-brand-red mt-12 overflow-x-auto scroll-smooth pb-2 [-ms-overflow-style:none] [scrollbar-width:none] focus-visible:ring-2 focus-visible:outline-none lg:mt-16 [&::-webkit-scrollbar]:hidden"
       >
-        {SERVICES_TEASER.map((service, i) => (
-          <li
-            key={service.slug}
-            onMouseEnter={() => setHoveredIndex(i)}
-            onMouseLeave={() => setHoveredIndex(null)}
-            data-active={activeIndex === i ? "true" : undefined}
-            className={[
-              "group relative h-[460px] overflow-hidden sm:h-[520px] lg:h-[600px] xl:h-[640px]",
-              "w-72 shrink-0 snap-start sm:w-80",
-              "md:w-auto md:flex-1 md:shrink md:basis-0",
-              "md:transition-[flex-grow] md:duration-500 md:ease-[cubic-bezier(0.16,1,0.3,1)]",
-              !rowHovered && i === 2 ? "md:grow-[2.5]" : "",
-              rowHovered && i === hoveredIndex ? "md:grow-[2.5]" : "",
-            ].join(" ")}
-          >
-            <Reveal delay={0.2 + i * 0.06} className="h-full">
-              <ServiceCard service={service} number={i + 1} active={activeIndex === i} />
-            </Reveal>
-          </li>
-        ))}
-      </ScrollSnapRow>
+        <ul
+          className="flex snap-x snap-mandatory gap-3 px-4 sm:px-6 md:gap-2.5 md:px-6 lg:px-8"
+          onMouseEnter={() => setRowHovered(true)}
+          onMouseLeave={() => setRowHovered(false)}
+        >
+          {SERVICES_TEASER.map((service, i) => (
+            <li
+              key={service.slug}
+              onMouseEnter={() => setHoveredIndex(i)}
+              onMouseLeave={() => setHoveredIndex(null)}
+              data-active={activeIndex === i ? "true" : undefined}
+              className={cn(
+                "group relative h-[460px] shrink-0 snap-start overflow-hidden sm:h-[520px] lg:h-[600px] xl:h-[640px]",
+                // Mobile: fixed width carousel.
+                "w-72 sm:w-80",
+                // Desktop+: min-width pattern. Inactive cards stay narrow, the
+                // active card grows wide. Card 6 sits past the right edge and
+                // is reached by horizontally scrolling/trackpad-swiping the row.
+                "md:w-auto md:min-w-[140px] lg:min-w-[180px] xl:min-w-[220px]",
+                "md:transition-[min-width] md:duration-500 md:ease-[cubic-bezier(0.16,1,0.3,1)]",
+                activeIndex === i && "md:!min-w-[420px] lg:!min-w-[600px] xl:!min-w-[720px]",
+              )}
+            >
+              <Reveal delay={0.2 + i * 0.06} className="h-full">
+                <ServiceCard service={service} number={i + 1} active={activeIndex === i} />
+              </Reveal>
+            </li>
+          ))}
+        </ul>
+      </div>
     </Section>
   );
 }

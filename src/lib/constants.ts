@@ -734,6 +734,12 @@ export type Service = {
   description: string;
   /** Path to the card image in /public. */
   image: string;
+  /**
+   * `object-position` for the teaser card image. Defaults to `center` when
+   * omitted. Used to nudge the visible crop for photos whose subject isn't
+   * centered (e.g., a truck cab on the right side).
+   */
+  imageObjectPosition?: string;
 
   // ---- M4 — Service Detail Page fields ----
 
@@ -1454,10 +1460,10 @@ export const SERVICES_TEASER: readonly Service[] = [
     slug: "ocean-roro",
     name: "Ocean RO/RO",
     description: "Transport your aircraft using Ro/Ro vessel, loaded on a MAFI or simply towing.",
-    image: "/home/services-teaser/ser-1.png",
+    image: "/home/services-teaser/ser-1.webp",
     detailEyebrow: "OVERVIEW OCEAN RO/RO",
     detailHeroTitle: ["Roll-On/Roll-Off", "Ocean Transport"],
-    detailHeroImage: "/home/services-teaser/ser-1.png",
+    detailHeroImage: "/home/services-teaser/ser-1.webp",
     detailOverview: {
       label: "Roll-On/Roll-Off Ocean Transport",
       title: ["Fast, Secure", "Helicopter Transport", "Using RoRo Vessels."],
@@ -1495,10 +1501,10 @@ export const SERVICES_TEASER: readonly Service[] = [
     slug: "ocean-lolo",
     name: "Ocean LO/LO",
     description: "Safe Lift-on/Lift-off into cargo load of container vessel or MPV Breakbulk ship.",
-    image: "/home/services-teaser/ser-2.png",
+    image: "/home/services-teaser/ser-2.webp",
     detailEyebrow: "OVERVIEW OCEAN LO/LO",
     detailHeroTitle: ["Ocean Lift-On / Lift-Off", "Transport Method"],
-    detailHeroImage: "/home/services-teaser/ser-2.png",
+    detailHeroImage: "/home/services-teaser/ser-2.webp",
     detailOverview: {
       label: "Lift-on / Lift-off Shipping",
       title: ["Container & Heavy", "Lift Shipping Options"],
@@ -1531,12 +1537,11 @@ export const SERVICES_TEASER: readonly Service[] = [
   {
     slug: "ocean-fcl",
     name: "Ocean FCL",
-    description:
-      "Save on freight cost by shipping in 40' container High Cube, Open Top or Flat Rack.",
-    image: "/home/services-teaser/ser-3.png",
+    description: "Flat Rack is an alternative and cost effective way of shipping.",
+    image: "/home/services-teaser/ser-3.webp",
     detailEyebrow: "OVERVIEW OCEAN FCL",
     detailHeroTitle: ["Ocean FCL - Container Transport"],
-    detailHeroImage: "/home/services-teaser/ser-3.png",
+    detailHeroImage: "/home/services-teaser/ser-3.webp",
     detailOverview: {
       // TODO: client review of FCL eyebrow text — replaced "Lift-on / Lift-off
       // Shipping" Figma value with "Full Container Load Shipping" pending
@@ -1565,10 +1570,11 @@ export const SERVICES_TEASER: readonly Service[] = [
     name: "Road Freight",
     description:
       "We deal with assets-own trucking companies providing GPS-equipped Air-ride specialised trailers.",
-    image: "/home/services-teaser/ser-4.png",
+    image: "/home/services-teaser/ser-4.webp",
+    imageObjectPosition: "30% 50%",
     detailEyebrow: "OVERVIEW ROAD FREIGHT",
     detailHeroTitle: ["Helicopter Road Freight Solutions"],
-    detailHeroImage: "/home/services-teaser/ser-4.png",
+    detailHeroImage: "/home/services-teaser/ser-4.webp",
     detailOverview: {
       label: "Road Freight Transport",
       title: ["End-to-End", "Road Freight Services"],
@@ -1598,10 +1604,10 @@ export const SERVICES_TEASER: readonly Service[] = [
     slug: "air-commercial",
     name: "Air Commercial",
     description: "Ship your aircraft on B74 Freighter.",
-    image: "/home/services-teaser/ser-5.png",
+    image: "/home/services-teaser/ser-5.webp",
     detailEyebrow: "OVERVIEW AIR COMMERCIAL",
     detailHeroTitle: ["Commercial Air Freight Transport Solutions"],
-    detailHeroImage: "/home/services-teaser/ser-5.png",
+    detailHeroImage: "/home/services-teaser/ser-5.webp",
     detailOverview: {
       label: "Air Cargo",
       title: ["Reliable & Flexible", "Commercial Air Cargo", "Transport"],
@@ -1624,6 +1630,41 @@ export const SERVICES_TEASER: readonly Service[] = [
       title: SHARED_WHEN_TO_CHOOSE.title,
       intro: SHARED_WHEN_TO_CHOOSE.intro,
       image: "/services/detail/air-commercial-when.webp",
+      cards: SHARED_WHEN_TO_CHOOSE.cards,
+    },
+  },
+  {
+    slug: "air-chartering",
+    name: "Air Chartering",
+    description:
+      "When time is of the essence or to reach places unreachable by 74F, go for the mighty Antonov124-100 or the IL76.",
+    image: "/home/services-teaser/ser-6.webp",
+    imageObjectPosition: "70% 50%",
+    detailEyebrow: "OVERVIEW AIR CHARTERING",
+    detailHeroTitle: ["Air Charter Transport for Urgent Shipments"],
+    detailHeroImage: "/home/services-teaser/ser-6.webp",
+    detailOverview: {
+      label: "Air Charter Transport",
+      title: ["Fast-Response", "Aircraft Charter", "Transport Solutions"],
+      paragraphs: [
+        para([
+          reg(
+            "If you have a flexible or more generous deadline for your shipping journey, then commercial air transportation is an excellent option. Depending on the departure and arrival locations and the carrier flight schedule, door-to-door transit time typically ranges from just 7 to 10 days.",
+          ),
+        ]),
+        para([
+          reg(
+            'Once dismantled, the helicopter is securely positioned on 20" aircraft pallets and loaded on board B747-400F or modern B747-8F aircraft. We arrange transportation with only the most reputable commercial cargo freighters, including Cargolux, Korean Air, Silk Way West Airlines, China Airlines, Cathay Pacific, and Singapore Airlines.',
+          ),
+        ]),
+      ],
+      image: "/services/detail/air-chartering-overview.webp",
+      hasVideoBadge: true,
+    },
+    detailWhenToChoose: {
+      title: SHARED_WHEN_TO_CHOOSE.title,
+      intro: SHARED_WHEN_TO_CHOOSE.intro,
+      image: "/services/detail/air-chartering-when.webp",
       cards: SHARED_WHEN_TO_CHOOSE.cards,
     },
   },
