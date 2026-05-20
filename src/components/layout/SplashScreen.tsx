@@ -23,7 +23,7 @@ export function SplashScreen({ children }: { children: React.ReactNode }) {
       setState("done");
       return;
     }
-    timerRef.current = setTimeout(() => dismiss(), 3000000);
+    timerRef.current = setTimeout(() => dismiss(), 4800);
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };

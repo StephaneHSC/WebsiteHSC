@@ -17,7 +17,10 @@ export function Hero() {
           playsInline
           className="absolute inset-0 h-full w-full object-cover object-center"
         >
-          <source src="/home/hero-video.mp4" type="video/mp4" />
+          {/* #t=4.8 starts playback at 4.8s — matches the splash auto-dismiss
+              so the home hero continues where the splash left off. Loops
+              return to the start of the file, not back to 4.8s. */}
+          <source src="/home/hero-video.mp4#t=4.8" type="video/mp4" />
           {/* Optional fallback fallback text/image if video fails */}
           Your browser does not support the video tag.
         </video>
