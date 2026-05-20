@@ -69,10 +69,12 @@ export function GlobalReachCallout() {
             </p>
           </Reveal>
           <Reveal delay={0.3} className="mt-6 lg:mt-6">
-            {/* Mobile: outline pill (white bg, ink text). */}
+            {/* Mobile: outline pill (white bg, ink text). Figma `505:7498` —
+                title-case label, 20×16 padding (NOT uppercase / 16×12 like the
+                home/services CTAs). */}
             <Link
               href={ctaHref}
-              className="border-ink text-ink font-body focus-visible:ring-brand-red hover:bg-ink hover:text-surface inline-flex items-center justify-center rounded-full border bg-white px-4 py-3 text-[12px] font-bold tracking-[0.06em] uppercase transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none lg:hidden"
+              className="border-ink text-ink font-body focus-visible:ring-brand-red hover:bg-ink hover:text-surface inline-flex items-center justify-center rounded-full border bg-white px-5 py-4 text-[12px] font-bold tracking-[0.06em] capitalize transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none lg:hidden"
             >
               {ctaLabel}
             </Link>

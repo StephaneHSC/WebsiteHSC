@@ -122,9 +122,11 @@ export function FeatureBlock({ block }: FeatureBlockProps) {
             ) : null}
 
             <Reveal delay={0.4} className="mt-8 lg:mt-10">
+              {/* Figma `505:7547` (mobile) / `344:6205` (desktop) — label is
+                  PT Sans Regular, NOT Bold like other red CTAs on the site. */}
               <Link
                 href={block.ctaHref}
-                className="bg-brand-red text-surface font-body focus-visible:ring-brand-red hover:bg-brand-red-dark inline-flex items-center justify-center rounded-full px-[20px] py-[14px] text-[14px] font-bold tracking-[0.06em] capitalize transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none lg:px-[30px] lg:py-[20px]"
+                className="bg-brand-red text-surface font-body focus-visible:ring-brand-red hover:bg-brand-red-dark inline-flex items-center justify-center rounded-full px-[20px] py-[14px] text-[14px] tracking-[0.06em] capitalize transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none lg:px-[30px] lg:py-[20px]"
               >
                 {block.ctaLabel}
               </Link>
