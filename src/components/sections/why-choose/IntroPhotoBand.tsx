@@ -14,7 +14,7 @@ export function IntroPhotoBand() {
     <section className="bg-surface w-full">
       <Container className="py-8 md:py-12 lg:py-12">
         <Reveal>
-          <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl md:aspect-[16/8] lg:aspect-[16/7]">
+          <div className="relative aspect-[16/9] w-full overflow-hidden">
             <Image
               src={WHY_CHOOSE_INTRO_PHOTO.src}
               alt={WHY_CHOOSE_INTRO_PHOTO.alt}

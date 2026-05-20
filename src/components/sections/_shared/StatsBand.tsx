@@ -96,7 +96,7 @@ type StatRow = { value: string; label: string };
 function StatCell({ stat }: { stat: StatRow }) {
   const description = STAT_DESCRIPTIONS[stat.label];
   return (
-    <div className="flex h-full flex-col px-4 py-6 md:px-6 md:py-8 lg:px-8 lg:py-10">
+    <div className="flex h-full flex-col px-4 py-6 md:px-5 md:py-8 lg:px-5 lg:py-10">
       <p className="font-display text-ink text-[12px] leading-[16px] font-bold tracking-[0.06em] uppercase md:leading-[20px]">
         {stat.label}
       </p>
@@ -110,7 +110,9 @@ function StatCell({ stat }: { stat: StatRow }) {
       </p>
       {description ? (
         <p className="font-body text-ink mt-3 text-[12px] leading-[16px] md:text-[13px] md:leading-[18px]">
-          {description}
+          {description[0]}
+          <br />
+          {description[1]}
         </p>
       ) : null}
     </div>
