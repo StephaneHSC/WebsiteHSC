@@ -49,7 +49,17 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${interTight.variable} ${ptSans.variable} ${inter.variable} ${poppins.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
+      <head>
+        {/* Pre-hydration check: if the splash has been seen this session,
+            add a class to <html> so CSS hides the overlay before first paint. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{if(sessionStorage.getItem('hsc-splash-seen'))document.documentElement.classList.add('hsc-splash-seen')}catch(e){}`,
+          }}
+        />
+      </head>
       <body className="bg-surface text-ink font-body flex min-h-full flex-col">{children}</body>
     </html>
   );

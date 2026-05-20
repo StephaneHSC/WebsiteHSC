@@ -9,11 +9,20 @@ export function SplashScreen({ children }: { children: React.ReactNode }) {
   function dismiss() {
     if (state !== "visible") return;
     if (timerRef.current) clearTimeout(timerRef.current);
+    sessionStorage.setItem("hsc-splash-seen", "1");
     setState("animating");
     setTimeout(() => setState("done"), 700);
   }
 
   useEffect(() => {
+    if (sessionStorage.getItem("hsc-splash-seen")) {
+      // Post-mount sync from browser-only state (sessionStorage) — the
+      // pre-hydration script in app/layout.tsx already prevents a visual
+      // blink; this just aligns React state with what CSS has already hidden.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setState("done");
+      return;
+    }
     timerRef.current = setTimeout(() => dismiss(), 3000000);
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
@@ -29,10 +38,11 @@ export function SplashScreen({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      {state !== "done" && <div className="fixed inset-0 z-[9996] bg-black" />}
+      {state !== "done" && <div data-splash className="fixed inset-0 z-[9996] bg-black" />}
 
       {state !== "done" && (
         <div
+          data-splash
           onClick={dismiss}
           onWheel={dismiss}
           onTouchStart={dismiss}
@@ -50,7 +60,7 @@ export function SplashScreen({ children }: { children: React.ReactNode }) {
             src="/home/hero-video.mp4"
           />
           <div
-            className="relative z-10 flex h-full items-center justify-end"
+            className="relative z-10 flex h-full items-center justify-center"
             style={{
               transform:
                 state === "animating"
@@ -63,7 +73,7 @@ export function SplashScreen({ children }: { children: React.ReactNode }) {
                   : "none",
             }}
           >
-            <h1 className="font-display px-8 pb-[15rem] text-right text-2xl font-black tracking-tight text-white uppercase md:text-4xl lg:text-6xl">
+            <h1 className="font-display px-8 pb-[15rem] text-center text-2xl font-black tracking-tight text-white uppercase md:text-4xl lg:text-6xl">
               Welcome to Heli Skycargo
             </h1>
           </div>
@@ -72,6 +82,7 @@ export function SplashScreen({ children }: { children: React.ReactNode }) {
 
       {/* Page */}
       <div
+        data-splash-page
         style={{
           position: state === "done" ? "static" : "fixed",
           inset: state === "done" ? "auto" : 0,

@@ -53,14 +53,14 @@ export function SectionHeading({
   );
 
   const ledeEl = lede ? (
-    <p
+    <div
       className={cn(
         "font-body text-ink-soft max-w-2xl text-base md:text-lg",
         align === "center" && "mx-auto",
       )}
     >
       {lede}
-    </p>
+    </div>
   ) : null;
 
   return (
