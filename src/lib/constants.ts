@@ -193,6 +193,14 @@ export type ShowcaseTile = {
   /** Primary photo for the tile thumbnail (used in the mosaic, not the modal). */
   src: string;
   /**
+   * Per-tile CSS `object-position` override for the thumbnail (e.g. `"70% center"`
+   * to shift the visible window toward the right side of the photo). Applies to
+   * both desktop and mobile mosaics. Default = browser default (`50% 50%`).
+   * Increase the X% to slide the photo content leftward in the tile, decrease
+   * to slide it rightward.
+   */
+  objectPosition?: string;
+  /**
    * Ordered carousel of mixed photos + videos shown inside the modal. When
    * absent, the modal falls back to the legacy `photos` + `videoUrl` fields.
    * If none of the three are set, the modal shows just `src` as a single
@@ -552,6 +560,11 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
   {
     id: "tile-11",
     src: "/showcase/tile-11.webp",
+    // Shift the visible window leftward so the wrapped helicopter on the
+    // photo's left isn't cropped off and the man-with-back subject stays
+    // framed per Figma. Tune by adjusting the X% (lower = photo content
+    // moves right; higher = moves left).
+    objectPosition: "70% 50%",
     alt: "Helicopter pre-flight on the apron",
     shape: "tall",
     desktopColumn: 2,
@@ -618,9 +631,14 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
 export const SHOWCASE_HERO = {
   eyebrow: "Shipment Showcase",
   // Desktop wraps to 2 lines: "Heli Skycargo Shipment / Highlight and More".
-  // Mobile renders 3 lines: "Heli Skycargo Shipment / Highlight / and More".
+  // Mobile renders 3 lines: "Heli Skycargo / Shipment Highlight / and More" (Figma 505:6096).
   h1Desktop: ["Heli Skycargo Shipment", "Highlight and More"] as const,
-  h1Mobile: ["Heli Skycargo Shipment", "Highlight", "and More"] as const,
+  h1Mobile: ["Heli Skycargo", "Shipment Highlight", "and More"] as const,
+  // TODO(content): copy lifted verbatim from Figma 505:6096 — text appears
+  // carried over from the smart-tracking section. Confirm/replace with
+  // showcase-appropriate copy at PM review.
+  subtitleMobile:
+    "Access real-time location of your helicopter while in transit, get push notification.",
   photo: "/showcase/hero-showcase.webp",
   photoAlt: "Heli Skycargo helicopter ready for transit at the loading dock",
 } as const;
@@ -1164,11 +1182,17 @@ export const WHY_CHOOSE_GLOBAL_REACH = {
  * fetching. Editor-added stats with unmatched labels render without a
  * description (graceful degrade).
  */
-export const STAT_DESCRIPTIONS: Record<string, string> = {
-  "Shipments Completed": "Air and ocean logistics, fully visible end-to-end.",
-  "Available Support": "Always ready. Always delivering.",
-  "Clients Worldwide": "Trusted worldwide for reliable freight solutions.",
-  "Trusted Since": "We deliver everywhere, to the farthest reaches.",
+/**
+ * Two-line descriptions for each stat. Breaks are FIXED to match Figma's
+ * mobile counts frame (505:7491 / 674:721 etc.) — same break points at every
+ * viewport so the cards read consistently across desktop + mobile. The
+ * `StatsBand` component renders each entry as `line1<br/>line2`.
+ */
+export const STAT_DESCRIPTIONS: Record<string, readonly [string, string]> = {
+  "Shipments Completed": ["Air and ocean logistics,", "fully visible end-to-end."],
+  "Available Support": ["Always ready.", "Always delivering."],
+  "Clients Worldwide": ["Trusted worldwide for reliable", "freight solutions."],
+  "Trusted Since": ["We deliver everywhere, to the", "farthest reaches."],
 };
 
 /**
@@ -1200,7 +1224,13 @@ export type FeatureBlockContent = {
   paragraphs?: readonly string[];
   /** Bullet list (Seamless variant). */
   bullets?: readonly string[];
-  photo: { src: string; alt: string };
+  photo: {
+    src: string;
+    alt: string;
+    /** Optional mobile-only override (<lg). Set when Figma uses a different
+     *  shot on the mobile frame than on desktop. */
+    mobileSrc?: string;
+  };
   /** Desktop-only image side; mobile is always image-top. */
   imageSide: "left" | "right";
   ctaLabel: string;
@@ -1225,7 +1255,7 @@ export const WHY_CHOOSE_FEATURE_BLOCKS: readonly FeatureBlockContent[] = [
     ],
     photo: {
       src: "/why-choose-us/seamless-photo.webp",
-      alt: "HSC operations team in safety vests on a vessel deck",
+      alt: "Three HSC specialists in hardhats and safety vests posing on a vessel deck beside a container ship",
     },
     imageSide: "left",
     ctaLabel: "Request Quote",
@@ -1245,6 +1275,9 @@ export const WHY_CHOOSE_FEATURE_BLOCKS: readonly FeatureBlockContent[] = [
     photo: {
       src: "/why-choose-us/tailored-photo.webp",
       alt: "Wrapped helicopter being lifted by ship-side crane",
+      // Mobile-only override (Figma 505:7539): wider shot of the wrapped
+      // helicopter on a trailer being rolled onto the "Grande Torino" RoRo.
+      mobileSrc: "/why-choose-us/tailored-photo-mobile.webp",
     },
     imageSide: "right",
     ctaLabel: "Request Quote",
@@ -1265,19 +1298,29 @@ export const WHY_CHOOSE_TRACKABILITY = {
 
 export const TEAM_HERO = {
   eyebrow: "Our Team",
-  // Mobile renders 3 lines; desktop wraps naturally inside max-w-[633px] to 2.
+  // Mobile: 3 explicit `block` lines (one per array entry, Figma `505:6782`).
+  // Desktop (lg+): the three spans become `inline`, so the headline reflows
+  // inside `max-w-[633px]` at 64 px — the browser picks the wrap point.
   h1Lines: ["Meet the People", "Behind Every", "Shipment"] as const,
+  // Two crops of the same source candid (Figma `505:6782` mobile / `344:4891`
+  // desktop): wide 16:7 for tablet+, near-square 0.91 for mobile so the team
+  // fills the portrait frame instead of getting horizontally cropped.
   photo: "/team/hero-team.webp",
+  photoMobile: "/team/hero-team-mobile.webp",
   photoAlt: "Heli Skycargo team behind the scenes",
 } as const;
 
 export const TEAM_INTRO = {
   eyebrow: "Experts You Can Trust",
-  // 3-line mixed-weight headline. Mobile re-wraps to 4 lines via component.
+  // 4-line mixed-weight headline on mobile per Figma `505:7076`. On desktop
+  // lines 3 + 4 visually collapse to a single line ("to deliver BEST-IN-CLASS
+  // service.") via responsive class swap in SpotlightHeadline. Weight is
+  // hardcoded per line in the component — line 0 is black, the rest bold.
   h2Lines: [
-    { text: "At Heli Skycargo,", weight: "black" },
-    { text: "our team is fueled by passion to deliver", weight: "bold" },
-    { text: "BEST-IN-CLASS service.", weight: "bold" },
+    "At Heli Skycargo,",
+    "our team is fueled by passion",
+    "to deliver BEST-IN-CLASS",
+    "service.",
   ],
 } as const;
 
@@ -1328,7 +1371,7 @@ export const PLACEHOLDER_TEAM_MEMBERS: readonly TeamMemberPlaceholder[] = [
     _id: "team.stephane-marot",
     full_name: "Stephane Marot",
     role: "Founder & CEO",
-    placeholderPhoto: "/team/stephane-marot.png",
+    placeholderPhoto: "/team/stephane-marot.webp",
     spotlightPhoto: TEAM_SPOTLIGHT_PLACEHOLDER_PHOTO,
     bioParagraphs: [
       "With 25+ years in global freight forwarding across Europe, USA, Asia and Middle East. Stephane brings deep industry expertise and a strong customer-focused approach.",
@@ -1344,7 +1387,7 @@ export const PLACEHOLDER_TEAM_MEMBERS: readonly TeamMemberPlaceholder[] = [
     _id: "team.daniel-cosico",
     full_name: "Daniel Cosico",
     role: "Deployment & Lead Coordinator",
-    placeholderPhoto: "/team/daniel-cosico.png",
+    placeholderPhoto: "/team/daniel-cosico.webp",
     // TODO(content): client to provide bio for Daniel Cosico.
     bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
   },
