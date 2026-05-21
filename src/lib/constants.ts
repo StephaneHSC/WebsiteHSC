@@ -750,6 +750,13 @@ export type Service = {
   /** Detail-page hero background photo (full-bleed). */
   detailHeroImage: string;
   /**
+   * Optional CSS `object-position` for the detail-page hero photo. Used to
+   * bias the focal point per service (e.g. "center 35%" keeps a tall subject
+   * visible above the chip strip at the bottom of the hero). Defaults to
+   * "center" when omitted.
+   */
+  detailHeroImagePosition?: string;
+  /**
    * 4 benefit chips on the hero. Optional — when omitted, the shared default
    * (`SHARED_DETAIL_HERO_BENEFITS`) renders. Per §6.2 user direction.
    */
@@ -952,6 +959,7 @@ export const SERVICES: readonly Service[] = [
     detailEyebrow: "OVERVIEW OCEAN RO/RO",
     detailHeroTitle: ["Roll-On/Roll-Off", "Ocean Transport"],
     detailHeroImage: "/services/detail/ocean-roro-hero.webp",
+    detailHeroImagePosition: "center 65%",
     detailOverview: {
       label: "Roll-On/Roll-Off Ocean Transport",
       title: ["Fast, Secure", "Helicopter Transport", "Using RoRo Vessels."],
@@ -993,6 +1001,7 @@ export const SERVICES: readonly Service[] = [
     detailEyebrow: "OVERVIEW OCEAN LO/LO",
     detailHeroTitle: ["Ocean Lift-On / Lift-Off", "Transport Method"],
     detailHeroImage: "/services/detail/ocean-lolo-hero.webp",
+    detailHeroImagePosition: "center 40%",
     detailOverview: {
       label: "Lift-on / Lift-off Shipping",
       title: ["Container & Heavy", "Lift Shipping Options"],
@@ -1031,6 +1040,7 @@ export const SERVICES: readonly Service[] = [
     detailEyebrow: "OVERVIEW OCEAN FCL",
     detailHeroTitle: ["Ocean FCL - Container Transport"],
     detailHeroImage: "/services/detail/ocean-fcl-hero.webp",
+    detailHeroImagePosition: "center 40%",
     detailOverview: {
       // TODO: client review of FCL eyebrow text — replaced "Lift-on / Lift-off
       // Shipping" Figma value with "Full Container Load Shipping" pending
@@ -1096,6 +1106,7 @@ export const SERVICES: readonly Service[] = [
     detailEyebrow: "OVERVIEW AIR COMMERCIAL",
     detailHeroTitle: ["Commercial Air Freight Transport Solutions"],
     detailHeroImage: "/services/detail/air-commercial-hero.webp",
+    detailHeroImagePosition: "center 35%",
     detailOverview: {
       label: "Air Cargo",
       title: ["Reliable & Flexible", "Commercial Air Cargo", "Transport"],
@@ -1130,6 +1141,7 @@ export const SERVICES: readonly Service[] = [
     detailEyebrow: "OVERVIEW AIR CHARTERING",
     detailHeroTitle: ["Air Charter Transport for Urgent Shipments"],
     detailHeroImage: "/services/detail/air-chartering-hero.webp",
+    detailHeroImagePosition: "center 55%",
     detailOverview: {
       label: "Air Charter Transport",
       title: ["Fast-Response", "Aircraft Charter", "Transport Solutions"],

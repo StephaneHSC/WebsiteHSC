@@ -125,7 +125,7 @@ export function ServiceCard({ service, number, isActive, onToggle }: ServiceCard
               "group-data-[active=true]/card:opacity-0 lg:group-focus-within/card:opacity-0 [@media(hover:hover)]:lg:group-hover/card:opacity-0",
             )}
           >
-            <ArrowUpRight className="size-4 lg:size-5" />
+            <ArrowUpRight className="size-5 lg:size-7" />
           </span>
           {/* Active: red pill linking to detail. Sits above the tap-target
               button on touch (because of source order + same z-index). */}

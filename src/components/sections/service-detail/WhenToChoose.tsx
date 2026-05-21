@@ -60,9 +60,17 @@ export function WhenToChoose({ service }: WhenToChooseProps) {
                 </p>
               </Reveal>
 
-              <div className="mt-8 grid w-full max-w-[640px] grid-cols-1 gap-2.5 lg:mt-10 lg:grid-cols-2 lg:gap-x-2 lg:gap-y-2.5">
+              <div className="mt-8 grid w-full max-w-[280px] grid-cols-1 gap-2.5 lg:mt-10 lg:max-w-[640px] lg:grid-cols-2 lg:gap-x-2 lg:gap-y-2.5">
                 {wtc.cards.map((card, i) => (
-                  <Reveal key={card.title} delay={0.25 + i * 0.05}>
+                  <Reveal
+                    key={card.title}
+                    delay={0.25 + i * 0.05}
+                    // Mobile reorders the cards to match the Figma mobile frame
+                    // `529:8633` (Ideal For Scheduled → Cost-Efficient → Safe
+                    // Transport For → Long-Distance). Desktop keeps the natural
+                    // row-major order of the source array via `lg:order-none`.
+                    className={MOBILE_ORDER_CLASS[i]}
+                  >
                     <ValueCard card={card} />
                   </Reveal>
                 ))}
@@ -83,6 +91,16 @@ export function WhenToChoose({ service }: WhenToChooseProps) {
     </section>
   );
 }
+
+// Mobile order for the 4 source cards (Long-Distance, Cost-Efficient, Safe
+// Transport For, Ideal For Scheduled) → mobile slots (4, 2, 3, 1). Desktop
+// resets to natural source order.
+const MOBILE_ORDER_CLASS = [
+  "order-4 lg:order-none",
+  "order-2 lg:order-none",
+  "order-3 lg:order-none",
+  "order-1 lg:order-none",
+] as const;
 
 function ValueCard({ card }: { card: WhenToChooseCard }) {
   return (

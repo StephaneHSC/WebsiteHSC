@@ -139,11 +139,15 @@ function ValueAddedRow({ service, number, isOpen, onToggle }: RowProps) {
               className={cn(
                 "relative inline-flex size-[42px] shrink-0 items-center justify-center rounded-full border transition-all duration-300 xl:size-[52px]",
                 isOpen
-                  ? "bg-brand-red border-brand-red text-surface rotate-0"
-                  : "border-ink text-ink rotate-[37deg] bg-transparent",
+                  ? "bg-brand-red border-brand-red text-surface"
+                  : "border-ink text-ink bg-transparent",
               )}
             >
-              <ArrowUpRight className="size-4 xl:size-5" />
+              {isOpen ? (
+                <ArrowUpRight className="size-5 xl:size-6" />
+              ) : (
+                <ArrowRight className="size-5 xl:size-6" />
+              )}
             </span>
           </span>
 
@@ -183,23 +187,43 @@ function ValueAddedRow({ service, number, isOpen, onToggle }: RowProps) {
 }
 
 /**
- * Arrow glyph traced from the Figma `card-arrow.svg` asset (node 345:7050).
- * Same path as the SVG asset in /public/services/, rendered inline so the
- * stroke can inherit currentColor for the idle ↔ open color transition.
+ * Two arrow variants used by the value-added accordion:
+ *   - `ArrowRight`  (idle rows)   — thin horizontal arrow, Figma node 345:7050.
+ *   - `ArrowUpRight` (open row)   — thin diagonal arrow,  Figma node 345:7071.
+ * Strokes are deliberately thin (`1.4`) to match the slim Figma asset.
  */
-function ArrowUpRight({ className }: { className?: string }) {
+function ArrowRight({ className }: { className?: string }) {
   return (
     <svg
-      viewBox="0 0 52.889 51.8138"
+      viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="4"
+      strokeWidth="1.4"
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
       className={className}
     >
-      <path d="M31.9783 29.3893L33.3211 20.9107L24.8426 19.5679M19.5679 30.9031L33.1836 21.0107" />
+      <path d="M5 12h14" />
+      <path d="M13 6l6 6-6 6" />
+    </svg>
+  );
+}
+
+function ArrowUpRight({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className={className}
+    >
+      <path d="M7 17 17 7" />
+      <path d="M9 7h8v8" />
     </svg>
   );
 }
