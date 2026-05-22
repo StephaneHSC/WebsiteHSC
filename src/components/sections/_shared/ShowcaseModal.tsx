@@ -270,51 +270,39 @@ export function ShowcaseModal({ tile, onClose }: ShowcaseModalProps) {
 
             {showArrows ? (
               <>
+                {/* Arrows per Figma node `674:475` (right) / `674:480` (left,
+                    same icon flipped). The SVG `/showcase/icon-arrow.svg` is
+                    the exact Figma asset (red filled circle + 1.5px white
+                    chevron) — the button is transparent so the SVG visually
+                    *is* the button. Hover/focus get a scale + ring; no color
+                    change since the fill is baked into the SVG. */}
                 <button
                   type="button"
                   onClick={prev}
                   aria-label="Previous item"
-                  className="bg-brand-red text-surface hover:bg-brand-red-dark focus-visible:ring-surface absolute top-1/2 left-3 z-20 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full transition focus-visible:ring-2 focus-visible:outline-none lg:left-6 lg:h-10 lg:w-10"
+                  className="focus-visible:ring-brand-red absolute top-1/2 left-4 z-20 h-12 w-12 -translate-y-1/2 transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none lg:left-6 lg:h-16 lg:w-16"
                 >
-                  <svg
-                    aria-hidden="true"
-                    viewBox="0 0 16 16"
-                    width="14"
-                    height="14"
-                    className="lg:h-4 lg:w-4"
-                  >
-                    <path
-                      d="M10 12L6 8l4-4"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      fill="none"
-                    />
-                  </svg>
+                  <Image
+                    src="/showcase/icon-arrow.svg"
+                    alt=""
+                    width={80}
+                    height={80}
+                    className="h-full w-full -scale-x-100 drop-shadow-md"
+                  />
                 </button>
                 <button
                   type="button"
                   onClick={next}
                   aria-label="Next item"
-                  className="bg-brand-red text-surface hover:bg-brand-red-dark focus-visible:ring-surface absolute top-1/2 right-3 z-20 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full transition focus-visible:ring-2 focus-visible:outline-none lg:right-6 lg:h-10 lg:w-10"
+                  className="focus-visible:ring-brand-red absolute top-1/2 right-4 z-20 h-12 w-12 -translate-y-1/2 transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none lg:right-6 lg:h-16 lg:w-16"
                 >
-                  <svg
-                    aria-hidden="true"
-                    viewBox="0 0 16 16"
-                    width="14"
-                    height="14"
-                    className="lg:h-4 lg:w-4"
-                  >
-                    <path
-                      d="M6 4l4 4-4 4"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      fill="none"
-                    />
-                  </svg>
+                  <Image
+                    src="/showcase/icon-arrow.svg"
+                    alt=""
+                    width={80}
+                    height={80}
+                    className="h-full w-full drop-shadow-md"
+                  />
                 </button>
               </>
             ) : null}

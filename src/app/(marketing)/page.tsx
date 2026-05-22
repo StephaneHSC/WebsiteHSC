@@ -23,7 +23,9 @@ export default function Home() {
       <TeamTeaser />
       <PartnersStrip />
       <CustomerTestimonials />
-      <ProjectsMosaic tiles={SHOWCASE_TILES.slice(0, 8)} />
+      {/* Mobile caps at 4 (a 2x2 preview per Figma home-mobile spec); desktop
+          renders the full 8-tile bento. */}
+      <ProjectsMosaic tiles={SHOWCASE_TILES.slice(0, 8)} mobileMaxVisible={4} />
       <MilestonesTimeline />
       <div id="request-quote" className="scroll-mt-24">
         <QuoteFormShell

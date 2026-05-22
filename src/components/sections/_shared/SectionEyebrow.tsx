@@ -16,7 +16,7 @@ const variantClasses: Record<EyebrowVariant, string> = {
   "outline-white": "border border-surface text-surface bg-transparent",
   "outline-ink": "border border-ink/15 text-ink bg-transparent",
   filled: "bg-brand-red text-surface",
-  outline: "border border-ink/15 text-ink",
+  outline: "border border-ink text-ink",
 };
 
 export type SectionEyebrowProps = HTMLAttributes<HTMLSpanElement> & {
@@ -36,7 +36,7 @@ export function SectionEyebrow({
   return (
     <span
       className={cn(
-        "font-body inline-flex items-center px-2 py-2 text-[12px] leading-none font-bold tracking-[0.06em] uppercase",
+        "font-body inline-flex items-center px-1.5 py-1.5 text-[12px] leading-none font-bold tracking-[0.06em] uppercase",
         variantClasses[variant],
         className,
       )}

@@ -115,7 +115,7 @@ const TEAM_MEMBERS = [
     order: 1,
     is_featured: true,
     status: "published",
-    photoPath: "/team/stephane-marot.png",
+    photoPath: "/team/stephane-marot.webp",
   },
   {
     _id: "team-daniel-cosico",
@@ -126,7 +126,7 @@ const TEAM_MEMBERS = [
     order: 2,
     is_featured: false,
     status: "published",
-    photoPath: "/team/daniel-cosico.png",
+    photoPath: "/team/daniel-cosico.webp",
   },
   {
     _id: "team-adriana-athirah",

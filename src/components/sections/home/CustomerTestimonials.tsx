@@ -77,7 +77,7 @@ export async function CustomerTestimonials() {
               className="font-display text-ink text-3xl leading-[1.1] font-bold tracking-tight uppercase md:text-4xl lg:text-[54px] lg:leading-[74px]"
             >
               <span aria-hidden="true">
-                Customers L
+                Customers <span className="text-brand-red">L</span>
                 <Image
                   src="/testimonials/heart-3d.webp"
                   alt=""
@@ -85,7 +85,7 @@ export async function CustomerTestimonials() {
                   height={56}
                   className="mx-1 -mt-2 inline-block h-[0.85em] w-auto align-middle md:mx-2"
                 />
-                ve Heli Skycargo
+                <span className="text-brand-red">ve</span> Heli Skycargo
               </span>
             </h2>
           </Reveal>
@@ -95,7 +95,7 @@ export async function CustomerTestimonials() {
             <hr className="border-brand-red/20" />
             <div
               aria-hidden="true"
-              className="bg-surface text-brand-red absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-2 px-4"
+              className="bg-surface text-brand-red absolute top-1/2 left-9 flex -translate-y-1/2 items-center gap-2 px-4"
             >
               <HeartGlyph className="h-3 w-3" />
               <HeartGlyph className="h-3 w-3" />
@@ -114,8 +114,11 @@ type GlyphProps = { className?: string };
 
 function HeartGlyph({ className }: GlyphProps) {
   return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
-      <path d="M12 21s-7-4.35-7-10.5C5 7.5 7.5 5 10.5 5c1.74 0 3.41.81 4.5 2.09C16.09 5.81 17.76 5 19.5 5 22.5 5 24 7.5 24 10.5 24 16.65 19 21 12 21z" />
+    <svg width="20" height="17" viewBox="0 0 20 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M10.1034 17C9.85492 16.7972 9.60924 16.6022 9.37055 16.4014C6.877 14.3048 4.79093 11.9542 3.03727 9.3984C2.09313 8.02226 1.27636 6.59699 0.674718 5.09126C0.375193 4.34161 0.138316 3.57887 0.0414943 2.79168C-0.0307336 2.20574 -0.0294392 1.62087 0.216239 1.05595C0.512659 0.374102 1.14148 0.00764608 2.01547 0.00013674C2.71911 -0.00587073 3.36061 0.186798 3.98089 0.434177C5.00141 0.841398 5.90878 1.39044 6.77319 1.99097C7.95291 2.81078 9.02235 3.72241 10.0304 4.68468C10.0473 4.70077 10.0636 4.71729 10.0877 4.74089C10.192 4.64477 10.2888 4.5553 10.3861 4.46605C11.5809 3.36668 12.8515 2.33468 14.3033 1.46639C15.0807 1.00145 15.8944 0.588011 16.8116 0.334624C17.2312 0.218766 17.6599 0.147964 18.1055 0.168775C18.9121 0.206322 19.4579 0.5451 19.7613 1.15915C19.9609 1.56315 20.0041 1.98818 19.9997 2.41965C19.9917 3.22658 19.7851 4.00605 19.5127 4.77436C18.9815 6.27258 18.2051 7.68563 17.3091 9.05512C16.0114 11.0391 14.4876 12.8969 12.7502 14.6346C11.9513 15.4336 11.1071 16.1978 10.2067 16.9191C10.1788 16.9414 10.1503 16.9631 10.1037 16.9998L10.1034 17Z"
+        fill="#E40C28"
+      />
     </svg>
   );
 }

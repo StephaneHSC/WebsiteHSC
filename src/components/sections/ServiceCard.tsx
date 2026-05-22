@@ -17,6 +17,7 @@ export type ServiceCardProps = {
   className?: string;
   /** `sizes` for the Next.js Image. Defaults to a sensible value for the home teaser. */
   imageSizes?: string;
+  active?: boolean;
 };
 
 /**
@@ -31,6 +32,7 @@ export function ServiceCard({
   number,
   alwaysExpanded = false,
   className,
+  active,
   imageSizes = "(min-width: 1280px) 25vw, (min-width: 768px) 20vw, 320px",
 }: ServiceCardProps) {
   const numberLabel = number.toString().padStart(2, "0");
@@ -42,14 +44,17 @@ export function ServiceCard({
         alt=""
         fill
         sizes={imageSizes}
-        className="object-cover object-center"
+        className="object-cover"
+        style={{ objectPosition: service.imageObjectPosition ?? "center" }}
       />
 
       {/* Top-to-bottom dim — keeps the corner number readable on bright photos
-          and the bottom title block legible regardless of image content. */}
+          and the bottom title block legible regardless of image content. Top
+          is nearly transparent so the photo stays vivid; bottom darkens to
+          carry the text. */}
       <span
         aria-hidden="true"
-        className="from-ink/25 via-ink/15 to-ink/85 absolute inset-0 bg-gradient-to-b"
+        className="from-ink/5 via-ink/10 to-ink/80 absolute inset-0 bg-gradient-to-b"
       />
 
       <span className="font-display text-surface absolute top-4 left-4 text-2xl font-bold md:top-6 md:left-6 md:text-3xl">
@@ -70,10 +75,22 @@ export function ServiceCard({
                 // Desktop with a hover-capable pointer: collapse, expand on
                 // hover or focus-within. Gating with @media(hover:hover)
                 // prevents iPad users from seeing permanently collapsed cards.
-                "mt-3 max-h-48 opacity-100 [@media(hover:hover)]:md:mt-0 [@media(hover:hover)]:md:max-h-0 [@media(hover:hover)]:md:overflow-hidden [@media(hover:hover)]:md:opacity-0 [@media(hover:hover)]:md:group-focus-within:mt-3 [@media(hover:hover)]:md:group-focus-within:max-h-48 [@media(hover:hover)]:md:group-focus-within:opacity-100 [@media(hover:hover)]:md:group-hover:mt-3 [@media(hover:hover)]:md:group-hover:max-h-48 [@media(hover:hover)]:md:group-hover:opacity-100",
+                "mt-3 max-h-48 opacity-100 [@media(hover:hover)]:md:mt-0 [@media(hover:hover)]:md:max-h-0 [@media(hover:hover)]:md:overflow-hidden [@media(hover:hover)]:md:opacity-0" +
+                  " [@media(hover:hover)]:md:group-focus-within:mt-3 [@media(hover:hover)]:md:group-focus-within:max-h-48 [@media(hover:hover)]:md:group-focus-within:opacity-100" +
+                  " [@media(hover:hover)]:md:group-hover:mt-3 [@media(hover:hover)]:md:group-hover:max-h-48 [@media(hover:hover)]:md:group-hover:opacity-100" +
+                  " [@media(hover:hover)]:md:[li[data-active=true]_&]:mt-3 [@media(hover:hover)]:md:[li[data-active=true]_&]:max-h-48 [@media(hover:hover)]:md:[li[data-active=true]_&]:opacity-100",
           )}
         >
-          <p className="font-body text-surface/85 text-sm md:text-base">{service.description}</p>
+          <div
+            className={cn(
+              "transition-all duration-500",
+              active
+                ? "translate-y-0 opacity-100"
+                : "pointer-events-none translate-y-4 opacity-0 [@media(hover:none)]:pointer-events-auto [@media(hover:none)]:translate-y-0 [@media(hover:none)]:opacity-100",
+            )}
+          >
+            <p>{service.description}</p>
+          </div>{" "}
           <Link
             href={`/services/${service.slug}`}
             className={cn(

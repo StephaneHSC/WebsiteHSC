@@ -1,6 +1,7 @@
 import Script from "next/script";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { SplashScreen } from "@/components/layout/SplashScreen";
 
 /**
  * Layout for public marketing pages — wraps content with sticky Header and dark Footer.
@@ -13,15 +14,19 @@ import { Footer } from "@/components/layout/Footer";
  */
 export default function MarketingLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <>
+    <div className="overflow-hidden">
+      {" "}
+      {/* this is key — clips the offscreen page without breaking scroll */}
       <Script
         id="cloudflare-turnstile"
         src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
         strategy="afterInteractive"
       />
       <Header />
-      {children}
-      <Footer />
-    </>
+      <SplashScreen>
+        {children}
+        <Footer />
+      </SplashScreen>
+    </div>
   );
 }

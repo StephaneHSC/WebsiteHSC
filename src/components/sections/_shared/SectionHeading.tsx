@@ -7,6 +7,7 @@ export type SectionHeadingProps = Omit<HTMLAttributes<HTMLDivElement>, "title"> 
   eyebrow?: ReactNode;
   eyebrowVariant?: SectionEyebrowProps["variant"];
   title: ReactNode;
+  subtitle?: ReactNode;
   lede?: ReactNode;
   align?: "left" | "center";
   /** Heading level. Each home section is an h2 below the page h1; nested cards use h3. */
@@ -26,6 +27,7 @@ export function SectionHeading({
   eyebrow,
   eyebrowVariant = "filled",
   title,
+  subtitle,
   lede,
   align = "center",
   as: Heading = "h2",
@@ -41,23 +43,24 @@ export function SectionHeading({
   const titleEl = (
     <Heading
       className={cn(
-        "font-display text-3xl leading-tight font-extrabold tracking-tight md:text-4xl lg:text-5xl",
+        "font-display text-3xl leading-tight tracking-tight md:text-4xl lg:text-5xl",
         uppercase && "uppercase",
       )}
     >
-      {title}
+      <span className="font-extrabold">{title}</span>
+      {subtitle ? <span className="font-semibold"> {subtitle}</span> : null}
     </Heading>
   );
 
   const ledeEl = lede ? (
-    <p
+    <div
       className={cn(
         "font-body text-ink-soft max-w-2xl text-base md:text-lg",
         align === "center" && "mx-auto",
       )}
     >
       {lede}
-    </p>
+    </div>
   ) : null;
 
   return (
@@ -73,8 +76,14 @@ export function SectionHeading({
       {animated ? (
         <>
           {eyebrowEl ? <Reveal>{eyebrowEl}</Reveal> : null}
-          <Reveal delay={0.1}>{titleEl}</Reveal>
-          {ledeEl ? <Reveal delay={0.2}>{ledeEl}</Reveal> : null}
+          <Reveal direction="up" delay={0.1}>
+            {titleEl}
+          </Reveal>
+          {ledeEl ? (
+            <Reveal direction="up" delay={0.2}>
+              {ledeEl}
+            </Reveal>
+          ) : null}
         </>
       ) : (
         <>

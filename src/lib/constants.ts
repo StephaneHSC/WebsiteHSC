@@ -193,6 +193,14 @@ export type ShowcaseTile = {
   /** Primary photo for the tile thumbnail (used in the mosaic, not the modal). */
   src: string;
   /**
+   * Per-tile CSS `object-position` override for the thumbnail (e.g. `"70% center"`
+   * to shift the visible window toward the right side of the photo). Applies to
+   * both desktop and mobile mosaics. Default = browser default (`50% 50%`).
+   * Increase the X% to slide the photo content leftward in the tile, decrease
+   * to slide it rightward.
+   */
+  objectPosition?: string;
+  /**
    * Ordered carousel of mixed photos + videos shown inside the modal. When
    * absent, the modal falls back to the legacy `photos` + `videoUrl` fields.
    * If none of the three are set, the modal shows just `src` as a single
@@ -552,6 +560,11 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
   {
     id: "tile-11",
     src: "/showcase/tile-11.webp",
+    // Shift the visible window leftward so the wrapped helicopter on the
+    // photo's left isn't cropped off and the man-with-back subject stays
+    // framed per Figma. Tune by adjusting the X% (lower = photo content
+    // moves right; higher = moves left).
+    objectPosition: "70% 50%",
     alt: "Helicopter pre-flight on the apron",
     shape: "tall",
     desktopColumn: 2,
@@ -618,9 +631,14 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
 export const SHOWCASE_HERO = {
   eyebrow: "Shipment Showcase",
   // Desktop wraps to 2 lines: "Heli Skycargo Shipment / Highlight and More".
-  // Mobile renders 3 lines: "Heli Skycargo Shipment / Highlight / and More".
+  // Mobile renders 3 lines: "Heli Skycargo / Shipment Highlight / and More" (Figma 505:6096).
   h1Desktop: ["Heli Skycargo Shipment", "Highlight and More"] as const,
-  h1Mobile: ["Heli Skycargo Shipment", "Highlight", "and More"] as const,
+  h1Mobile: ["Heli Skycargo", "Shipment Highlight", "and More"] as const,
+  // TODO(content): copy lifted verbatim from Figma 505:6096 — text appears
+  // carried over from the smart-tracking section. Confirm/replace with
+  // showcase-appropriate copy at PM review.
+  subtitleMobile:
+    "Access real-time location of your helicopter while in transit, get push notification.",
   photo: "/showcase/hero-showcase.webp",
   photoAlt: "Heli Skycargo helicopter ready for transit at the loading dock",
 } as const;
@@ -716,6 +734,12 @@ export type Service = {
   description: string;
   /** Path to the card image in /public. */
   image: string;
+  /**
+   * `object-position` for the teaser card image. Defaults to `center` when
+   * omitted. Used to nudge the visible crop for photos whose subject isn't
+   * centered (e.g., a truck cab on the right side).
+   */
+  imageObjectPosition?: string;
 
   // ---- M4 — Service Detail Page fields ----
 
@@ -725,6 +749,13 @@ export type Service = {
   detailHeroTitle: readonly [string] | readonly [string, string];
   /** Detail-page hero background photo (full-bleed). */
   detailHeroImage: string;
+  /**
+   * Optional CSS `object-position` for the detail-page hero photo. Used to
+   * bias the focal point per service (e.g. "center 35%" keeps a tall subject
+   * visible above the chip strip at the bottom of the hero). Defaults to
+   * "center" when omitted.
+   */
+  detailHeroImagePosition?: string;
   /**
    * 4 benefit chips on the hero. Optional — when omitted, the shared default
    * (`SHARED_DETAIL_HERO_BENEFITS`) renders. Per §6.2 user direction.
@@ -928,6 +959,7 @@ export const SERVICES: readonly Service[] = [
     detailEyebrow: "OVERVIEW OCEAN RO/RO",
     detailHeroTitle: ["Roll-On/Roll-Off", "Ocean Transport"],
     detailHeroImage: "/services/detail/ocean-roro-hero.webp",
+    detailHeroImagePosition: "center 65%",
     detailOverview: {
       label: "Roll-On/Roll-Off Ocean Transport",
       title: ["Fast, Secure", "Helicopter Transport", "Using RoRo Vessels."],
@@ -969,6 +1001,7 @@ export const SERVICES: readonly Service[] = [
     detailEyebrow: "OVERVIEW OCEAN LO/LO",
     detailHeroTitle: ["Ocean Lift-On / Lift-Off", "Transport Method"],
     detailHeroImage: "/services/detail/ocean-lolo-hero.webp",
+    detailHeroImagePosition: "center 40%",
     detailOverview: {
       label: "Lift-on / Lift-off Shipping",
       title: ["Container & Heavy", "Lift Shipping Options"],
@@ -1007,6 +1040,7 @@ export const SERVICES: readonly Service[] = [
     detailEyebrow: "OVERVIEW OCEAN FCL",
     detailHeroTitle: ["Ocean FCL - Container Transport"],
     detailHeroImage: "/services/detail/ocean-fcl-hero.webp",
+    detailHeroImagePosition: "center 40%",
     detailOverview: {
       // TODO: client review of FCL eyebrow text — replaced "Lift-on / Lift-off
       // Shipping" Figma value with "Full Container Load Shipping" pending
@@ -1072,6 +1106,7 @@ export const SERVICES: readonly Service[] = [
     detailEyebrow: "OVERVIEW AIR COMMERCIAL",
     detailHeroTitle: ["Commercial Air Freight Transport Solutions"],
     detailHeroImage: "/services/detail/air-commercial-hero.webp",
+    detailHeroImagePosition: "center 35%",
     detailOverview: {
       label: "Air Cargo",
       title: ["Reliable & Flexible", "Commercial Air Cargo", "Transport"],
@@ -1106,6 +1141,7 @@ export const SERVICES: readonly Service[] = [
     detailEyebrow: "OVERVIEW AIR CHARTERING",
     detailHeroTitle: ["Air Charter Transport for Urgent Shipments"],
     detailHeroImage: "/services/detail/air-chartering-hero.webp",
+    detailHeroImagePosition: "center 55%",
     detailOverview: {
       label: "Air Charter Transport",
       title: ["Fast-Response", "Aircraft Charter", "Transport Solutions"],
@@ -1164,11 +1200,17 @@ export const WHY_CHOOSE_GLOBAL_REACH = {
  * fetching. Editor-added stats with unmatched labels render without a
  * description (graceful degrade).
  */
-export const STAT_DESCRIPTIONS: Record<string, string> = {
-  "Shipments Completed": "Air and ocean logistics, fully visible end-to-end.",
-  "Available Support": "Always ready. Always delivering.",
-  "Clients Worldwide": "Trusted worldwide for reliable freight solutions.",
-  "Trusted Since": "We deliver everywhere, to the farthest reaches.",
+/**
+ * Two-line descriptions for each stat. Breaks are FIXED to match Figma's
+ * mobile counts frame (505:7491 / 674:721 etc.) — same break points at every
+ * viewport so the cards read consistently across desktop + mobile. The
+ * `StatsBand` component renders each entry as `line1<br/>line2`.
+ */
+export const STAT_DESCRIPTIONS: Record<string, readonly [string, string]> = {
+  "Shipments Completed": ["Air and ocean logistics,", "fully visible end-to-end."],
+  "Available Support": ["Always ready.", "Always delivering."],
+  "Clients Worldwide": ["Trusted worldwide for reliable", "freight solutions."],
+  "Trusted Since": ["We deliver everywhere, to the", "farthest reaches."],
 };
 
 /**
@@ -1200,7 +1242,13 @@ export type FeatureBlockContent = {
   paragraphs?: readonly string[];
   /** Bullet list (Seamless variant). */
   bullets?: readonly string[];
-  photo: { src: string; alt: string };
+  photo: {
+    src: string;
+    alt: string;
+    /** Optional mobile-only override (<lg). Set when Figma uses a different
+     *  shot on the mobile frame than on desktop. */
+    mobileSrc?: string;
+  };
   /** Desktop-only image side; mobile is always image-top. */
   imageSide: "left" | "right";
   ctaLabel: string;
@@ -1225,7 +1273,7 @@ export const WHY_CHOOSE_FEATURE_BLOCKS: readonly FeatureBlockContent[] = [
     ],
     photo: {
       src: "/why-choose-us/seamless-photo.webp",
-      alt: "HSC operations team in safety vests on a vessel deck",
+      alt: "Three HSC specialists in hardhats and safety vests posing on a vessel deck beside a container ship",
     },
     imageSide: "left",
     ctaLabel: "Request Quote",
@@ -1245,6 +1293,9 @@ export const WHY_CHOOSE_FEATURE_BLOCKS: readonly FeatureBlockContent[] = [
     photo: {
       src: "/why-choose-us/tailored-photo.webp",
       alt: "Wrapped helicopter being lifted by ship-side crane",
+      // Mobile-only override (Figma 505:7539): wider shot of the wrapped
+      // helicopter on a trailer being rolled onto the "Grande Torino" RoRo.
+      mobileSrc: "/why-choose-us/tailored-photo-mobile.webp",
     },
     imageSide: "right",
     ctaLabel: "Request Quote",
@@ -1422,19 +1473,29 @@ export const QUOTE_FORM_DEFAULTS = {
 
 export const TEAM_HERO = {
   eyebrow: "Our Team",
-  // Mobile renders 3 lines; desktop wraps naturally inside max-w-[633px] to 2.
+  // Mobile: 3 explicit `block` lines (one per array entry, Figma `505:6782`).
+  // Desktop (lg+): the three spans become `inline`, so the headline reflows
+  // inside `max-w-[633px]` at 64 px — the browser picks the wrap point.
   h1Lines: ["Meet the People", "Behind Every", "Shipment"] as const,
+  // Two crops of the same source candid (Figma `505:6782` mobile / `344:4891`
+  // desktop): wide 16:7 for tablet+, near-square 0.91 for mobile so the team
+  // fills the portrait frame instead of getting horizontally cropped.
   photo: "/team/hero-team.webp",
+  photoMobile: "/team/hero-team-mobile.webp",
   photoAlt: "Heli Skycargo team behind the scenes",
 } as const;
 
 export const TEAM_INTRO = {
   eyebrow: "Experts You Can Trust",
-  // 3-line mixed-weight headline. Mobile re-wraps to 4 lines via component.
+  // 4-line mixed-weight headline on mobile per Figma `505:7076`. On desktop
+  // lines 3 + 4 visually collapse to a single line ("to deliver BEST-IN-CLASS
+  // service.") via responsive class swap in SpotlightHeadline. Weight is
+  // hardcoded per line in the component — line 0 is black, the rest bold.
   h2Lines: [
-    { text: "At Heli Skycargo,", weight: "black" },
-    { text: "our team is fueled by passion to deliver", weight: "bold" },
-    { text: "BEST-IN-CLASS service.", weight: "bold" },
+    "At Heli Skycargo,",
+    "our team is fueled by passion",
+    "to deliver BEST-IN-CLASS",
+    "service.",
   ],
 } as const;
 
@@ -1485,7 +1546,7 @@ export const PLACEHOLDER_TEAM_MEMBERS: readonly TeamMemberPlaceholder[] = [
     _id: "team.stephane-marot",
     full_name: "Stephane Marot",
     role: "Founder & CEO",
-    placeholderPhoto: "/team/stephane-marot.png",
+    placeholderPhoto: "/team/stephane-marot.webp",
     spotlightPhoto: TEAM_SPOTLIGHT_PLACEHOLDER_PHOTO,
     bioParagraphs: [
       "With 25+ years in global freight forwarding across Europe, USA, Asia and Middle East. Stephane brings deep industry expertise and a strong customer-focused approach.",
@@ -1501,7 +1562,7 @@ export const PLACEHOLDER_TEAM_MEMBERS: readonly TeamMemberPlaceholder[] = [
     _id: "team.daniel-cosico",
     full_name: "Daniel Cosico",
     role: "Deployment & Lead Coordinator",
-    placeholderPhoto: "/team/daniel-cosico.png",
+    placeholderPhoto: "/team/daniel-cosico.webp",
     // TODO(content): client to provide bio for Daniel Cosico.
     bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
   },
@@ -1562,3 +1623,218 @@ export const PLACEHOLDER_TEAM_MEMBERS: readonly TeamMemberPlaceholder[] = [
     bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
   },
 ];
+
+export const SERVICES_TEASER: readonly Service[] = [
+  {
+    slug: "ocean-roro",
+    name: "Ocean RO/RO",
+    description: "Transport your aircraft using Ro/Ro vessel, loaded on a MAFI or simply towing.",
+    image: "/home/services-teaser/ser-1.webp",
+    detailEyebrow: "OVERVIEW OCEAN RO/RO",
+    detailHeroTitle: ["Roll-On/Roll-Off", "Ocean Transport"],
+    detailHeroImage: "/home/services-teaser/ser-1.webp",
+    detailOverview: {
+      label: "Roll-On/Roll-Off Ocean Transport",
+      title: ["Fast, Secure", "Helicopter Transport", "Using RoRo Vessels."],
+      paragraphs: [
+        para([
+          reg("Shipped on a "),
+          bold("MAFI Roll Trailer"),
+          reg(" or "),
+          bold("towed inside the vessel"),
+          reg(
+            ", helicopters are stowed and transported safely under deck. With Ro/Ro vessels, loading and unloading is fast and efficient, saving valuable time on the transportation journey.",
+          ),
+        ]),
+        para([
+          reg(
+            "Heli Skycargo contracts with the very best global Ro/Ro carriers, including NYK, Höegh Autoliners, Wallenius Wilhelmsen, ",
+          ),
+          bold("MOL (Mitsui O.S.K. Lines)"),
+          reg(", K Line, Armacup, "),
+          bold("EUKOR"),
+          reg(", the Grimaldi Group, Bahri Shipping and many others."),
+        ]),
+      ],
+      image: "/services/detail/ocean-roro-overview.webp",
+      hasVideoBadge: true,
+    },
+    detailWhenToChoose: {
+      title: SHARED_WHEN_TO_CHOOSE.title,
+      intro: SHARED_WHEN_TO_CHOOSE.intro,
+      image: "/services/detail/ocean-roro-when.webp",
+      cards: SHARED_WHEN_TO_CHOOSE.cards,
+    },
+  },
+  {
+    slug: "ocean-lolo",
+    name: "Ocean LO/LO",
+    description: "Safe Lift-on/Lift-off into cargo load of container vessel or MPV Breakbulk ship.",
+    image: "/home/services-teaser/ser-2.webp",
+    detailEyebrow: "OVERVIEW OCEAN LO/LO",
+    detailHeroTitle: ["Ocean Lift-On / Lift-Off", "Transport Method"],
+    detailHeroImage: "/home/services-teaser/ser-2.webp",
+    detailOverview: {
+      label: "Lift-on / Lift-off Shipping",
+      title: ["Container & Heavy", "Lift Shipping Options"],
+      paragraphs: [
+        para([
+          reg("Alternatively, helicopters can be transported using a "),
+          bold("Lift-On/Lift-Off method"),
+          reg(" – either via container ships or a multipurpose "),
+          bold("heavy lift vessel"),
+          reg(
+            ". The cargo is lifted on and off the shipping vessel by crane, before being safely stored and secured for travel.",
+          ),
+        ]),
+        para([
+          reg(
+            "Though this method adds some time to your transportation schedule to account for loading and unloading, it is ideal for situations where the destination or departure port is not served by Ro/Ro carriers, or where the Ro/Ro carrier schedule does not meet your requirements.",
+          ),
+        ]),
+      ],
+      image: "/services/detail/ocean-lolo-overview.webp",
+      hasVideoBadge: true,
+    },
+    detailWhenToChoose: {
+      title: SHARED_WHEN_TO_CHOOSE.title,
+      intro: SHARED_WHEN_TO_CHOOSE.intro,
+      image: "/services/detail/ocean-lolo-when.webp",
+      cards: SHARED_WHEN_TO_CHOOSE.cards,
+    },
+  },
+  {
+    slug: "ocean-fcl",
+    name: "Ocean FCL",
+    description: "Flat Rack is an alternative and cost effective way of shipping.",
+    image: "/home/services-teaser/ser-3.webp",
+    detailEyebrow: "OVERVIEW OCEAN FCL",
+    detailHeroTitle: ["Ocean FCL - Container Transport"],
+    detailHeroImage: "/home/services-teaser/ser-3.webp",
+    detailOverview: {
+      // TODO: client review of FCL eyebrow text — replaced "Lift-on / Lift-off
+      // Shipping" Figma value with "Full Container Load Shipping" pending
+      // content review (per M4 plan §6.4).
+      label: "Full Container Load Shipping",
+      title: ["Dedicated & Secure", "Full Container Ocean", "Solutions"],
+      paragraphs: [
+        para([
+          reg(
+            "Whether partially or fully disassembled, helicopters can be transported using 40' high cube, 40' open-top, or 40' flat rack containers.",
+          ),
+        ]),
+      ],
+      image: "/services/detail/ocean-fcl-overview.webp",
+      hasVideoBadge: true,
+    },
+    detailWhenToChoose: {
+      title: SHARED_WHEN_TO_CHOOSE.title,
+      intro: SHARED_WHEN_TO_CHOOSE.intro,
+      image: "/services/detail/ocean-fcl-when.webp",
+      cards: SHARED_WHEN_TO_CHOOSE.cards,
+    },
+  },
+  {
+    slug: "road-freight",
+    name: "Road Freight",
+    description:
+      "We deal with assets-own trucking companies providing GPS-equipped Air-ride specialised trailers.",
+    image: "/home/services-teaser/ser-4.webp",
+    imageObjectPosition: "30% 50%",
+    detailEyebrow: "OVERVIEW ROAD FREIGHT",
+    detailHeroTitle: ["Helicopter Road Freight Solutions"],
+    detailHeroImage: "/home/services-teaser/ser-4.webp",
+    detailOverview: {
+      label: "Road Freight Transport",
+      title: ["End-to-End", "Road Freight Services"],
+      paragraphs: [
+        para([
+          reg(
+            "Whether the helicopter is being exclusively transported by road, or it is just a small part of the wider journey, Heli Skycargo can arrange road freight solutions including road survey and road permit application to meet your exact requirements.",
+          ),
+        ]),
+        para([
+          reg(
+            "Our carefully selected trucking and haulage companies are on standby ready to serve, and we have exclusive contracts around the world with specialist freight companies offering exceptional transports using air ride and hydraulic trucks.",
+          ),
+        ]),
+      ],
+      image: "/services/detail/road-freight-overview.webp",
+      hasVideoBadge: true,
+    },
+    detailWhenToChoose: {
+      title: SHARED_WHEN_TO_CHOOSE.title,
+      intro: SHARED_WHEN_TO_CHOOSE.intro,
+      image: "/services/detail/road-freight-when.webp",
+      cards: SHARED_WHEN_TO_CHOOSE.cards,
+    },
+  },
+  {
+    slug: "air-commercial",
+    name: "Air Commercial",
+    description: "Ship your aircraft on B74 Freighter.",
+    image: "/home/services-teaser/ser-5.webp",
+    detailEyebrow: "OVERVIEW AIR COMMERCIAL",
+    detailHeroTitle: ["Commercial Air Freight Transport Solutions"],
+    detailHeroImage: "/home/services-teaser/ser-5.webp",
+    detailOverview: {
+      label: "Air Cargo",
+      title: ["Reliable & Flexible", "Commercial Air Cargo", "Transport"],
+      paragraphs: [
+        para([
+          reg(
+            "If you have a flexible or more generous deadline for your shipping journey, then commercial air transportation is an excellent option. Depending on the departure and arrival locations and the carrier flight schedule, door-to-door transit time typically ranges from just 7 to 10 days.",
+          ),
+        ]),
+        para([
+          reg(
+            'Once dismantled, the helicopter is securely positioned on 20" aircraft pallets and loaded on board B747-400F or modern B747-8F aircraft. We arrange transportation with only the most reputable commercial cargo freighters, including Cargolux, Korean Air, Silk Way West Airlines, China Airlines, Cathay Pacific, and Singapore Airlines.',
+          ),
+        ]),
+      ],
+      image: "/services/detail/air-commercial-overview.webp",
+      hasVideoBadge: true,
+    },
+    detailWhenToChoose: {
+      title: SHARED_WHEN_TO_CHOOSE.title,
+      intro: SHARED_WHEN_TO_CHOOSE.intro,
+      image: "/services/detail/air-commercial-when.webp",
+      cards: SHARED_WHEN_TO_CHOOSE.cards,
+    },
+  },
+  {
+    slug: "air-chartering",
+    name: "Air Chartering",
+    description:
+      "When time is of the essence or to reach places unreachable by 74F, go for the mighty Antonov124-100 or the IL76.",
+    image: "/home/services-teaser/ser-6.webp",
+    imageObjectPosition: "70% 50%",
+    detailEyebrow: "OVERVIEW AIR CHARTERING",
+    detailHeroTitle: ["Air Charter Transport for Urgent Shipments"],
+    detailHeroImage: "/home/services-teaser/ser-6.webp",
+    detailOverview: {
+      label: "Air Charter Transport",
+      title: ["Fast-Response", "Aircraft Charter", "Transport Solutions"],
+      paragraphs: [
+        para([
+          reg(
+            "If you have a flexible or more generous deadline for your shipping journey, then commercial air transportation is an excellent option. Depending on the departure and arrival locations and the carrier flight schedule, door-to-door transit time typically ranges from just 7 to 10 days.",
+          ),
+        ]),
+        para([
+          reg(
+            'Once dismantled, the helicopter is securely positioned on 20" aircraft pallets and loaded on board B747-400F or modern B747-8F aircraft. We arrange transportation with only the most reputable commercial cargo freighters, including Cargolux, Korean Air, Silk Way West Airlines, China Airlines, Cathay Pacific, and Singapore Airlines.',
+          ),
+        ]),
+      ],
+      image: "/services/detail/air-chartering-overview.webp",
+      hasVideoBadge: true,
+    },
+    detailWhenToChoose: {
+      title: SHARED_WHEN_TO_CHOOSE.title,
+      intro: SHARED_WHEN_TO_CHOOSE.intro,
+      image: "/services/detail/air-chartering-when.webp",
+      cards: SHARED_WHEN_TO_CHOOSE.cards,
+    },
+  },
+] as const;

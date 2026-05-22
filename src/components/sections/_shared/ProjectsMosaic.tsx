@@ -58,6 +58,14 @@ export type ProjectsMosaicProps = {
   /** Tile dataset. Defaults to all 14 entries in `SHOWCASE_TILES`. */
   tiles?: readonly ShowcaseTile[];
   /**
+   * Optional mobile-only tile dataset. When provided, the 2-column mobile
+   * masonry uses this array instead of `tiles` — useful when the mobile
+   * Figma layout reorders tiles or substitutes per-tile fields (e.g. a
+   * different image on /showcase mobile) without disturbing the desktop
+   * column layout. Defaults to `tiles`.
+   */
+  mobileTiles?: readonly ShowcaseTile[];
+  /**
    * Filter tiles by service slug. When set, only tiles whose
    * `relatedServices` contains the slug (or whose `relatedServices` is
    * undefined) are kept.
@@ -92,7 +100,7 @@ export type ProjectsMosaicProps = {
 
 const DEFAULT_HEADING: Required<ProjectsMosaicHeading> = {
   eyebrow: "Case Visuals",
-  title: { pre: "Some of ", emphasis: "Our Projects", post: " and More" },
+  title: { pre: "Some of ", emphasis: "Our Projects", post: " and More", postMobile: " & More" },
 };
 
 /**
@@ -108,6 +116,7 @@ const DEFAULT_HEADING: Required<ProjectsMosaicHeading> = {
  */
 export function ProjectsMosaic({
   tiles = SHOWCASE_TILES,
+  mobileTiles: mobileTilesProp,
   serviceSlug,
   initialDesktop,
   initialMobile,
@@ -131,8 +140,25 @@ export function ProjectsMosaic({
     return recycled;
   }, [tiles, serviceSlug]);
 
+  // When a mobile-specific array is supplied, run it through the same
+  // service-slug filter so detail pages get consistent behavior across
+  // viewports. Otherwise fall back to the desktop-filtered list.
+  const filteredMobileTiles = useMemo(() => {
+    const source = mobileTilesProp ?? tiles;
+    if (!serviceSlug) return source;
+    const matched = source.filter(
+      (t) => t.relatedServices === undefined || t.relatedServices.includes(serviceSlug),
+    );
+    if (matched.length === 0) return source.slice(0, 8);
+    if (matched.length >= 8) return matched;
+    const recycled: ShowcaseTile[] = [];
+    for (let i = 0; i < 8; i++) recycled.push(matched[i % matched.length]!);
+    return recycled;
+  }, [mobileTilesProp, tiles, serviceSlug]);
+
   const total = filteredTiles.length;
-  const mobileTotal = Math.min(mobileMaxVisible ?? total, total);
+  const mobileSourceTotal = filteredMobileTiles.length;
+  const mobileTotal = Math.min(mobileMaxVisible ?? mobileSourceTotal, mobileSourceTotal);
   const initDesktop = Math.min(initialDesktop ?? total, total);
   const initMobile = Math.min(initialMobile ?? mobileTotal, mobileTotal);
 
@@ -146,7 +172,7 @@ export function ProjectsMosaic({
   };
 
   const desktopTiles = filteredTiles.slice(0, desktopVisible);
-  const mobileTiles = filteredTiles.slice(0, mobileVisible);
+  const mobileTiles = filteredMobileTiles.slice(0, mobileVisible);
 
   const desktopColumns: ShowcaseTile[][] = [[], [], [], []];
   for (const tile of desktopTiles) desktopColumns[tile.desktopColumn]!.push(tile);
@@ -192,7 +218,9 @@ export function ProjectsMosaic({
             <SectionEyebrow variant="gray">{headingCopy.eyebrow}</SectionEyebrow>
           </Reveal>
           <Reveal delay={0.1}>
-            <h2 className="font-display text-ink text-3xl leading-[1.1] font-bold tracking-tight uppercase md:text-4xl lg:text-5xl">
+            {/* Mobile uses a smaller H2 size + nowrap so the line fits in 375px
+                (Figma 505:6417 — width 384, ~17px tall). md/lg unchanged. */}
+            <h2 className="font-display text-ink text-[20px] leading-[1.1] font-bold tracking-tight whitespace-nowrap uppercase md:text-4xl md:whitespace-normal lg:text-5xl">
               {headingCopy.title.pre}
               <span className="font-extrabold">{headingCopy.title.emphasis}</span>
               {headingCopy.title.postMobile ? (
@@ -245,7 +273,7 @@ export function ProjectsMosaic({
           {mobileColumns.map((column, colIdx) => (
             <div key={`m-col-${colIdx}`} className="flex flex-1 flex-col gap-[10px]">
               {column.map((tile) => {
-                const tileIdx = filteredTiles.indexOf(tile);
+                const tileIdx = filteredMobileTiles.indexOf(tile);
                 return (
                   <Reveal
                     key={tile.id}
@@ -337,6 +365,7 @@ function Tile({ tile, viewport, onOpen }: TileProps) {
         fill
         sizes="(min-width: 1024px) 25vw, 50vw"
         className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+        style={tile.objectPosition ? { objectPosition: tile.objectPosition } : undefined}
       />
 
       {dimAlpha ? <span aria-hidden="true" className={cn("absolute inset-0", dimAlpha)} /> : null}

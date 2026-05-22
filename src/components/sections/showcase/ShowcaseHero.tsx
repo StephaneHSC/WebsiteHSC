@@ -23,7 +23,11 @@ export function ShowcaseHero() {
           fill
           priority
           sizes="100vw"
-          className="object-cover object-[center_30%]"
+          // Mobile crops horizontally only (photo scales by height), so the
+          // `[center_30%]` y-axis bias is a no-op there — only the desktop
+          // `lg:object-center` matters and recenters the helicopter inside
+          // the wider 1600/700 frame so it isn't cropped from the bottom.
+          className="object-cover object-[center_30%] lg:object-[center_90%]"
         />
         <span className="bg-ink/[0.36] absolute inset-0" />
       </div>
@@ -37,7 +41,7 @@ export function ShowcaseHero() {
           </Reveal>
           <Reveal delay={0.1}>
             <h1 className="font-body text-surface mt-6 max-w-[748px] text-[32px] leading-[42px] font-bold tracking-[0.64px] capitalize md:mt-8 md:text-5xl md:leading-[1.2] md:tracking-normal lg:mt-10 lg:text-[64px] lg:leading-[82px]">
-              {/* Mobile: 3 forced lines. Desktop wraps naturally to 2 lines. */}
+              {/* Mobile: 3 forced lines per Figma 505:6096. Desktop wraps to 2. */}
               <span className="block lg:hidden">
                 <span className="block">{SHOWCASE_HERO.h1Mobile[0]}</span>
                 <span className="block">{SHOWCASE_HERO.h1Mobile[1]}</span>
@@ -48,6 +52,12 @@ export function ShowcaseHero() {
                 <span className="block">{SHOWCASE_HERO.h1Desktop[1]}</span>
               </span>
             </h1>
+          </Reveal>
+          {/* Mobile-only subtitle per Figma 505:6106. */}
+          <Reveal delay={0.2} className="lg:hidden">
+            <p className="font-body text-surface/90 mt-4 max-w-[356px] text-[14px] leading-[16px] font-normal">
+              {SHOWCASE_HERO.subtitleMobile}
+            </p>
           </Reveal>
         </div>
       </Container>
