@@ -49,6 +49,12 @@ if (!token) {
 }
 
 const purge = process.argv.includes("--purge");
+const formModeArg = process.argv.find((a) => a.startsWith("--form-mode="));
+const formMode = formModeArg ? formModeArg.split("=")[1] : "custom";
+if (!["custom", "embed"].includes(formMode)) {
+  console.error(`[seed] --form-mode must be 'custom' or 'embed' (got: ${formMode})`);
+  process.exit(1);
+}
 
 const client = createClient({
   projectId,
@@ -310,7 +316,7 @@ const TESTIMONIALS = [
 // ── Mutations ───────────────────────────────────────────────────────────────
 
 async function purgeAll() {
-  for (const type of ["teamMember", "milestone", "testimonial", "siteStats"]) {
+  for (const type of ["teamMember", "milestone", "testimonial", "siteStats", "quoteFormConfig"]) {
     const ids = await client.fetch(`*[_type == "${type}"]._id`);
     if (ids.length === 0) continue;
     console.log(`[seed] purging ${ids.length} ${type} doc(s)...`);
@@ -358,6 +364,41 @@ async function seedSiteStats() {
   console.log(`  ✓ ${SITE_STATS.stats.length} stats → ${created._id}`);
 }
 
+/**
+ * Seeds the quoteFormConfig singleton with PDF §4.2's 6 spec fields +
+ * `form_mode` toggle. `--form-mode=custom|embed` CLI flag picks the path
+ * (defaults to `custom`).
+ *
+ * The 4 dead fields (transport_modes, helicopter_models, transaction_types,
+ * step_titles) were removed 2026-05-13 — the frontend uses hardcoded
+ * constants so CMS arrays for those changed nothing.
+ */
+async function seedQuoteFormConfig() {
+  console.log(`\n[seed] quote form config (mode=${formMode})`);
+  const sampleEmbed = `<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdHMhZhqcVJUyFIV08A47labV9BC3FKCaZ0Ve28QUP6aH5v5Q/viewform?embedded=true" width="100%" height="1975" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>`;
+  // Upload the canonical Figma-matching Antonov photo so the `hero_image`
+  // CMS field is populated out of the box (instead of relying on the
+  // hardcoded `QUOTE_HERO.photo.src` fallback). One image — overridable
+  // by the editor in Studio; appears on /quote AND every embedded shell.
+  const heroAsset = await uploadImage("/quote/quote-hero.webp");
+  const doc = {
+    _id: "quoteFormConfig",
+    _type: "quoteFormConfig",
+    form_mode: formMode,
+    // Pre-fill with the Figma-canonical 2-line headline so editors see what
+    // the field controls. Newlines render as line breaks in the H1/H2 stack
+    // (split + per-line block-span — see QuoteHero / QuoteFormShell).
+    hero_headline: "Share Your Shipment Details\nWe'll Handle The Rest.",
+    hero_image: imageRef(heroAsset),
+    recipient_email: "",
+    success_message: "Thank you for your enquiry. Our ops team will reply within 24 hours.",
+    form_enabled: true,
+    form_embed_code: formMode === "embed" ? sampleEmbed : "",
+  };
+  const created = await client.createOrReplace(doc);
+  console.log(`  ✓ quoteFormConfig (${formMode}) → ${created._id}`);
+}
+
 async function seedTestimonials() {
   console.log("\n[seed] testimonials");
   for (const t of TESTIMONIALS) {
@@ -382,6 +423,7 @@ async function main() {
   await seedMilestones();
   await seedTestimonials();
   await seedSiteStats();
+  await seedQuoteFormConfig();
   console.log(
     "\n[seed] done. Hard refresh http://localhost:3000/ to see the live data replace placeholders.",
   );

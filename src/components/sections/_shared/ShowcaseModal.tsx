@@ -116,16 +116,65 @@ export function ShowcaseModal({ tile, onClose }: ShowcaseModalProps) {
   const handleQuoteClick = useCallback(() => {
     onClose();
     if (typeof window === "undefined") return;
+    // Build a prefill payload from the tile's modal metadata when present.
+    // Routes are parsed from `modal.route` of the form "Origin → Destination".
+    // The showcase tile's `transportMode` uses descriptive labels (e.g.
+    // "Ocean Freight (RoRo)", "Air Charter (AN-124)") that don't match the
+    // form's canonical 6-mode dropdown values verbatim — map them here.
+    const SHOWCASE_MODE_MAP: Record<string, string> = {
+      "Air Commercial": "Air Commercial",
+      "Air Charter (AN-124)": "Air Charter",
+      "Ocean Freight (RoRo)": "Ocean RoRo",
+      "Ocean Freight (LoLo)": "Ocean Breakbulk (Lo/Lo)",
+      "Ocean Freight (FCL)": "Ocean Container",
+      "Road Freight": "Land",
+      Ground: "Land",
+      // Ambiguous labels ("Multi-modal", "Ocean Freight", "Ground/Air",
+      // "Local Coordination") intentionally unmapped — better to leave the
+      // mode untouched than guess wrong.
+    };
+    const rawMode = tile?.modal?.transportMode;
+    const mode = rawMode ? SHOWCASE_MODE_MAP[rawMode] : undefined;
+    const route = tile?.modal?.route;
+    let origin: string | undefined;
+    let destination: string | undefined;
+    if (route) {
+      const parts = route.split(/\s*[→\-]\s*/);
+      if (parts.length === 2) {
+        origin = parts[0]?.trim();
+        destination = parts[1]?.trim();
+      }
+    }
+
     const target = document.getElementById("request-quote");
     if (target) {
+      // Dispatch the prefill event so QuoteFormCore merges values into state.
+      // Mode is validated by the listener so unknown labels are silently dropped.
+      window.dispatchEvent(
+        new CustomEvent("hsc:quote-prefill", {
+          detail: {
+            mode,
+            routes:
+              origin || destination
+                ? [{ origin: origin ?? "", destination: destination ?? "" }]
+                : undefined,
+          },
+        }),
+      );
       // Small delay so the dialog's close animation completes before the scroll.
       window.setTimeout(() => {
         target.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 50);
     } else {
-      router.push("/quote");
+      // No on-page form — fall back to /quote with query-string prefill.
+      const params = new URLSearchParams();
+      if (mode) params.set("mode", mode);
+      if (origin) params.set("origin", origin);
+      if (destination) params.set("destination", destination);
+      const qs = params.toString();
+      router.push(qs ? `/quote?${qs}` : "/quote");
     }
-  }, [onClose, router]);
+  }, [onClose, router, tile]);
 
   const modal = tile?.modal;
   const ariaLabel = modal?.title ?? tile?.alt ?? "Project detail";

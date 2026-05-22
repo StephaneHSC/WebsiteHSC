@@ -7,7 +7,7 @@ import { ValueAddedGrid } from "@/components/sections/service-detail/ValueAddedG
 import { ProjectsMosaic } from "@/components/sections/_shared/ProjectsMosaic";
 import { QuoteFormShell } from "@/components/sections/_shared/QuoteFormShell";
 import { OfficesGlobal } from "@/components/sections/_shared/OfficesGlobal";
-import { SERVICES, SHOWCASE_TILES } from "@/lib/constants";
+import { SERVICES, SHOWCASE_TILES, QUOTE_MODE_BY_SERVICE_SLUG } from "@/lib/constants";
 
 type RouteParams = Promise<{ slug: string }>;
 
@@ -55,6 +55,7 @@ export default async function ServiceDetailPage({ params }: { params: RouteParam
             src: "/quote/services-quote.webp",
             alt: "Antonov 124 freighter loading helicopter cargo at sunset",
           }}
+          defaultMode={QUOTE_MODE_BY_SERVICE_SLUG[slug]}
         />
       </div>
       <OfficesGlobal />

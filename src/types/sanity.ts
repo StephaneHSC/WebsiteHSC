@@ -43,7 +43,7 @@ export type Milestone = {
   image: SanityImage;
 };
 
-/** Quote form configuration. Fields populated depend on `form_mode`. */
+/** Quote form configuration — PDF §4.2 spec verbatim + `form_mode` toggle. */
 export type QuoteFormConfig = {
   form_mode: "custom" | "embed";
   hero_headline: string;
@@ -51,21 +51,8 @@ export type QuoteFormConfig = {
   recipient_email: string;
   success_message: string;
   form_enabled: boolean;
-
-  // Path A — iframe embed
+  /** Used only when `form_mode === "embed"`. Raw HTML iframe snippet. */
   form_embed_code?: string;
-
-  // Path B — custom React form
-  transport_modes?: string[];
-  helicopter_models?: string[];
-  transaction_types?: string[];
-  step_titles?: {
-    step_1?: string;
-    step_2?: string;
-    step_3?: string;
-    step_4?: string;
-    step_5?: string;
-  };
 };
 
 export type SiteStat = {

@@ -15,6 +15,130 @@ Format:
 
 ---
 
+## 2026-05-14 — M8 Quote — hero photo swap + CMS hero overrides flow to shells
+
+**Two corrections from review-round-4:**
+
+1. **Hero photo on /quote** — the placeholder `helicopter.webp` (close-up of helicopter on tarmac next to a small Antonov-nose slice) did not match the Figma frames (345:9554 desktop, 529:8837 mobile). Both Figma frames show the FULL Antonov AN-124 from a side angle — nose lifted, ramp out, helicopter visible inside the cargo hold, wing + engines extending right. Saved two crops sourced from Figma into `public/quote/`:
+   - `quote-hero.webp` (1600×700, ~63 KB) — desktop crop
+   - `quote-hero-mobile.webp` (860×940, ~42 KB) — mobile portrait crop
+     `QuoteHero` now renders two `<Image>` components, one per breakpoint (`lg:hidden` / `hidden lg:block`). The Figma exports already include the rgba(0,0,0,0.36–0.4) wash, so the CSS overlay is now applied ONLY when a CMS override is in effect (the override photo isn't pre-darkened).
+     `helicopter.webp` deleted (no remaining references).
+
+2. **CMS `hero_image` + `hero_headline` now propagate to embedded shells** — previously these two fields lived in `quoteFormConfig` but were consumed ONLY by the standalone `/quote` page. The six embedded `QuoteFormShell` placements (home, services listing, service-detail, team, why-choose-us, showcase) ignored them and used their own hardcoded `photo` and 3-line headline. An editor setting `hero_image` or `hero_headline` in Studio would have changed `/quote` but nothing else.
+   `QuoteFormShell` now reads the same config it was already fetching for form_mode / form_enabled, and applies:
+   - `hero_image` (when set) overrides the page-provided `photo` prop in every shell placement
+   - `hero_headline` (when set) replaces the 3-line `{ line1, line2, line3 }` stack with a single bold line
+     Default behavior (no CMS override) is unchanged — each placement keeps its context-appropriate photo and copy.
+
+**Why**: User asked "make sure everything in CMS is used". With all 7 fields wired in both places, an editor has a single source of truth for the quote-form chrome (image + headline + recipient + success + enabled + mode + embed code), and every change propagates via the 60s ISR window — no deploy, no hunting through which page uses which override.
+
+**Schema descriptions updated** in `src/sanity/schemas/quoteFormConfig.ts` to document the override semantics so future editors don't expect a /quote-only effect.
+
+**Trade-offs**:
+
+- `hero_image` is one asset, but each embedded shell currently passes a different per-page photo (home gets `home-quote.webp`, services gets `services-quote.webp` with sunset tones, etc.). When the editor sets `hero_image`, that single image will appear on ALL placements — flattening the per-page variety. Acceptable: this is opt-in (default keeps the variety) and intended for campaigns / brand refreshes where the editor explicitly wants uniformity.
+- `hero_headline` similarly flattens the 3-line shell H2 ("Start Your / Global Transport / Request") to a single line. Editors who want to keep the structure should just leave it blank.
+
+**Alternatives considered**:
+
+- Add `shell_headline` and `shell_image` as separate CMS fields → rejected: doubles the schema, violates "PDF §4.2 verbatim" constraint, makes editing twice as much work for the common case.
+- Keep `hero_*` as /quote-only and document it → rejected: user explicitly wants everything CMS to flow somewhere.
+
+---
+
+## 2026-05-13 — M8 Quote — post-review tightening
+
+**Decisions made after the first round of M8 visual review:**
+
+1. **Shell variant has a separate mode-of-transport order** — `QUOTE_SHELL_TRANSPORT_MODES` (Air Charter, Air Commercial, Ocean RoRo, Ocean Container, Land, Ocean Breakbulk) matches Figma `344:3275` exactly. Canonical `QUOTE_TRANSPORT_MODES` order stays for standalone. Server-side validation accepts both orders since the values overlap.
+
+2. **Shell variant strips "(Lo/Lo)" from the Breakbulk label** — Figma shell shows just "Ocean Breakbulk". `SHELL_LABEL_OVERRIDES` in `ModeRadioGrid` + `ModeMobilePill` handles the rename without changing the form state value.
+
+3. **Shell variant uses 2-column horizontal layout for Step 02, NOT vertical stack** — Figma `344:3275` shows origin + destination side-by-side. Earlier `stackFields={true}` assumption was wrong.
+
+4. **Shell variant hides the "Add Another Route" button** — Figma shell shows a single origin+destination row, no multi-route UI. `hideMultiRoute` prop on `Step02RouteInformation`.
+
+5. **Helicopter Brand + Model + Quantity are now OPTIONAL** (both variants) — customers often request quotes before finalizing aircraft choice. Asterisk dropped from the "Helicopter Model & Quantity" label. Validation only checks consistency (model belongs to brand) when values are present.
+
+6. **Shell variant uses smaller textarea (2 rows) for Additional Information** and HIDES the file-upload dropzone. Standalone keeps the full 3-row textarea + attachments. Per Figma `344:3275` (shell omits attachment UI).
+
+7. **Step 04 label differs by variant** — shell uses "Transaction Classification", standalone uses "Transaction Details". Both labels in Figma; the values are the same, only the heading text changes.
+
+8. **Embedded shell makes ALL 5 steps collapsible** — Steps 01 + 02 were previously always-expanded plain sections; now they use `CollapsibleSection` in shell variant. Standalone /quote keeps Steps 01+02 always-expanded (Figma standalone frame `345:9613` shows all expanded).
+
+9. **Auto-expand effect rewrote to capture `prevCompletion.current` BEFORE `setOpenSteps`** — original code mutated the ref synchronously after the setState updater was queued, so the updater read the already-updated ref and never detected transitions. Fix: read `previous` into a local variable first.
+
+10. **Cloudflare Turnstile attribution removed** — unlike reCAPTCHA, Turnstile doesn't require attribution text. `legalAttribution` constant removed from `QUOTE_FORM_DEFAULTS`.
+
+11. **Submit button is "Submit" (capitalize) not "SUBMIT" (uppercase)** — per Figma frame review. Bumped weight to PT Sans Bold 14-15px.
+
+12. **Mobile step heading weight bumped to `font-semibold`** (Inter Tight 500) — was unweighted (regular). Figma mobile frames show clearly bolder headings than the regular weight default.
+
+13. **Chevron icon in QuoteFormShell bumped to 48px desktop / 44px mobile** with `strokeWidth=3.5` — was 38px desktop / 32px mobile / 2.5px stroke. Figma shows a thicker, larger icon at both viewports.
+
+14. **Selected-radio inner indicator is now a solid white filled disc** (no outline + inner-dot doughnut) — matches Figma's cleaner radio styling on the red gradient bg.
+
+15. **Iframe sanitizer rewritten as blocklist instead of allowlist** — `QuoteFormEmbedded.tsx` previously enumerated 13 allowed attributes (which rejected Google Forms' `marginheight`/`marginwidth` + similar provider-specific attrs). New approach: allow ALL attributes, reject only `on*` handlers + `srcdoc`, force `loading="lazy"`. Accepts paired, self-closed, and bare iframe shapes + fallback text content.
+
+16. **Showcase tile `transportMode` labels now map to canonical modes** via `SHOWCASE_MODE_MAP` in `ShowcaseModal` — Figma showcase tiles use descriptive labels ("Ocean Freight (RoRo)", "Air Charter (AN-124)", etc.) that the form mode dropdown doesn't list verbatim. The mapper translates before dispatching the `hsc:quote-prefill` event. Ambiguous labels (Multi-modal, Local Coordination) intentionally unmapped.
+
+17. **`QuoteFormCore` prefill listener defensively validates `mode`** — drops any value not in `QUOTE_TRANSPORT_MODES`, even if dispatched directly. Prevents future bad-dispatch corruption.
+
+18. **`#request-quote` anchor added to `/` and `/services`** — was already on the 4 other embedded-shell placements (service-detail, why-choose-us, team, showcase). Now consistent across all 6 placements + standalone — showcase modal's smooth-scroll-then-prefill works on every page.
+
+19. **CMS schema trimmed to PDF §4.2 verbatim** — removed 4 dead fields (`transport_modes`, `helicopter_models`, `transaction_types`, `step_titles`) which the frontend never read. Remaining fields: `form_mode` + 6 PDF-spec fields (`hero_headline`, `hero_image`, `recipient_email`, `success_message`, `form_enabled`, `form_embed_code`). Frontend uses hardcoded constants for the dropdown options — those are industry data, not editorial.
+
+20. **`recipient_email` schema description updated to reflect actual behavior** — was "for editor reference" (misleading legacy from the Formspree era); now "Read by /api/quote at submit time and passed to Resend's `to:` field."
+
+21. **Mode-of-transport radios use proportional CSS grid `180fr 150fr 150fr 230fr 180fr 120fr`** instead of fixed widths. All 6 radios fit on one row at every desktop breakpoint (1024 → 1920), not just 1440+.
+
+---
+
+## 2026-05-12 — M8 Request a Quote — locked decisions
+
+**Decision**: `/quote` ships with the architecture, content, and Figma deviations captured below. Each item is something a reader of M3-M7 wouldn't infer from the code or the brief.
+
+1. **`/quote` standalone is a different layout from the embedded `QuoteFormShell`.** Standalone = hero + centered white card; embedded = M3 split-pane with photo on left. Both render the same `<QuoteFormCore />` engine. The visual divergence is documented and intentional (Figma frames `345:9554` / `345:9613` differ from M3 frames). The `variant` prop drives layout differences in the steps (single-row vs stacked, submit-button width, disclaimer placement).
+
+2. **All 5 steps render expanded on desktop; mobile uses progressive accordion** — 01 + 02 always expanded; 03 / 04 / 05 collapsed by default and auto-expand when the previous step transitions to complete. Submit-with-errors also auto-expands the steps that contain errors. Matches Figma evidence at both viewports.
+
+3. **Transport mode list canonical order locked**: Air Commercial, Air Charter, Ocean RoRo, Ocean Breakbulk (Lo/Lo), Ocean Container, Land. Replaces the 6-item list in the M3 `QuoteFormShell.tsx` placeholder. Order is structural — the 6 desktop radio widths sum to exactly 1040 px in this order and that is the inner content width of the 1196 px form card (1196 − 2 × 78 px gutters).
+
+4. **Helicopter brand → model cascade is hardcoded, NOT in CMS** (`QUOTE_HELICOPTER_MODELS_BY_BRAND` in `src/lib/constants.ts`). The Sanity `helicopter_models: string[]` schema field stays as a backwards-compat placeholder. Reason: aviation manufacturer / model relationships are stable industry data, not editorial. Airbus list is canonical (11 models pulled from Figma); other 7 brands ship with `// TODO(content):` placeholder lists.
+
+5. **Spam protection = Cloudflare Turnstile** (server-verified via `/api/quote` Route Handler), NOT Google reCAPTCHA. The 2026-05-11 M8_PLAN.md draft specified reCAPTCHA v3 — pivoted back to Turnstile on 2026-05-12 when the developer's Google Workspace admin restriction blocked Cloud project creation (needed for classic reCAPTCHA keys). Turnstile setup is purely email signup, no Google Cloud project required. Verify endpoint: `https://challenges.cloudflare.com/turnstile/v0/siteverify`. Token field name on submit: `cf-turnstile-response`. Widget runs in invisible mode (configured in the Cloudflare dashboard) and triggers via `turnstile.execute()`; the client passes `appearance: "execute"` so the widget doesn't auto-fire on render. CLAUDE.md §3.4 already named Turnstile so no doc edit needed there.
+
+6. **Mail delivery = Resend + `/api/quote` Route Handler, NOT Formspree.** Reasons: (a) Resend free 3000 emails/mo + 100/day vs Formspree free 50 submissions/mo; (b) Resend supports attachments on free tier (40 MB per email post-Base64), Formspree free doesn't support uploads at all; (c) Resend reads `recipient_email` from CMS at submit time → true CMS-driven routing matches the client's PDF §4.3 spec literally; (d) emails come from `quotes@heliskycargo.com` (own-domain DKIM/SPF) after DNS verification. Trade-off: adds one file (`src/app/api/quote/route.ts`, ~140 lines) — deployed as a Vercel serverless function on the existing hobby tier, no new hosting. During dev we use Resend's sandbox sender `onboarding@resend.dev` (only delivers to the Resend account owner's address). Client must add 3 DNS records (SPF / DKIM / DMARC) to verify `heliskycargo.com` before launch.
+
+7. **File upload added at the bottom of Step 04** as a deliberate Figma deviation (brief lists upload; Figma doesn't draw it). Max 5 files, 10 MB total, allow-list for PDF / DOC / XLS / images / DWG / DXF (see `QUOTE_FILE_LIMITS`). Resend's 40 MB email-size cap leaves comfortable headroom.
+
+8. **Additional Information field is a `<textarea rows="3" resize-y>`** NOT a single-row input as Figma draws it. The placeholder copy ("Instructions, cargo dimensions, certifications, or any relevant notes…") clearly anticipates multi-line content; cap-at-60 px would force one-liners. Per-character counter shown when within 200 chars of the 2000 limit.
+
+9. **Step 04 mobile label = `Transaction Details` everywhere** (Figma mobile uses `Transaction Classification` — treated as a stale duplicate label).
+
+10. **Multi-route limit = 5 total (1 base + 4 added).** Figma doesn't show added-route state — implemented as a vertical stack with per-route header (`ROUTE 2 ×`) above each appended row. The base row has no remove button.
+
+11. **Submit button width is 510 px on desktop standalone, NOT full form width** (Figma draws it inside the left content column only). On the embedded variant, the right column is half-width so submit fills the available width. Disclaimer sits right-aligned next to submit on desktop standalone; below submit and centered on mobile / embedded.
+
+12. **Disclaimer Figma typo (`cHANNEL`) is corrected** to all-uppercase + middle-dot separator: `All fields marked * are required · Data transmitted over secure channel`.
+
+13. **Spam-provider attribution line** is rendered below the disclaimer (`This site is protected by Cloudflare Turnstile and the Cloudflare Privacy Policy and Terms of Service apply.`). Turnstile in invisible mode doesn't ship a visible widget so there's nothing to hide via CSS (unlike reCAPTCHA's badge), but the attribution is good UX hygiene either way.
+
+14. **Form mode `embed` sanitizer allow-lists `<iframe>` only.** No `<script>`, no event handlers (`on*` attrs rejected). Allowed attrs: src, width, height, frameborder, allow, allowfullscreen, style, title, name, loading, referrerpolicy, sandbox, scrolling. Editor-supplied HTML through Sanity is trusted-but-bounded. Invalid embed → maintenance card + console warning.
+
+15. **`form_enabled = false` → maintenance card replaces the form everywhere** (`/quote` AND every embedded placement). Renders the CMS `success_message` as the body (re-purposed as a generic "we'll get back to you" message during maintenance).
+
+16. **Prefill via URL query AND CustomEvent.** URL works for cross-page navigation (`/quote?mode=Ocean%20RoRo&origin=Dubai&destination=Houston&company=Acme&email=a@b.com`); the `hsc:quote-prefill` window event works for in-page prefill (showcase modal → `#request-quote` scroll). Both paths converge on `QuoteFormCore`'s prefill merge. `ShowcaseModal` parses `tile.modal.route` (format "Origin → Destination") and dispatches the event before scroll-into-view; when no on-page form exists, it falls back to the URL-query path.
+
+17. **Validation strategy = inline on submit + clear on type.** Submit button stays enabled regardless of validation state (better discoverability than gating Submit). Clicking submit with errors fires `validateAll`, surfaces inline messages, auto-expands any collapsed mobile step containing an error, and focus-scrolls to the first invalid field. Typing into a previously-errored field clears that field's error.
+
+18. **Email template lives in `src/lib/forms/quoteEmailTemplate.ts`** as a single function returning an HTML string. Uses `<table>` layout (Outlook compat), inline styles only (no external CSS), system-font fallback (Inter Tight not reliable in mail clients). Brand red top stripe (`#E40C28`, 6 px) + section dividers per the HSC color palette. Total size well under 100 KB (Gmail clips larger).
+
+**Open content questions tracked in `docs/M8_PLAN.md` §13**: transaction-type final list, per-brand helicopter model catalogs beyond Airbus, ops recipient email, Resend account owner + DNS verification, auto-reply body, allowed file types, `/quote` SEO metadata. None are launch-blocking — every form area has a placeholder default.
+
+---
+
 ## 2026-05-10 — M7 Shipment Showcase — locked decisions
 
 **Decision**: `/showcase` ships with the data model, layout, and page-level deviations from Figma captured below. Each item is something a reader of M2-M6 wouldn't infer from the code or the brief.

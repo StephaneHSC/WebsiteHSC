@@ -52,9 +52,9 @@ export const milestonesQuery = /* groq */ `
 `;
 
 /**
- * Quote form configuration (singleton).
- * Returns both Path A (embed) and Path B (custom) fields; the frontend reads
- * `form_mode` to decide which to use.
+ * Quote form configuration (singleton). PDF §4.2's 6 spec fields + `form_mode`
+ * toggle. Dead fields (transport_modes, helicopter_models, transaction_types,
+ * step_titles) were removed 2026-05-13 — the frontend uses hardcoded constants.
  */
 export const quoteFormConfigQuery = /* groq */ `
   *[_type == "quoteFormConfig"][0]{
@@ -64,11 +64,7 @@ export const quoteFormConfigQuery = /* groq */ `
     recipient_email,
     success_message,
     form_enabled,
-    form_embed_code,
-    transport_modes,
-    helicopter_models,
-    transaction_types,
-    step_titles
+    form_embed_code
   }
 `;
 

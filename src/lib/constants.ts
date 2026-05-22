@@ -1261,6 +1261,163 @@ export const WHY_CHOOSE_TRACKABILITY = {
   lede: "Access real-time location of your helicopter while in transit, get push notification.",
 } as const;
 
+// ── M8 — Request a Quote ───────────────────────────────────────────────────
+
+/**
+ * Mode-of-transport options (Step 01). Order locked by Figma's desktop layout:
+ * the 6 radio widths sum to exactly 1040px in this sequence (180 / 150 / 150 /
+ * 230 / 180 / 120 + 5×6px gaps), which matches the form card's content width.
+ * The mobile pill cycles through the same order.
+ *
+ * Replaces the earlier 6-string list in QuoteFormShell.tsx (Figma-canonical).
+ */
+export const QUOTE_TRANSPORT_MODES = [
+  "Air Commercial",
+  "Air Charter",
+  "Ocean RoRo",
+  "Ocean Breakbulk (Lo/Lo)",
+  "Ocean Container",
+  "Land",
+] as const;
+
+/**
+ * Shell-variant mode-of-transport list. Per Figma `344:3275` (home shell) the
+ * 6 radios render in a 3×2 grid with this order — Air Charter first, no
+ * "(Lo/Lo)" suffix on Breakbulk. The canonical full list above is still the
+ * source of truth for validation (server-side accepts both shell and standalone
+ * orderings); the shell variant is purely a presentation override.
+ */
+export const QUOTE_SHELL_TRANSPORT_MODES = [
+  "Air Charter",
+  "Air Commercial",
+  "Ocean RoRo",
+  "Ocean Container",
+  "Land",
+  "Ocean Breakbulk (Lo/Lo)",
+] as const;
+
+/**
+ * Helicopter brand list for Step 03 — first dropdown. Airbus list is canonical
+ * (11 models pulled from Figma). The other 7 carry TODO(content) placeholders;
+ * client supplies real catalogs.
+ *
+ * Prefixed `QUOTE_` to avoid collision with the existing `HELICOPTER_BRANDS`
+ * constant (manufacturer logos rendered in the home partners strip).
+ */
+export const QUOTE_HELICOPTER_BRANDS = [
+  "Airbus",
+  "Leonardo",
+  "Sikorsky",
+  "Bell",
+  "Robinson",
+  "Boeing",
+  "Kaman model",
+  "K-Max",
+] as const;
+
+export const QUOTE_HELICOPTER_MODELS_BY_BRAND: Readonly<Record<string, readonly string[]>> = {
+  Airbus: [
+    "H125",
+    "H130",
+    "H145",
+    "H160",
+    "H170",
+    "AS332L1",
+    "AS332L2",
+    "SUPERPUMA",
+    "AS365N2",
+    "AS365N3",
+    "BK117",
+  ],
+  // TODO(content): client to confirm full per-brand model catalogs.
+  Leonardo: ["AW109", "AW119", "AW139", "AW169", "AW189"],
+  Sikorsky: ["S-76", "S-92", "CH-53"],
+  Bell: ["206", "407", "412", "429", "505", "525"],
+  Robinson: ["R22", "R44", "R66"],
+  Boeing: ["CH-47", "AH-6", "MH-6"],
+  "Kaman model": ["K-MAX", "SH-2G"],
+  "K-Max": ["K-1200", "K-MAX-TITAN"],
+};
+
+export const QUOTE_QUANTITIES = ["01", "02", "03", "04", "05", "06"] as const;
+
+// TODO(content): client to confirm transaction-type options + ordering.
+export const QUOTE_TRANSACTION_TYPES = ["Purchase", "Sale", "Lease", "Trade-in", "Other"] as const;
+
+/**
+ * Service-slug → prefilled mode-of-transport. Used by the service-detail
+ * pages so clicking "Request Quote" inside a Ocean Ro/Ro page lands the
+ * embedded form with that mode preselected.
+ */
+export const QUOTE_MODE_BY_SERVICE_SLUG: Readonly<
+  Record<string, (typeof QUOTE_TRANSPORT_MODES)[number]>
+> = {
+  "ocean-roro": "Ocean RoRo",
+  "ocean-lolo": "Ocean Breakbulk (Lo/Lo)",
+  "ocean-fcl": "Ocean Container",
+  "road-freight": "Land",
+  "air-commercial": "Air Commercial",
+  "air-chartering": "Air Charter",
+};
+
+/** Attachment size + type allow-list (clients + ops both audit against this). */
+export const QUOTE_FILE_LIMITS = {
+  maxFiles: 5,
+  maxTotalBytes: 10 * 1024 * 1024,
+  allowedTypes: [
+    "application/pdf",
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/vnd.ms-excel",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "image/png",
+    "image/jpeg",
+    "application/acad",
+    "application/dxf",
+    "application/octet-stream",
+  ],
+  allowedExtensions: [
+    ".pdf",
+    ".doc",
+    ".docx",
+    ".xls",
+    ".xlsx",
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".dwg",
+    ".dxf",
+  ],
+} as const;
+
+/** Hero copy for the standalone /quote route. CMS hero_headline overrides line 1. */
+export const QUOTE_HERO = {
+  eyebrow: "Request a Quote",
+  headline: {
+    desktop: ["Share Your Shipment Details", "We'll Handle The Rest."],
+    mobile: ["Share Your Shipment", "Details. We'll", "Handle The Rest."],
+  },
+  photo: {
+    /**
+     * Single hero asset (1600×700, ~63 KB). Mobile portrait crops the same
+     * image via `object-position: 35% center` to keep the plane nose + ramp
+     * loading scene framed. One image keeps the CMS `hero_image` override
+     * round-trip clean — editors upload one asset, it works at every breakpoint.
+     */
+    src: "/quote/quote-hero.webp",
+    alt: "Antonov AN-124 cargo aircraft with nose lifted, helicopter being loaded via ramp",
+  },
+} as const;
+
+export const QUOTE_FORM_DEFAULTS = {
+  successMessage: "Thank you for your enquiry. Our ops team will reply within 24 hours.",
+  submitLabel: "Submit",
+  submittingLabel: "Submitting…",
+  disclaimer: "All fields marked * are required · Data transmitted over secure channel",
+  legalAttribution:
+    "This site is protected by Cloudflare Turnstile and the Cloudflare Privacy Policy and Terms of Service apply.",
+} as const;
+
 // ── M6 — Our Team page content ──────────────────────────────────────────────
 
 export const TEAM_HERO = {
