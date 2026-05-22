@@ -50,7 +50,11 @@ export function TextareaField({
         aria-describedby={errorId}
         className={cn(
           "font-body text-ink placeholder:text-input-placeholder mt-[6px] block w-full resize-y border bg-white px-[16px] py-[14px] text-[13px] transition-colors outline-none lg:mt-[8px] lg:px-[19px] lg:py-[18px] lg:text-[15px]",
-          rows && rows <= 2 ? "min-h-[70px] lg:min-h-[80px]" : "min-h-[100px] lg:min-h-[110px]",
+          rows && rows <= 1
+            ? "min-h-[50px] lg:min-h-[60px]"
+            : rows && rows <= 2
+              ? "min-h-[70px] lg:min-h-[80px]"
+              : "min-h-[100px] lg:min-h-[110px]",
           error
             ? "border-brand-red focus:border-brand-red"
             : "border-input-border focus:border-input-focus",

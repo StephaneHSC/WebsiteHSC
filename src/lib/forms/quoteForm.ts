@@ -11,7 +11,6 @@
  */
 
 import {
-  QUOTE_FILE_LIMITS,
   QUOTE_HELICOPTER_MODELS_BY_BRAND,
   QUOTE_QUANTITIES,
   QUOTE_TRANSACTION_TYPES,
@@ -48,7 +47,6 @@ export function initialQuoteFormState(prefill?: Partial<QuoteFormState>): QuoteF
     companyWebsite: "",
     fullName: "",
     email: prefill?.email ?? "",
-    attachments: [],
     turnstileToken: null,
   };
 }
@@ -124,42 +122,7 @@ export function validateAll(state: QuoteFormState): QuoteFormErrors {
   if (email.length === 0) errors.email = "Please enter your email address.";
   else if (!EMAIL_RE.test(email)) errors.email = "Please enter a valid email address.";
 
-  if (state.attachments.length > QUOTE_FILE_LIMITS.maxFiles) {
-    errors.attachments = `Maximum ${QUOTE_FILE_LIMITS.maxFiles} files.`;
-  } else {
-    const totalBytes = state.attachments.reduce((s, f) => s + f.size, 0);
-    if (totalBytes > QUOTE_FILE_LIMITS.maxTotalBytes)
-      errors.attachments = "Total attachment size exceeds 10 MB.";
-  }
-
   return errors;
-}
-
-export function validateFile(
-  file: File,
-  existing: File[],
-): { ok: true } | { ok: false; reason: string } {
-  if (existing.length >= QUOTE_FILE_LIMITS.maxFiles) {
-    return { ok: false, reason: `Maximum ${QUOTE_FILE_LIMITS.maxFiles} files.` };
-  }
-  const extension = file.name.toLowerCase().slice(file.name.lastIndexOf(".") || file.name.length);
-  const extensions = QUOTE_FILE_LIMITS.allowedExtensions as readonly string[];
-  const mimeTypes = QUOTE_FILE_LIMITS.allowedTypes as readonly string[];
-  const typeOk = mimeTypes.includes(file.type) || extensions.includes(extension);
-  if (!typeOk) return { ok: false, reason: "File type not allowed." };
-
-  const currentTotal = existing.reduce((s, f) => s + f.size, 0);
-  if (currentTotal + file.size > QUOTE_FILE_LIMITS.maxTotalBytes) {
-    return {
-      ok: false,
-      reason: `Total attachment size would exceed ${(
-        QUOTE_FILE_LIMITS.maxTotalBytes /
-        1024 /
-        1024
-      ).toFixed(0)} MB.`,
-    };
-  }
-  return { ok: true };
 }
 
 declare global {
@@ -220,7 +183,6 @@ export async function submitQuoteForm(
   fd.append("company_website", state.companyWebsite);
   fd.append("full_name", state.fullName);
   fd.append("email", state.email);
-  state.attachments.forEach((f, i) => fd.append(`attachment_${i + 1}`, f));
   fd.append("cf-turnstile-response", turnstileToken);
 
   try {
@@ -349,27 +311,6 @@ export function validateServerSide(fd: FormData): ServerValidationError | null {
   for (const key of ["company_name", "email", "full_name"]) {
     if (/[\r\n]/.test(get(key))) return { message: "Invalid characters detected.", field: "email" };
   }
-
-  // Attachments — collect, count, sum.
-  let totalBytes = 0;
-  let count = 0;
-  for (let i = 1; i <= QUOTE_FILE_LIMITS.maxFiles + 1; i += 1) {
-    const f = fd.get(`attachment_${i}`);
-    if (f instanceof File && f.size > 0) {
-      count += 1;
-      totalBytes += f.size;
-      const ext = f.name.toLowerCase().slice(f.name.lastIndexOf(".") || f.name.length);
-      const extensions = QUOTE_FILE_LIMITS.allowedExtensions as readonly string[];
-      const mimeTypes = QUOTE_FILE_LIMITS.allowedTypes as readonly string[];
-      if (!mimeTypes.includes(f.type) && !extensions.includes(ext)) {
-        return { message: `File type not allowed: ${f.name}.`, field: "attachments" };
-      }
-    }
-  }
-  if (count > QUOTE_FILE_LIMITS.maxFiles)
-    return { message: `Maximum ${QUOTE_FILE_LIMITS.maxFiles} files.`, field: "attachments" };
-  if (totalBytes > QUOTE_FILE_LIMITS.maxTotalBytes)
-    return { message: "Total attachment size exceeds 10 MB.", field: "attachments" };
 
   return null;
 }

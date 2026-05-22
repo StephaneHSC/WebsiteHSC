@@ -271,10 +271,7 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
         state.shippingPeriod.length > 0 ||
         state.helicopterBrand !== null ||
         state.helicopterModel !== null,
-      4:
-        state.transactionType !== null ||
-        state.additionalInformation.length > 0 ||
-        state.attachments.length > 0,
+      4: state.transactionType !== null || state.additionalInformation.length > 0,
       5:
         state.companyName.length > 0 ||
         state.companyWebsite.length > 0 ||
@@ -288,7 +285,6 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
       state.helicopterModel,
       state.transactionType,
       state.additionalInformation,
-      state.attachments,
       state.companyName,
       state.companyWebsite,
       state.fullName,
@@ -383,12 +379,7 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
             validation.helicopterQuantity
           )
             next.add(3);
-          if (
-            validation.transactionType ||
-            validation.additionalInformation ||
-            validation.attachments
-          )
-            next.add(4);
+          if (validation.transactionType || validation.additionalInformation) next.add(4);
           if (
             validation.companyName ||
             validation.companyWebsite ||
@@ -533,7 +524,10 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
         </CollapsibleSection>
       ) : (
         <section aria-labelledby="step-02" className="flex flex-col gap-[20px]">
-          <div id="step-02">
+          <div
+            id="step-02"
+            className="border-input-border border-t border-dotted pt-[20px] lg:border-t-0 lg:pt-0"
+          >
             <StepHeading number="02" label="Route Information" status={statusFor(2)} />
           </div>
           <Step02RouteInformation

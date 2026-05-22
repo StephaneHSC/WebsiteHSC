@@ -36,7 +36,6 @@ export interface QuoteFormState {
   companyWebsite: string;
   fullName: string;
   email: string;
-  attachments: File[];
   turnstileToken: string | null;
 }
 
@@ -52,7 +51,6 @@ export type QuoteFieldKey =
   | "companyWebsite"
   | "fullName"
   | "email"
-  | "attachments"
   | `routes.${number}.origin`
   | `routes.${number}.destination`;
 

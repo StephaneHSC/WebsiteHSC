@@ -2,20 +2,15 @@
 
 import { SelectField } from "@/components/sections/quote/fields/SelectField";
 import { TextareaField } from "@/components/sections/quote/fields/TextareaField";
-import { FileDropzone } from "@/components/sections/quote/fields/FileDropzone";
 import { QUOTE_TRANSACTION_TYPES } from "@/lib/constants";
 import type { QuoteFormErrors, QuoteFormState, TransactionType } from "@/types/quoteForm";
 
 export type Step04Props = {
-  state: Pick<QuoteFormState, "transactionType" | "additionalInformation" | "attachments">;
+  state: Pick<QuoteFormState, "transactionType" | "additionalInformation">;
   onChange: (patch: Partial<QuoteFormState>) => void;
   errors: QuoteFormErrors;
   stackFields?: boolean;
-  /**
-   * Shell variant per Figma `344:3275`: smaller note textbox (2 rows) and the
-   * attachments dropzone is hidden — file upload only exists on standalone
-   * /quote where the brief explicitly added it.
-   */
+  /** Shell variant per Figma `344:3275`: smaller note textbox (2 rows). */
   variant?: "standalone" | "shell";
 };
 
@@ -48,7 +43,7 @@ export function Step04TransactionDetails({
         <TextareaField
           label="Additional Information"
           required
-          rows={isShell ? 2 : 3}
+          rows={isShell ? 2 : 1}
           maxLength={2000}
           showCounter={!isShell}
           placeholder="Instructions, cargo dimensions, certifications, or any relevant notes…"
@@ -57,14 +52,6 @@ export function Step04TransactionDetails({
           error={errors.additionalInformation}
         />
       </div>
-
-      {!isShell ? (
-        <FileDropzone
-          files={state.attachments}
-          onChange={(files) => onChange({ attachments: files })}
-          error={errors.attachments}
-        />
-      ) : null}
     </fieldset>
   );
 }

@@ -1411,36 +1411,6 @@ export const QUOTE_MODE_BY_SERVICE_SLUG: Readonly<
   "air-chartering": "Air Charter",
 };
 
-/** Attachment size + type allow-list (clients + ops both audit against this). */
-export const QUOTE_FILE_LIMITS = {
-  maxFiles: 5,
-  maxTotalBytes: 10 * 1024 * 1024,
-  allowedTypes: [
-    "application/pdf",
-    "application/msword",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    "application/vnd.ms-excel",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    "image/png",
-    "image/jpeg",
-    "application/acad",
-    "application/dxf",
-    "application/octet-stream",
-  ],
-  allowedExtensions: [
-    ".pdf",
-    ".doc",
-    ".docx",
-    ".xls",
-    ".xlsx",
-    ".png",
-    ".jpg",
-    ".jpeg",
-    ".dwg",
-    ".dxf",
-  ],
-} as const;
-
 /** Hero copy for the standalone /quote route. CMS hero_headline overrides line 1. */
 export const QUOTE_HERO = {
   eyebrow: "Request a Quote",

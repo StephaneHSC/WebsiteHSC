@@ -30,12 +30,6 @@ function nl2br(input: string): string {
   return escapeHtml(input).replace(/\r?\n/g, "<br>");
 }
 
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / 1024 / 1024).toFixed(2)} MB`;
-}
-
 function sectionHeading(label: string): string {
   return `
     <tr>
@@ -57,11 +51,6 @@ function row(label: string, value: string): string {
     </tr>`;
 }
 
-export interface QuoteEmailAttachment {
-  filename: string;
-  size: number;
-}
-
 export interface QuoteEmailInput {
   mode: string;
   routes: QuoteFormRoute[];
@@ -75,7 +64,6 @@ export interface QuoteEmailInput {
   companyWebsite: string;
   fullName: string;
   email: string;
-  attachments: QuoteEmailAttachment[];
   receivedAt: Date;
 }
 
@@ -89,18 +77,6 @@ export function buildQuoteEmailHtml(input: QuoteEmailInput): string {
         </td></tr>`,
     )
     .join("");
-
-  const attachmentsBlock =
-    input.attachments.length === 0
-      ? `<tr><td style="padding: 4px 0; font-family: Arial, sans-serif; font-size: 14px; color: #6B7280;">No attachments.</td></tr>`
-      : input.attachments
-          .map(
-            (a) =>
-              `<tr><td style="padding: 4px 0; font-family: Arial, sans-serif; font-size: 14px; color: ${INK};">
-                &bull; ${escapeHtml(a.filename)} <span style="color: #6B7280;">(${formatBytes(a.size)})</span>
-              </td></tr>`,
-          )
-          .join("");
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -148,9 +124,6 @@ export function buildQuoteEmailHtml(input: QuoteEmailInput): string {
                 ${row("Email", input.email)}
                 ${row("Company", input.companyName)}
                 ${row("Website", input.companyWebsite)}
-
-                ${sectionHeading("Attachments")}
-                ${attachmentsBlock}
               </table>
             </td>
           </tr>

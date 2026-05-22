@@ -57,7 +57,7 @@ export const quoteFormConfig = defineType({
       type: "text",
       rows: 3,
       description:
-        "Multi-line override that replaces the H1 on /quote AND the headline on every embedded quote-form section (home, services, service-detail, team, why-choose-us, showcase). Each newline = a line break in the rendered headline. SPECIAL CASE: if the value is the canonical 'Share Your Shipment Details. We'll Handle The Rest.' (any casing/punctuation/whitespace), the Figma per-breakpoint break patterns are used instead — desktop 2 lines, mobile 3 lines (because the mobile layout uses a different word grouping that a single text field can't express). Edit to anything else and your own newline breaks apply uniformly.",
+        "Multi-line override for the H1 on the dedicated /quote page only. Does NOT affect the embedded quote-form sections elsewhere on the site (home, services, service-detail, team, why-choose-us, showcase) — those use their own page-specific headlines and aren't editable from here. Each newline = a line break in the rendered headline. SPECIAL CASE: if the value is the canonical 'Share Your Shipment Details. We'll Handle The Rest.' (any casing/punctuation/whitespace), the Figma per-breakpoint break patterns are used instead — desktop 2 lines, mobile 3 lines (because the mobile layout uses a different word grouping that a single text field can't express). Edit to anything else and your own newline breaks apply uniformly.",
     }),
 
     defineField({
@@ -66,7 +66,7 @@ export const quoteFormConfig = defineType({
       type: "image",
       options: { hotspot: true },
       description:
-        "Optional override that replaces the photo on /quote AND on every embedded quote-form section across the site. Leave blank to keep each placement's hardcoded context photo (Antonov AN-124 loading scene on /quote; per-page photos on home / services / team / etc.).",
+        "Optional override for the hero photo on the dedicated /quote page only. Does NOT affect the embedded quote-form sections elsewhere on the site — those use their own page-specific photos and aren't editable from here. Leave blank to keep the hardcoded Antonov AN-124 loading scene.",
     }),
 
     defineField({

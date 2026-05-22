@@ -2,9 +2,8 @@ import { Resend } from "resend";
 import { client as sanityClient } from "@/lib/sanity/client";
 import { quoteFormConfigQuery } from "@/lib/sanity/queries";
 import { validateServerSide } from "@/lib/forms/quoteForm";
-import { buildQuoteEmailHtml, type QuoteEmailAttachment } from "@/lib/forms/quoteEmailTemplate";
+import { buildQuoteEmailHtml } from "@/lib/forms/quoteEmailTemplate";
 import type { QuoteFormConfig } from "@/types/sanity";
-import { QUOTE_FILE_LIMITS } from "@/lib/constants";
 
 export const runtime = "nodejs";
 export const maxDuration = 15;
@@ -107,21 +106,11 @@ export async function POST(req: Request) {
   }
   const resend = new Resend(apiKey);
 
-  // 5. Build email body + attachments
+  // 5. Build email body
   const routes = JSON.parse(String(fd.get("routes") ?? "[]")) as {
     origin: string;
     destination: string;
   }[];
-  const attachmentList: { filename: string; content: Buffer }[] = [];
-  const attachmentMeta: QuoteEmailAttachment[] = [];
-  for (let i = 1; i <= QUOTE_FILE_LIMITS.maxFiles; i += 1) {
-    const file = fd.get(`attachment_${i}`);
-    if (file instanceof File && file.size > 0) {
-      const buffer = Buffer.from(await file.arrayBuffer());
-      attachmentList.push({ filename: file.name, content: buffer });
-      attachmentMeta.push({ filename: file.name, size: file.size });
-    }
-  }
 
   const companyName = String(fd.get("company_name") ?? "");
   const mode = String(fd.get("mode") ?? "");
@@ -140,7 +129,6 @@ export async function POST(req: Request) {
     companyWebsite: String(fd.get("company_website") ?? ""),
     fullName: String(fd.get("full_name") ?? ""),
     email: submitterEmail,
-    attachments: attachmentMeta,
     receivedAt: new Date(),
   });
 
@@ -152,7 +140,6 @@ export async function POST(req: Request) {
       replyTo: submitterEmail,
       subject: `Quote: ${companyName} — ${mode}`,
       html,
-      attachments: attachmentList,
     });
     if (error) {
       console.error("[/api/quote] Resend error", error);
