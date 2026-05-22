@@ -62,7 +62,7 @@ export function QuoteHero({ cmsHeadline, imageSrc, imageAlt }: QuoteHeroProps) {
           fill
           priority
           sizes="100vw"
-          className="object-cover object-left-bottom lg:object-bottom"
+          className="object-cover object-[center_70%]"
         />
         <span aria-hidden="true" className="absolute inset-0 bg-black/[0.36] lg:bg-black/40" />
 

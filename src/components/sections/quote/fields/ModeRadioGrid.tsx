@@ -102,10 +102,14 @@ export function ModeRadioGrid({
             <span
               aria-hidden="true"
               className={cn(
-                "absolute top-1/2 left-[14px] size-[15px] -translate-y-1/2 rounded-full border",
-                selected ? "border-white bg-white" : "border-ink/30",
+                "absolute top-1/2 left-[14px] size-[15px] -translate-y-1/2 rounded-full",
+                selected ? "bg-white" : "bg-[#D9D9D9]",
               )}
-            />
+            >
+              {selected ? (
+                <span className="bg-brand-red absolute inset-[3px] rounded-full" />
+              ) : null}
+            </span>
             {label}
           </div>
         );

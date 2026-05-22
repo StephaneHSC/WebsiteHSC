@@ -81,21 +81,27 @@ export function ChevronDown({ className, ...props }: IconProps) {
   );
 }
 
+/**
+ * Filled white rounded square with a brand-red chevron-down inside.
+ * Matches Figma node 505:7784 (mobile mode pill dropdown indicator).
+ * The squircle uses Figma's exact superellipse-ish path (rounder than a
+ * rect+rx=4, flatter corners than rx=8) — keep the cubic anchors when
+ * resizing rather than swapping for `<rect>`.
+ */
 export function ArrowSquareDown({ className, ...props }: IconProps) {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      className={className}
-      {...props}
-    >
-      <rect x="3" y="3" width="18" height="18" rx="4" />
-      <path d="m8 11 4 4 4-4" />
+    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" className={className} {...props}>
+      <path
+        d="M7 20H13C18 20 20 18 20 13V7C20 2 18 0 13 0H7C2 0 0 2 0 7V13C0 18 2 20 7 20Z"
+        fill="white"
+      />
+      <path
+        d="M6.46875 8.64062L9.99875 12.1606L13.5287 8.64062"
+        stroke="#E40C28"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }

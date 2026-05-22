@@ -563,6 +563,7 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
           onChange={updateState}
           errors={errors}
           stackFields={stackFields}
+          compactRow={isShell}
         />
       </CollapsibleSection>
 
@@ -640,7 +641,7 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
           <p
             className={cn(
               "font-body text-ink text-[10px] tracking-[0.04em] uppercase",
-              variant === "standalone" ? "text-center lg:text-right" : "text-center",
+              variant === "standalone" ? "text-center lg:text-right" : "text-left",
             )}
           >
             {QUOTE_FORM_DEFAULTS.disclaimer}
@@ -689,8 +690,8 @@ function CollapsibleSection({
       <div
         className={
           desktopAccordion
-            ? "border-input-border border-t pt-[20px]"
-            : "border-input-border border-t pt-[20px] lg:border-t-0 lg:pt-0"
+            ? "border-input-border border-t border-dotted pt-[20px]"
+            : "border-input-border border-t border-dotted pt-[20px] lg:border-t-0 lg:pt-0"
         }
       >
         <StepHeading

@@ -62,9 +62,9 @@ export function ModeMobilePill({ value, onChange, variant = "standalone" }: Mode
       >
         <span
           aria-hidden="true"
-          className="absolute top-1/2 left-[14px] size-[15px] -translate-y-1/2 rounded-full border border-white"
+          className="absolute top-1/2 left-[14px] size-[15px] -translate-y-1/2 rounded-full bg-white"
         >
-          <span className="bg-surface absolute top-1/2 left-1/2 size-[9px] -translate-x-1/2 -translate-y-1/2 rounded-full" />
+          <span className="bg-brand-red absolute inset-[3px] rounded-full" />
         </span>
         <span className="truncate text-left">{pillLabel}</span>
         <ArrowSquareDown

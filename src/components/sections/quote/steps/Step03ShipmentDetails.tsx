@@ -18,9 +18,21 @@ export type Step03Props = {
   errors: QuoteFormErrors;
   /** Embedded variant stacks all 4 fields vertically (half-width column). */
   stackFields?: boolean;
+  /**
+   * Shell variant: keep the outer 2-col grid (Period | Model column) but
+   * stack Brand/Model/Quantity vertically inside the right column — the
+   * narrow shell pane can't fit all three side-by-side.
+   */
+  compactRow?: boolean;
 };
 
-export function Step03ShipmentDetails({ state, onChange, errors, stackFields }: Step03Props) {
+export function Step03ShipmentDetails({
+  state,
+  onChange,
+  errors,
+  stackFields,
+  compactRow,
+}: Step03Props) {
   const models = state.helicopterBrand
     ? (QUOTE_HELICOPTER_MODELS_BY_BRAND[state.helicopterBrand] ?? [])
     : [];
@@ -51,7 +63,7 @@ export function Step03ShipmentDetails({ state, onChange, errors, stackFields }: 
           </span>
           <div
             className={
-              stackFields
+              stackFields || compactRow
                 ? "flex flex-col gap-[12px]"
                 : "flex flex-col gap-[12px] lg:flex-row lg:gap-[7px]"
             }
@@ -62,31 +74,59 @@ export function Step03ShipmentDetails({ state, onChange, errors, stackFields }: 
               options={QUOTE_HELICOPTER_BRANDS}
               value={state.helicopterBrand}
               onChange={(brand) => onChange({ helicopterBrand: brand, helicopterModel: null })}
-              className={stackFields ? "" : "lg:w-[180px]"}
+              className={stackFields || compactRow ? "" : "lg:w-[180px]"}
               ariaLabel="Helicopter brand"
               error={errors.helicopterBrand}
             />
-            <SelectField
-              compact
-              placeholder="Select e.g. Airbus H125"
-              options={models}
-              value={state.helicopterModel}
-              onChange={(model) => onChange({ helicopterModel: model })}
-              disabled={!state.helicopterBrand}
-              className={stackFields ? "" : "lg:flex-1"}
-              ariaLabel="Helicopter model"
-              error={errors.helicopterModel}
-            />
-            <SelectField
-              compact
-              placeholder="Qty"
-              options={QUOTE_QUANTITIES}
-              value={state.helicopterQuantity}
-              onChange={(qty) => onChange({ helicopterQuantity: qty })}
-              className={stackFields ? "" : "lg:w-[100px]"}
-              ariaLabel="Quantity"
-              error={errors.helicopterQuantity}
-            />
+            {compactRow ? (
+              <div className="flex gap-[7px]">
+                <SelectField
+                  compact
+                  placeholder="Select e.g. Airbus H125"
+                  options={models}
+                  value={state.helicopterModel}
+                  onChange={(model) => onChange({ helicopterModel: model })}
+                  disabled={!state.helicopterBrand}
+                  className="min-w-0 flex-1"
+                  ariaLabel="Helicopter model"
+                  error={errors.helicopterModel}
+                />
+                <SelectField
+                  compact
+                  placeholder="Qty"
+                  options={QUOTE_QUANTITIES}
+                  value={state.helicopterQuantity}
+                  onChange={(qty) => onChange({ helicopterQuantity: qty })}
+                  className="w-[80px] shrink-0"
+                  ariaLabel="Quantity"
+                  error={errors.helicopterQuantity}
+                />
+              </div>
+            ) : (
+              <>
+                <SelectField
+                  compact
+                  placeholder="Select e.g. Airbus H125"
+                  options={models}
+                  value={state.helicopterModel}
+                  onChange={(model) => onChange({ helicopterModel: model })}
+                  disabled={!state.helicopterBrand}
+                  className={stackFields ? "" : "lg:flex-1"}
+                  ariaLabel="Helicopter model"
+                  error={errors.helicopterModel}
+                />
+                <SelectField
+                  compact
+                  placeholder="Qty"
+                  options={QUOTE_QUANTITIES}
+                  value={state.helicopterQuantity}
+                  onChange={(qty) => onChange({ helicopterQuantity: qty })}
+                  className={stackFields ? "" : "lg:w-[100px]"}
+                  ariaLabel="Quantity"
+                  error={errors.helicopterQuantity}
+                />
+              </>
+            )}
           </div>
         </div>
       </div>
