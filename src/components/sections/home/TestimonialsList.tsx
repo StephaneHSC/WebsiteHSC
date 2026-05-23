@@ -76,11 +76,19 @@ export function TestimonialsList({ testimonials }: TestimonialsListProps) {
 
       {/* Mobile: scroll-snap carousel. Initial 3 cards; after expand, the full
           list is rendered in the same carousel (still horizontal scroll). */}
+
       <div className="mt-12 md:hidden">
-        <ScrollSnapRow ariaLabel="Customer testimonials" className="gap-4 px-6 pb-4">
+        <ScrollSnapRow
+          ariaLabel="Customer testimonials"
+          className="items-stretch gap-4 px-6 pb-4" // ← items-stretch here
+        >
           {visible.map((t, i) => (
-            <li key={t._id} className="w-[85%] shrink-0 snap-center">
-              <Reveal delay={0.2 + (i % 3) * 0.05}>
+            <li key={t._id} className="flex w-[85%] shrink-0 snap-center">
+              {" "}
+              {/* ← flex, no h-full */}
+              <Reveal delay={0.2 + (i % 3) * 0.05} className="flex w-full flex-col">
+                {" "}
+                {/* ← flex flex-col w-full */}
                 <TestimonialCard testimonial={t} />
               </Reveal>
             </li>
