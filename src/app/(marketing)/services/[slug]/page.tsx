@@ -8,6 +8,7 @@ import { ProjectsMosaic } from "@/components/sections/_shared/ProjectsMosaic";
 import { QuoteFormShell } from "@/components/sections/_shared/QuoteFormShell";
 import { OfficesGlobal } from "@/components/sections/_shared/OfficesGlobal";
 import { SERVICES, SHOWCASE_TILES, QUOTE_MODE_BY_SERVICE_SLUG } from "@/lib/constants";
+import { pageMetadata } from "@/lib/seo";
 
 type RouteParams = Promise<{ slug: string }>;
 
@@ -19,10 +20,11 @@ export async function generateMetadata({ params }: { params: RouteParams }): Pro
   const { slug } = await params;
   const service = SERVICES.find((s) => s.slug === slug);
   if (!service) return {};
-  return {
+  return pageMetadata({
     title: service.name,
     description: service.description,
-  };
+    path: `/services/${service.slug}`,
+  });
 }
 
 /**

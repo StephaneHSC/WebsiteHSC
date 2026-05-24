@@ -66,3 +66,81 @@ html {
     scroll-behavior: auto !important;
   }
 }
+
+/* Legal pages (/privacy, /terms) — styles the sanitized verbatim HTML
+   injected via dangerouslySetInnerHTML. Numbered section headings use the
+   data-n attribute as a red numeric prefix to match the brand. */
+.legal-prose h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 1.25rem;
+  line-height: 1.3;
+  color: var(--color-ink);
+  margin-top: 2.5rem;
+}
+@media (min-width: 768px) {
+  .legal-prose h2 {
+    font-size: 1.5rem;
+  }
+}
+.legal-prose h2[data-n]::before {
+  content: attr(data-n) ". ";
+  color: var(--color-brand-red);
+  margin-right: 0.25rem;
+}
+.legal-prose h3,
+.legal-prose h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 1.125rem;
+  line-height: 1.3;
+  color: var(--color-ink);
+  margin-top: 2.5rem;
+}
+.legal-prose p {
+  margin-top: 1rem;
+}
+.legal-prose ul,
+.legal-prose ol {
+  margin-top: 1rem;
+  padding-left: 1.5rem;
+}
+.legal-prose ul {
+  list-style: disc;
+}
+.legal-prose ol {
+  list-style: decimal;
+}
+.legal-prose ol ol {
+  list-style: lower-alpha;
+  margin-top: 0.5rem;
+}
+.legal-prose ol ol ol {
+  list-style: lower-roman;
+}
+.legal-prose li {
+  margin-top: 0.5rem;
+}
+.legal-prose li > p:first-child {
+  margin-top: 0;
+}
+.legal-prose strong,
+.legal-prose b {
+  font-weight: 700;
+  color: var(--color-ink);
+}
+.legal-prose a {
+  color: var(--color-brand-red);
+}
+.legal-prose a:hover {
+  text-decoration: underline;
+}
+.legal-prose hr {
+  margin-block: 1.5rem;
+  border-color: var(--color-border);
+}
+.legal-prose > *:first-child {
+  margin-top: 0;
+}

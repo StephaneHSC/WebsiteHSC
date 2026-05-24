@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { client } from "@/lib/sanity/client";
 import { quoteFormConfigQuery } from "@/lib/sanity/queries";
 import type { QuoteFormConfig } from "@/types/sanity";
@@ -11,14 +10,16 @@ import { QuoteFormEmbedded } from "@/components/sections/quote/QuoteFormEmbedded
 import { QuoteFormDisabled } from "@/components/sections/quote/QuoteFormDisabled";
 import { OfficesGlobal } from "@/components/sections/_shared/OfficesGlobal";
 import { Reveal } from "@/components/sections/_shared/Reveal";
+import { pageMetadata } from "@/lib/seo";
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Request a Quote",
   description:
     "Tell us about your helicopter shipment — origin, destination, aircraft, and timeline. Our ops team replies within 24 hours.",
-};
+  path: "/quote",
+});
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
