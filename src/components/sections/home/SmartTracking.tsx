@@ -42,12 +42,12 @@ export function SmartTracking() {
               <AppBadgeRow
                 variant="light"
                 size="sm"
-                badgeClassName="border-2 border-ink"
+                badgeClassName="border border-ink"
                 className="md:hidden"
               />
               <AppBadgeRow
                 variant="light"
-                badgeClassName="border-2 border-ink"
+                badgeClassName="border border-ink"
                 className="hidden md:flex"
               />
             </Reveal>
