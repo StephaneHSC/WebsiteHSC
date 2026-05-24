@@ -11,19 +11,48 @@ import { cn } from "@/lib/utils";
 export function ServicesTeaser() {
   const [rowHovered, setRowHovered] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  // Mobile snap-center: tracks which card is currently centered in the
+  // viewport. Defaults to index 2 (Ocean FCL) so the third card lands on
+  // mount, matching desktop and the Figma frame.
+  const [mobileInViewIndex, setMobileInViewIndex] = useState(2);
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const itemRefs = useRef<Array<HTMLLIElement | null>>([]);
 
-  // Default-active = 3rd card (Ocean FCL). On hover, the hovered card takes over.
-  const activeIndex = rowHovered ? hoveredIndex : 2;
+  // Desktop default-active = 3rd card. On hover, the hovered card takes over.
+  const desktopActive = rowHovered ? hoveredIndex : 2;
 
-  // Mobile only: on mount, scroll the carousel so the 3rd card is in view —
-  // mirrors the desktop default-active behaviour and hints that the row scrolls.
+  // Mobile-only: center the 3rd card on mount, then keep `mobileInViewIndex`
+  // in sync with whichever card the user has scrolled to.
   useEffect(() => {
-    if (window.matchMedia("(min-width: 768px)").matches) return;
+    if (!window.matchMedia("(max-width: 767px)").matches) return;
     const scroller = scrollerRef.current;
     if (!scroller) return;
-    const third = scroller.querySelectorAll<HTMLLIElement>("li")[2];
-    if (third) scroller.scrollTo({ left: third.offsetLeft - 16, behavior: "smooth" });
+
+    const third = itemRefs.current[2];
+    if (third) {
+      const target = third.offsetLeft + third.offsetWidth / 2 - scroller.clientWidth / 2;
+      scroller.scrollTo({ left: Math.max(0, target), behavior: "smooth" });
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        let bestRatio = 0;
+        let bestIdx = -1;
+        entries.forEach((entry) => {
+          if (entry.intersectionRatio > bestRatio) {
+            const idx = itemRefs.current.indexOf(entry.target as HTMLLIElement);
+            if (idx !== -1) {
+              bestRatio = entry.intersectionRatio;
+              bestIdx = idx;
+            }
+          }
+        });
+        if (bestIdx !== -1) setMobileInViewIndex(bestIdx);
+      },
+      { root: scroller, threshold: [0.55, 0.7, 0.85, 0.95, 1] },
+    );
+    itemRefs.current.forEach((el) => el && observer.observe(el));
+    return () => observer.disconnect();
   }, []);
 
   return (
@@ -55,36 +84,57 @@ export function ServicesTeaser() {
         role="region"
         aria-label="Helicopter transport service offerings"
         tabIndex={0}
-        className="focus-visible:ring-brand-red mt-12 overflow-x-auto scroll-smooth pb-2 [-ms-overflow-style:none] [scrollbar-width:none] focus-visible:ring-2 focus-visible:outline-none lg:mt-16 [&::-webkit-scrollbar]:hidden"
+        // `snap-x snap-mandatory` MUST live on the scroll container (the
+        // element with `overflow`); putting it on the inner <ul> is a no-op.
+        className="focus-visible:ring-brand-red mt-12 snap-x snap-mandatory overflow-x-auto scroll-smooth pb-2 [-ms-overflow-style:none] [scrollbar-width:none] focus-visible:ring-2 focus-visible:outline-none lg:mt-16 [&::-webkit-scrollbar]:hidden"
       >
         <ul
-          className="flex snap-x snap-mandatory gap-3 px-4 sm:px-6 md:gap-2.5 md:px-6 lg:px-8"
+          // Mobile: symmetric edge padding equal to (viewport − card)/2 so that
+          // every card — first and last included — can snap to viewport center.
+          // md+: original flush layout with the expanding-active behaviour.
+          className="flex gap-1 px-[calc(50vw_-_9rem)] sm:px-[calc(50vw_-_10rem)] md:gap-2.5 md:px-6 lg:px-8"
           onMouseEnter={() => setRowHovered(true)}
           onMouseLeave={() => setRowHovered(false)}
         >
-          {SERVICES_TEASER.map((service, i) => (
-            <li
-              key={service.slug}
-              onMouseEnter={() => setHoveredIndex(i)}
-              onMouseLeave={() => setHoveredIndex(null)}
-              data-active={activeIndex === i ? "true" : undefined}
-              className={cn(
-                "group relative h-[460px] shrink-0 snap-start overflow-hidden sm:h-[520px] lg:h-[600px] xl:h-[640px]",
-                // Mobile: fixed width carousel.
-                "w-72 sm:w-80",
-                // Desktop+: min-width pattern. Inactive cards stay narrow, the
-                // active card grows wide. Card 6 sits past the right edge and
-                // is reached by horizontally scrolling/trackpad-swiping the row.
-                "md:w-auto md:min-w-[140px] lg:min-w-[180px] xl:min-w-[220px]",
-                "md:transition-[min-width] md:duration-500 md:ease-[cubic-bezier(0.16,1,0.3,1)]",
-                activeIndex === i && "md:!min-w-[420px] lg:!min-w-[600px] xl:!min-w-[720px]",
-              )}
-            >
-              <Reveal delay={0.2 + i * 0.06} className="h-full">
-                <ServiceCard service={service} number={i + 1} active={activeIndex === i} />
-              </Reveal>
-            </li>
-          ))}
+          {SERVICES_TEASER.map((service, i) => {
+            const isMobileCentered = mobileInViewIndex === i;
+            return (
+              <li
+                key={service.slug}
+                ref={(el) => {
+                  itemRefs.current[i] = el;
+                }}
+                onMouseEnter={() => setHoveredIndex(i)}
+                onMouseLeave={() => setHoveredIndex(null)}
+                data-active={desktopActive === i ? "true" : undefined}
+                data-in-view={isMobileCentered ? "true" : undefined}
+                className={cn(
+                  "group relative h-[460px] shrink-0 overflow-hidden sm:h-[520px] lg:h-[600px] xl:h-[640px]",
+                  // Mobile: fixed card width, snap-center, snap-always so a
+                  // single swipe advances exactly one card (no fling-skipping).
+                  "w-72 snap-center snap-always sm:w-80",
+                  // md+: min-width pattern. Inactive cards stay narrow, the
+                  // active card grows wide. Snap-start so the row reads as a
+                  // grid rather than a single-card carousel.
+                  "md:w-auto md:min-w-[140px] md:snap-start lg:min-w-[180px] xl:min-w-[220px]",
+                  "md:transition-[min-width] md:duration-500 md:ease-[cubic-bezier(0.16,1,0.3,1)]",
+                  // Mobile: scale neighbours down so the centered card reads
+                  // as the largest in frame. Reset on md+ where the desktop
+                  // expansion takes over.
+                  "scale-[0.88] transition-transform duration-300 ease-out data-[in-view=true]:scale-100 md:!scale-100",
+                  desktopActive === i && "md:!min-w-[420px] lg:!min-w-[600px] xl:!min-w-[720px]",
+                )}
+              >
+                <Reveal delay={0.2 + i * 0.06} className="h-full">
+                  <ServiceCard
+                    service={service}
+                    number={i + 1}
+                    active={desktopActive === i || isMobileCentered}
+                  />
+                </Reveal>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </Section>

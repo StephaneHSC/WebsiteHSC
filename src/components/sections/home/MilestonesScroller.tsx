@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Reveal } from "@/components/sections/_shared/Reveal";
 import { urlFor } from "@/lib/sanity/image";
 import type { Milestone } from "@/types/sanity";
@@ -21,7 +21,7 @@ function isPlaceholder(m: MilestoneRow): m is PlaceholderMilestone {
   return "placeholderImage" in m;
 }
 
-const CARD_W_PX = { base: 288, lg: 320 };
+const CARD_W_PX = { base: 288, lg: 360 };
 const GAP_PX = { base: 16, lg: 24 };
 
 type Props = {
@@ -29,8 +29,13 @@ type Props = {
 };
 
 export function MilestonesScroller({ milestones }: Props) {
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const cardW = "w-72 lg:w-80";
+  const cardsRowRef = useRef<HTMLDivElement>(null);
+  const [cardsMidPx, setCardsMidPx] = useState<number>(0);
+  const [canPrev, setCanPrev] = useState(false);
+  const [canNext, setCanNext] = useState(false);
+  const cardW = "w-72 lg:w-[360px]";
 
   function scrollByCards(count: number) {
     const el = scrollRef.current;
@@ -41,32 +46,89 @@ export function MilestonesScroller({ milestones }: Props) {
     el.scrollBy({ left: count * (w + gap), behavior: "smooth" });
   }
 
+  useEffect(() => {
+    function measure() {
+      const row = cardsRowRef.current;
+      const wrap = wrapperRef.current;
+      if (!row || !wrap) return;
+      const r = row.getBoundingClientRect();
+      const w = wrap.getBoundingClientRect();
+      setCardsMidPx(r.top - w.top + r.height / 2);
+    }
+    measure();
+    const ro = new ResizeObserver(measure);
+    if (cardsRowRef.current) ro.observe(cardsRowRef.current);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, []);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    function update() {
+      if (!el) return;
+      const max = el.scrollWidth - el.clientWidth;
+      // `scroll-pl-*` on the scroller pulls the first card's snap-rest back to
+      // scrollLeft=0, so a plain "> 0" check tells us if there's anywhere to go.
+      setCanPrev(el.scrollLeft > 1);
+      setCanNext(el.scrollLeft < max - 1);
+    }
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => {
+      el.removeEventListener("scroll", update);
+      ro.disconnect();
+    };
+  }, []);
+
   return (
-    <>
-      {/* Scroll track — capped at the Container max-width and centered so the
-          left edge aligns with the heading at every viewport. */}
+    <div ref={wrapperRef} className="relative">
+      {/* Scroll track — full bleed on the right, left padding matches the
+          QuoteFormShell content start (px-6 lg:px-12) so the section reads as
+          a wider band than the centered heading container above it.
+          `scroll-pl-*` matches the inner `pl-*` so snap-start lands the first
+          card 24/48px from the viewport edge (without it, mandatory snap would
+          drag the card flush left and visually erase the padding). */}
       <div
         ref={scrollRef}
-        className="mx-auto mt-12 w-full max-w-[1600px] cursor-grab overflow-x-auto [scrollbar-width:none] active:cursor-grabbing lg:mt-16 [&::-webkit-scrollbar]:hidden"
+        className="mt-4 w-full cursor-grab scroll-pl-6 overflow-x-auto [scrollbar-width:none] active:cursor-grabbing lg:mt-6 lg:scroll-pl-12 [&::-webkit-scrollbar]:hidden"
         style={{ scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}
       >
-        <div className="inline-flex flex-col px-8 pb-4 md:px-12 lg:px-20">
-          {/* Row — timeline line + dots + helicopter */}
-          <div className="relative mt-[2rem]">
-            {/* Helicopter sits in normal flow above the line */}
-            <div
-              className="flex w-full"
-              style={{
-                paddingLeft: `calc(${100 / Math.max(milestones.length, 1)}% + 40px - 48px)`,
-              }}
-            >
+        <div className="inline-flex flex-col pb-4 pl-6 lg:pl-12">
+          {/* Row — timeline line + dots + helicopter. mt is sized to leave
+              room for the helicopter (which is absolutely positioned and
+              centered on the line, extending ~half its height above it). */}
+          <div className="relative mt-8 lg:mt-12">
+            {/* The actual line — extends leftward past the inner pl-6/lg:pl-12
+                so it bleeds to the viewport edge while dots/cards stay inset
+                at the QuoteFormShell column. Rendered first so the helicopter
+                can be absolutely positioned and centered on it. */}
+            <span
+              aria-hidden="true"
+              className="bg-ink/15 -ml-6 block h-[2px] w-[calc(100%+1.5rem)] lg:-ml-12 lg:w-[calc(100%+3rem)]"
+            />
+
+            {/* Helicopter — absolutely positioned, vertically centered on the
+                line. paddingLeft centers it on the midpoint between the first
+                two dots (2026 and 2024), so it reads as "flying from past
+                toward present".
+                  mobile: dots @ 144/448 (w-72 + gap-4), mid = 296, heli w-24
+                          → pl = 296-48 = 248px
+                  lg+:    dots @ 180/564 (w-[360px] + gap-6), mid = 372,
+                          heli w-28 → pl = 372-56 = 316px */}
+            <div className="pointer-events-none absolute inset-x-0 top-1/2 flex -translate-y-1/2 pl-[248px] lg:pl-[316px]">
               <Image
                 src="/milestones/helicopter-red.svg"
                 alt=""
                 width={76}
                 height={33}
                 aria-hidden="true"
-                className="mb-2 h-auto w-24 -scale-x-100 md:hidden"
+                className="h-auto w-24 -scale-x-100 md:hidden"
               />
               <Image
                 src="/milestones/helicopter.svg"
@@ -74,12 +136,9 @@ export function MilestonesScroller({ milestones }: Props) {
                 width={99}
                 height={42}
                 aria-hidden="true"
-                className="mb-2 hidden h-auto w-24 -scale-x-100 md:block lg:w-28"
+                className="hidden h-auto w-24 -scale-x-100 md:block lg:w-28"
               />
             </div>
-
-            {/* The actual line */}
-            <span aria-hidden="true" className="bg-ink/15 block h-px w-full" />
 
             {/* Dots */}
             <div className="absolute inset-x-0 top-[calc(100%-1px)] flex gap-4 lg:gap-6">
@@ -98,7 +157,7 @@ export function MilestonesScroller({ milestones }: Props) {
           </div>
 
           {/* Row 1 — years */}
-          <div className="mt-[3rem] flex gap-4 lg:gap-6">
+          <div className="mt-6 flex gap-4 lg:gap-6">
             {milestones.map((m, i) => (
               <div key={m._id} className={cn("flex shrink-0 justify-center", cardW)}>
                 <Reveal delay={0.2 + i * 0.05}>
@@ -116,7 +175,7 @@ export function MilestonesScroller({ milestones }: Props) {
           </div>
 
           {/* Row 3 — cards */}
-          <div className="mt-[4rem] flex items-stretch gap-4 self-stretch lg:gap-6">
+          <div ref={cardsRowRef} className="mt-12 flex items-stretch gap-4 self-stretch lg:gap-6">
             {milestones.map((m, i) => (
               <div
                 key={m._id}
@@ -146,12 +205,24 @@ export function MilestonesScroller({ milestones }: Props) {
         </div>
       </div>
 
-      {/* Nav buttons */}
-      <div className="mt-8 flex justify-center gap-3">
-        <NavButton direction="prev" onClick={() => scrollByCards(-1)} />
-        <NavButton direction="next" onClick={() => scrollByCards(1)} />
-      </div>
-    </>
+      {/* Nav buttons — desktop only, overlaid on the card row; mobile relies on native swipe.
+          Inset matches the new scroller padding so the buttons align with the visible
+          card band (left = QuoteFormShell start, right = small inset from viewport edge). */}
+      <NavButton
+        direction="prev"
+        onClick={() => scrollByCards(-1)}
+        visible={canPrev}
+        className="absolute left-6 hidden -translate-y-1/2 md:inline-flex lg:left-12"
+        style={{ top: cardsMidPx || "50%" }}
+      />
+      <NavButton
+        direction="next"
+        onClick={() => scrollByCards(1)}
+        visible={canNext}
+        className="absolute right-6 hidden -translate-y-1/2 md:inline-flex lg:right-12"
+        style={{ top: cardsMidPx || "50%" }}
+      />
+    </div>
   );
 }
 
@@ -200,18 +271,26 @@ function MilestoneCard({ milestone: m, active }: MilestoneCardProps) {
 type NavButtonProps = {
   direction: "prev" | "next";
   onClick: () => void;
+  visible: boolean;
+  className?: string;
+  style?: React.CSSProperties;
 };
 
-function NavButton({ direction, onClick }: NavButtonProps) {
+function NavButton({ direction, onClick, visible, className, style }: NavButtonProps) {
   return (
     <button
       type="button"
       onClick={onClick}
       aria-label={direction === "prev" ? "Previous cards" : "Next cards"}
+      aria-hidden={!visible}
+      tabIndex={visible ? 0 : -1}
+      style={style}
       className={cn(
-        "border-ink/20 text-ink inline-flex h-11 w-11 items-center justify-center rounded-full border transition-colors duration-200",
-        "hover:border-ink hover:bg-ink hover:text-surface",
+        "bg-surface text-ink z-20 inline-flex h-12 w-12 items-center justify-center rounded-full shadow-[0_4px_16px_rgba(0,0,0,0.12)] transition-all duration-200",
+        "hover:bg-ink hover:text-surface hover:shadow-[0_6px_20px_rgba(0,0,0,0.2)]",
         "focus-visible:ring-brand-red focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
+        !visible && "pointer-events-none opacity-0",
+        className,
       )}
     >
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">

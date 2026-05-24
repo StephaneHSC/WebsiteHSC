@@ -15,7 +15,7 @@ import { PartnersMarquee } from "./PartnersMarquee";
  */
 export function PartnersStrip() {
   return (
-    <Section tone="alt" spacing="standard" className="overflow-hidden">
+    <Section tone="alt" spacing="standard" className="mt-12 overflow-hidden md:mt-16 lg:mt-20">
       <Container>
         <div className="flex flex-col items-start gap-4">
           <Reveal>
