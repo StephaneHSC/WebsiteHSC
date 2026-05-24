@@ -45,7 +45,7 @@ export function ServiceOverview({ service }: ServiceOverviewProps) {
 
           {/* Content column. */}
           <div className="lg:order-1 lg:flex lg:items-center">
-            <div className="mx-auto flex w-full max-w-[600px] flex-col items-center text-center lg:px-10">
+            <div className="mx-auto flex w-full max-w-[680px] flex-col items-center text-center lg:px-10">
               <Reveal>
                 <SectionEyebrow variant="gray" className="px-3 py-2">
                   {o.label}
@@ -64,7 +64,10 @@ export function ServiceOverview({ service }: ServiceOverviewProps) {
                 </h2>
               </Reveal>
 
-              <Reveal delay={0.2} className="mt-8 flex w-full flex-col gap-6 lg:mt-10">
+              <Reveal
+                delay={0.2}
+                className="mt-8 flex w-full flex-col gap-6 lg:mt-10 lg:max-w-[520px]"
+              >
                 {o.paragraphs.map((p, i) => (
                   <Paragraph key={i} paragraph={p} />
                 ))}

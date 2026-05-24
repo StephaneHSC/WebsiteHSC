@@ -977,9 +977,9 @@ export const SERVICES: readonly Service[] = [
           reg(
             "Heli Skycargo contracts with the very best global Ro/Ro carriers, including NYK, Höegh Autoliners, Wallenius Wilhelmsen, ",
           ),
-          bold("MOL (Mitsui O.S.K. Lines)"),
+          reg("MOL (Mitsui O.S.K. Lines)"),
           reg(", K Line, Armacup, "),
-          bold("EUKOR"),
+          reg("EUKOR"),
           reg(", the Grimaldi Group, Bahri Shipping and many others."),
         ]),
       ],
@@ -1620,9 +1620,9 @@ export const SERVICES_TEASER: readonly Service[] = [
           reg(
             "Heli Skycargo contracts with the very best global Ro/Ro carriers, including NYK, Höegh Autoliners, Wallenius Wilhelmsen, ",
           ),
-          bold("MOL (Mitsui O.S.K. Lines)"),
+          reg("MOL (Mitsui O.S.K. Lines)"),
           reg(", K Line, Armacup, "),
-          bold("EUKOR"),
+          reg("EUKOR"),
           reg(", the Grimaldi Group, Bahri Shipping and many others."),
         ]),
       ],
