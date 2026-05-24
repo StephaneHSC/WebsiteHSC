@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { WhyChooseHero } from "@/components/sections/why-choose/WhyChooseHero";
 import { GlobalReachCallout } from "@/components/sections/why-choose/GlobalReachCallout";
 import { StatsBand } from "@/components/sections/_shared/StatsBand";
@@ -8,14 +7,16 @@ import { TrackabilityCallout } from "@/components/sections/why-choose/Trackabili
 import { OfficesGlobal } from "@/components/sections/_shared/OfficesGlobal";
 import { QuoteFormShell } from "@/components/sections/_shared/QuoteFormShell";
 import { WHY_CHOOSE_FEATURE_BLOCKS } from "@/lib/constants";
+import { pageMetadata } from "@/lib/seo";
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: "Why Choose Heli Skycargo",
+export const metadata = pageMetadata({
+  title: "Why Choose Us",
   description:
     "Bespoke helicopter shipping with global reach, dedicated specialists, and end-to-end tracking. Tailored logistics solutions built around your aircraft.",
-};
+  path: "/why-choose-us",
+});
 
 /**
  * /why-choose-us — M5. Hero → Global Reach → Stats → Intro photo band →

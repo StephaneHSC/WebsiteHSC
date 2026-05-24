@@ -23,7 +23,7 @@ export function SplashScreen({ children }: { children: React.ReactNode }) {
       setState("done");
       return;
     }
-    timerRef.current = setTimeout(() => dismiss(), 4800);
+    timerRef.current = setTimeout(() => dismiss(), 4700);
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
@@ -56,11 +56,11 @@ export function SplashScreen({ children }: { children: React.ReactNode }) {
             autoPlay
             muted
             playsInline
-            className="absolute inset-0 h-full w-full object-cover opacity-60"
+            className="absolute inset-0 h-full w-full object-cover opacity-50 md:opacity-60"
             src="/home/hero-video.mp4"
           />
           <div
-            className="relative z-10 flex h-full items-center justify-center"
+            className="relative z-10 flex h-full items-start justify-center pt-28 md:items-center md:justify-center md:pt-0"
             style={{
               transform:
                 state === "animating"
@@ -73,7 +73,7 @@ export function SplashScreen({ children }: { children: React.ReactNode }) {
                   : "none",
             }}
           >
-            <h1 className="font-display px-8 pb-[15rem] text-center text-2xl font-black tracking-tight text-white uppercase md:text-4xl lg:text-6xl">
+            <h1 className="font-display px-6 text-center text-[2rem] leading-[1.1] font-black tracking-tight text-white uppercase md:pb-[15rem] md:text-4xl lg:text-6xl">
               Welcome to Heli Skycargo
             </h1>
           </div>

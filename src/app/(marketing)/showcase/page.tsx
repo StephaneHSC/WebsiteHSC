@@ -1,17 +1,18 @@
-import type { Metadata } from "next";
 import { ShowcaseHero } from "@/components/sections/showcase/ShowcaseHero";
 import { ProjectsMosaic } from "@/components/sections/_shared/ProjectsMosaic";
 import { QuoteFormShell } from "@/components/sections/_shared/QuoteFormShell";
 import { OfficesGlobal } from "@/components/sections/_shared/OfficesGlobal";
 import { SHOWCASE_GALLERY, SHOWCASE_TILES, type ShowcaseTile } from "@/lib/constants";
+import { pageMetadata } from "@/lib/seo";
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Shipment Showcase",
   description:
     "Explore Heli Skycargo's past helicopter shipment projects across the globe — routes, aircraft, timelines, challenges, and outcomes.",
-};
+  path: "/showcase",
+});
 
 /**
  * /showcase-specific desktop tile order: swap `china-guatemala` (idx 7,

@@ -59,10 +59,7 @@ export const FOOTER = {
   ],
 } as const;
 
-/**
- * App download links. TODO: replace placeholder hrefs with the real
- * App Store and Google Play URLs when the client provides them.
- */
+/** App download links — confirmed by client. */
 export const APP_LINKS = {
   appStore: "https://apps.apple.com/us/app/hschelitrack/id1498909837",
   googlePlay: "https://play.google.com/store/apps/details?id=com.heliskycargo",

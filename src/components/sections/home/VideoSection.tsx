@@ -57,10 +57,13 @@ export function VideoSection() {
         )}
 
         {/* Logo overlay — sibling of the button so its Link click doesn't fire
-            the play button. Pointer-events kept enabled for the Link itself. */}
+            the play button. Pointer-events kept enabled for the Link itself.
+            Inverted (white) variant while playing — portrait container +
+            landscape video leaves bg-black letterboxing on mobile, and the
+            footage itself is dark on desktop, so the dark mark disappears. */}
         <div className="pointer-events-none absolute top-4 left-4 z-10 sm:top-6 sm:left-6 md:top-8 md:left-8">
           <span className="pointer-events-auto inline-block">
-            <Logo imageClassName="h-8 sm:h-10 md:h-12" />
+            <Logo inverted={playing} imageClassName="h-8 sm:h-10 md:h-12" />
           </span>
         </div>
       </div>

@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { TeamHero } from "@/components/sections/team/TeamHero";
 import { TeamSpotlightSection } from "@/components/sections/team/TeamSpotlightSection";
 import { OfficesGlobal } from "@/components/sections/_shared/OfficesGlobal";
@@ -7,14 +6,16 @@ import { fetchWithCmsFallback } from "@/components/sections/_shared/cmsFallback"
 import { teamMembersQuery } from "@/lib/sanity/queries";
 import { PLACEHOLDER_TEAM_MEMBERS, type TeamMemberPlaceholder } from "@/lib/constants";
 import type { TeamMember } from "@/types/sanity";
+import { pageMetadata } from "@/lib/seo";
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Our Team",
   description:
     "Meet the people behind every Heli Skycargo shipment — a global team of helicopter logistics specialists, coordinators, and Japan-desk experts.",
-};
+  path: "/team",
+});
 
 /**
  * /team — M6. Hero → Experts You Can Trust spotlight + slider → Quote form
