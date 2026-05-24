@@ -32,7 +32,7 @@ export async function TeamTeaser() {
           eyebrowVariant="outline"
           title={
             <>
-              Meet The Team <span className="font-bold md:block">Behind Every Mission</span>
+              Meet The Team <span className="block font-semibold">Behind Every Mission</span>
             </>
           }
           align="center"

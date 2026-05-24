@@ -14,7 +14,7 @@ const spacingClasses: Record<SectionSpacing, string> = {
   none: "",
   tight: "py-12 md:py-16",
   standard: "py-16 md:py-24 lg:py-28",
-  loose: "py-20 md:py-32 lg:py-40",
+  loose: "py-8 md:py-16 lg:py-20",
 };
 
 export type SectionProps = HTMLAttributes<HTMLElement> & {

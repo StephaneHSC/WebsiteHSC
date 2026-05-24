@@ -24,16 +24,29 @@ export function ServicesHero() {
       </div>
 
       <Container>
-        <div className="flex min-h-[470px] flex-col justify-end pt-32 pb-12 md:min-h-[640px] md:pt-44 md:pb-20 lg:min-h-[705px] lg:pt-56 lg:pb-28">
+        {/*
+         * Top-anchored layout: eyebrow + title sit at Figma's fixed top
+         * coordinates (eyebrow `y=212` mobile / `y=294` desktop) instead of
+         * being pushed against the bottom edge. The empty space below is
+         * intentional — Figma frames `505:7643` / `345:6960`.
+         */}
+        <div className="flex min-h-[470px] flex-col pt-[212px] pb-12 md:min-h-[640px] md:pt-[250px] md:pb-20 lg:min-h-[705px] lg:pt-[294px] lg:pb-28">
           <Reveal>
             <SectionEyebrow variant="red" className="px-3 py-2">
               What We Do
             </SectionEyebrow>
           </Reveal>
           <Reveal delay={0.1}>
-            <h1 className="font-body text-surface mt-6 text-[32px] leading-[1.31] font-bold tracking-[0.02em] capitalize md:mt-8 md:text-5xl md:leading-[1.2] lg:text-[64px] lg:leading-[82px]">
-              <span className="block">Global logistics experts</span>
-              <span className="block">with unique industry access.</span>
+            <h1 className="font-body text-surface mt-4 text-[32px] leading-[1.31] font-bold tracking-[0.02em] capitalize md:mt-6 md:text-5xl md:leading-[1.2] lg:text-[64px] lg:leading-[82px]">
+              {/*
+               * Mobile (3 lines): "Global Logistics" / "Experts With Unique"
+               * / "Industry Access.". Desktop (2 lines): "Global Logistics
+               * Experts" / "With Unique Industry Access."
+               */}
+              Global Logistics
+              <br className="md:hidden" /> Experts
+              <br className="hidden md:inline" /> With Unique
+              <br className="md:hidden" /> Industry Access.
             </h1>
           </Reveal>
         </div>

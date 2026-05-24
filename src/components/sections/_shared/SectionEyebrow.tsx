@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 export type EyebrowVariant =
   | "red"
   | "gray"
+  | "solid-white"
   | "outline-white"
   | "outline-ink"
   // Backwards-compat aliases for M1/M2 consumers.
@@ -13,10 +14,11 @@ export type EyebrowVariant =
 const variantClasses: Record<EyebrowVariant, string> = {
   red: "bg-brand-red text-surface",
   gray: "bg-ink-muted text-surface",
+  "solid-white": "bg-surface text-ink",
   "outline-white": "border border-surface text-surface bg-transparent",
   "outline-ink": "border border-ink/15 text-ink bg-transparent",
   filled: "bg-brand-red text-surface",
-  outline: "border border-ink/15 text-ink",
+  outline: "border border-ink text-ink",
 };
 
 export type SectionEyebrowProps = HTMLAttributes<HTMLSpanElement> & {
@@ -36,7 +38,7 @@ export function SectionEyebrow({
   return (
     <span
       className={cn(
-        "font-body inline-flex items-center px-2 py-2 text-[12px] leading-none font-bold tracking-[0.06em] uppercase",
+        "font-body inline-flex items-center px-1.5 py-1.5 text-[12px] leading-none font-bold tracking-[0.06em] uppercase",
         variantClasses[variant],
         className,
       )}

@@ -10,12 +10,12 @@ import { AppBadge } from "@/components/ui/AppBadge";
 
 // ── App download buttons ────────────────────────────────────────────────────
 
-export function AppStoreButton() {
-  return <AppBadge store="app-store" variant="light" />;
+export function AppStoreButton({ size = "md" }: { size?: "sm" | "md" } = {}) {
+  return <AppBadge store="app-store" variant="light" size={size} />;
 }
 
-export function GooglePlayButton() {
-  return <AppBadge store="google-play" variant="light" />;
+export function GooglePlayButton({ size = "md" }: { size?: "sm" | "md" } = {}) {
+  return <AppBadge store="google-play" variant="light" size={size} />;
 }
 
 // ── Social icons ─────────────────────────────────────────────────────────────
@@ -83,28 +83,46 @@ function SocialLink({
 // ── VAI partner badge ───────────────────────────────────────────────────────
 
 /**
- * VAI partner mark with "A Proud Member Of :" label stacked above the logo.
- * Matches the Figma compact badge.
+ * VAI partner mark with "A Proud Member Of :" label.
+ *
+ *  - Default (desktop): label stacked above the logo (matches the Figma
+ *    desktop footer column).
+ *  - `inline`: label sits to the LEFT of the logo on a single row (mobile
+ *    footer top strip).
  */
-export function VaiBadge() {
+export function VaiBadge({ inline = false }: { inline?: boolean } = {}) {
+  const label = (
+    <span className="text-surface/80 font-body text-[12px] tracking-normal">
+      A Proud Member Of :
+    </span>
+  );
+  const logo = (
+    <Image
+      src="/partners/vai.svg"
+      alt={PARTNERS.vai.name}
+      width={500}
+      height={90}
+      className={cn(
+        "w-auto [clip-path:inset(1px_0.5px_0_0)]",
+        // Inline layout (mobile) uses a shorter logo so the label stays on
+        // one line; stacked layout (desktop) keeps the original size.
+        inline ? "h-5" : "h-7",
+      )}
+    />
+  );
   return (
     <a
       href={PARTNERS.vai.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex flex-col items-start gap-1.5 transition-opacity hover:opacity-90"
+      className={cn(
+        "inline-flex transition-opacity hover:opacity-90",
+        inline ? "items-center gap-3" : "flex-col items-start gap-1.5",
+      )}
       aria-label={`A Proud Member Of ${PARTNERS.vai.name}`}
     >
-      <span className="text-surface/80 font-display text-[11px] tracking-wider uppercase">
-        A Proud Member Of :
-      </span>
-      <Image
-        src="/partners/vai.svg"
-        alt={PARTNERS.vai.name}
-        width={500}
-        height={90}
-        className="h-7 w-auto [clip-path:inset(1px_0.5px_0_0)]"
-      />
+      {label}
+      {logo}
     </a>
   );
 }

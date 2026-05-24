@@ -27,13 +27,15 @@ export default function Home() {
           renders the full 8-tile bento. */}
       <ProjectsMosaic tiles={SHOWCASE_TILES.slice(0, 8)} mobileMaxVisible={4} />
       <MilestonesTimeline />
-      <QuoteFormShell
-        tinted
-        photo={{
-          src: "/quote/home-quote.webp",
-          alt: "Southern Air freight truck and helicopter on the tarmac",
-        }}
-      />
+      <div id="request-quote" className="scroll-mt-24">
+        <QuoteFormShell
+          tinted
+          photo={{
+            src: "/quote/home-quote.webp",
+            alt: "Southern Air freight truck and helicopter on the tarmac",
+          }}
+        />
+      </div>
       <OfficesGlobal />
     </main>
   );

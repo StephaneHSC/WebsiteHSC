@@ -734,6 +734,12 @@ export type Service = {
   description: string;
   /** Path to the card image in /public. */
   image: string;
+  /**
+   * `object-position` for the teaser card image. Defaults to `center` when
+   * omitted. Used to nudge the visible crop for photos whose subject isn't
+   * centered (e.g., a truck cab on the right side).
+   */
+  imageObjectPosition?: string;
 
   // ---- M4 — Service Detail Page fields ----
 
@@ -743,6 +749,13 @@ export type Service = {
   detailHeroTitle: readonly [string] | readonly [string, string];
   /** Detail-page hero background photo (full-bleed). */
   detailHeroImage: string;
+  /**
+   * Optional CSS `object-position` for the detail-page hero photo. Used to
+   * bias the focal point per service (e.g. "center 35%" keeps a tall subject
+   * visible above the chip strip at the bottom of the hero). Defaults to
+   * "center" when omitted.
+   */
+  detailHeroImagePosition?: string;
   /**
    * 4 benefit chips on the hero. Optional — when omitted, the shared default
    * (`SHARED_DETAIL_HERO_BENEFITS`) renders. Per §6.2 user direction.
@@ -946,6 +959,7 @@ export const SERVICES: readonly Service[] = [
     detailEyebrow: "OVERVIEW OCEAN RO/RO",
     detailHeroTitle: ["Roll-On/Roll-Off", "Ocean Transport"],
     detailHeroImage: "/services/detail/ocean-roro-hero.webp",
+    detailHeroImagePosition: "center 65%",
     detailOverview: {
       label: "Roll-On/Roll-Off Ocean Transport",
       title: ["Fast, Secure", "Helicopter Transport", "Using RoRo Vessels."],
@@ -987,6 +1001,7 @@ export const SERVICES: readonly Service[] = [
     detailEyebrow: "OVERVIEW OCEAN LO/LO",
     detailHeroTitle: ["Ocean Lift-On / Lift-Off", "Transport Method"],
     detailHeroImage: "/services/detail/ocean-lolo-hero.webp",
+    detailHeroImagePosition: "center 40%",
     detailOverview: {
       label: "Lift-on / Lift-off Shipping",
       title: ["Container & Heavy", "Lift Shipping Options"],
@@ -1025,6 +1040,7 @@ export const SERVICES: readonly Service[] = [
     detailEyebrow: "OVERVIEW OCEAN FCL",
     detailHeroTitle: ["Ocean FCL - Container Transport"],
     detailHeroImage: "/services/detail/ocean-fcl-hero.webp",
+    detailHeroImagePosition: "center 40%",
     detailOverview: {
       // TODO: client review of FCL eyebrow text — replaced "Lift-on / Lift-off
       // Shipping" Figma value with "Full Container Load Shipping" pending
@@ -1090,6 +1106,7 @@ export const SERVICES: readonly Service[] = [
     detailEyebrow: "OVERVIEW AIR COMMERCIAL",
     detailHeroTitle: ["Commercial Air Freight Transport Solutions"],
     detailHeroImage: "/services/detail/air-commercial-hero.webp",
+    detailHeroImagePosition: "center 35%",
     detailOverview: {
       label: "Air Cargo",
       title: ["Reliable & Flexible", "Commercial Air Cargo", "Transport"],
@@ -1124,6 +1141,7 @@ export const SERVICES: readonly Service[] = [
     detailEyebrow: "OVERVIEW AIR CHARTERING",
     detailHeroTitle: ["Air Charter Transport for Urgent Shipments"],
     detailHeroImage: "/services/detail/air-chartering-hero.webp",
+    detailHeroImagePosition: "center 55%",
     detailOverview: {
       label: "Air Charter Transport",
       title: ["Fast-Response", "Aircraft Charter", "Transport Solutions"],
@@ -1294,6 +1312,133 @@ export const WHY_CHOOSE_TRACKABILITY = {
   lede: "Access real-time location of your helicopter while in transit, get push notification.",
 } as const;
 
+// ── M8 — Request a Quote ───────────────────────────────────────────────────
+
+/**
+ * Mode-of-transport options (Step 01). Order locked by Figma's desktop layout:
+ * the 6 radio widths sum to exactly 1040px in this sequence (180 / 150 / 150 /
+ * 230 / 180 / 120 + 5×6px gaps), which matches the form card's content width.
+ * The mobile pill cycles through the same order.
+ *
+ * Replaces the earlier 6-string list in QuoteFormShell.tsx (Figma-canonical).
+ */
+export const QUOTE_TRANSPORT_MODES = [
+  "Air Commercial",
+  "Air Charter",
+  "Ocean RoRo",
+  "Ocean Breakbulk (Lo/Lo)",
+  "Ocean Container",
+  "Land",
+] as const;
+
+/**
+ * Shell-variant mode-of-transport list. Per Figma `344:3275` (home shell) the
+ * 6 radios render in a 3×2 grid with this order — Air Charter first, no
+ * "(Lo/Lo)" suffix on Breakbulk. The canonical full list above is still the
+ * source of truth for validation (server-side accepts both shell and standalone
+ * orderings); the shell variant is purely a presentation override.
+ */
+export const QUOTE_SHELL_TRANSPORT_MODES = [
+  "Air Charter",
+  "Air Commercial",
+  "Ocean RoRo",
+  "Ocean Container",
+  "Land",
+  "Ocean Breakbulk (Lo/Lo)",
+] as const;
+
+/**
+ * Helicopter brand list for Step 03 — first dropdown. Airbus list is canonical
+ * (11 models pulled from Figma). The other 7 carry TODO(content) placeholders;
+ * client supplies real catalogs.
+ *
+ * Prefixed `QUOTE_` to avoid collision with the existing `HELICOPTER_BRANDS`
+ * constant (manufacturer logos rendered in the home partners strip).
+ */
+export const QUOTE_HELICOPTER_BRANDS = [
+  "Airbus",
+  "Leonardo",
+  "Sikorsky",
+  "Bell",
+  "Robinson",
+  "Boeing",
+  "Kaman model",
+  "K-Max",
+] as const;
+
+export const QUOTE_HELICOPTER_MODELS_BY_BRAND: Readonly<Record<string, readonly string[]>> = {
+  Airbus: [
+    "H125",
+    "H130",
+    "H145",
+    "H160",
+    "H170",
+    "AS332L1",
+    "AS332L2",
+    "SUPERPUMA",
+    "AS365N2",
+    "AS365N3",
+    "BK117",
+  ],
+  // TODO(content): client to confirm full per-brand model catalogs.
+  Leonardo: ["AW109", "AW119", "AW139", "AW169", "AW189"],
+  Sikorsky: ["S-76", "S-92", "CH-53"],
+  Bell: ["206", "407", "412", "429", "505", "525"],
+  Robinson: ["R22", "R44", "R66"],
+  Boeing: ["CH-47", "AH-6", "MH-6"],
+  "Kaman model": ["K-MAX", "SH-2G"],
+  "K-Max": ["K-1200", "K-MAX-TITAN"],
+};
+
+export const QUOTE_QUANTITIES = ["01", "02", "03", "04", "05", "06"] as const;
+
+// TODO(content): client to confirm transaction-type options + ordering.
+export const QUOTE_TRANSACTION_TYPES = ["Purchase", "Sale", "Lease", "Trade-in", "Other"] as const;
+
+/**
+ * Service-slug → prefilled mode-of-transport. Used by the service-detail
+ * pages so clicking "Request Quote" inside a Ocean Ro/Ro page lands the
+ * embedded form with that mode preselected.
+ */
+export const QUOTE_MODE_BY_SERVICE_SLUG: Readonly<
+  Record<string, (typeof QUOTE_TRANSPORT_MODES)[number]>
+> = {
+  "ocean-roro": "Ocean RoRo",
+  "ocean-lolo": "Ocean Breakbulk (Lo/Lo)",
+  "ocean-fcl": "Ocean Container",
+  "road-freight": "Land",
+  "air-commercial": "Air Commercial",
+  "air-chartering": "Air Charter",
+};
+
+/** Hero copy for the standalone /quote route. CMS hero_headline overrides line 1. */
+export const QUOTE_HERO = {
+  eyebrow: "Request a Quote",
+  headline: {
+    desktop: ["Share Your Shipment Details", "We'll Handle The Rest."],
+    mobile: ["Share Your Shipment", "Details. We'll", "Handle The Rest."],
+  },
+  photo: {
+    /**
+     * Single hero asset (1600×700, ~63 KB). Mobile portrait crops the same
+     * image via `object-position: 35% center` to keep the plane nose + ramp
+     * loading scene framed. One image keeps the CMS `hero_image` override
+     * round-trip clean — editors upload one asset, it works at every breakpoint.
+     */
+    src: "/quote/quote-hero.webp",
+    alt: "Antonov AN-124 cargo aircraft with nose lifted, helicopter being loaded via ramp",
+  },
+} as const;
+
+export const QUOTE_FORM_DEFAULTS = {
+  successMessage: "Thank you for your enquiry. Our ops team will reply within 24 hours.",
+  submitLabel: "Submit",
+  submittingLabel: "Submitting…",
+  disclaimer: "All fields marked * are required · Data transmitted over secure channel",
+  legalAttribution:
+    "This site is protected by Cloudflare Turnstile and the Cloudflare Privacy Policy and Terms of Service apply.",
+} as const;
+
 // ── M6 — Our Team page content ──────────────────────────────────────────────
 
 export const TEAM_HERO = {
@@ -1448,3 +1593,218 @@ export const PLACEHOLDER_TEAM_MEMBERS: readonly TeamMemberPlaceholder[] = [
     bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
   },
 ];
+
+export const SERVICES_TEASER: readonly Service[] = [
+  {
+    slug: "ocean-roro",
+    name: "Ocean RO/RO",
+    description: "Transport your aircraft using Ro/Ro vessel, loaded on a MAFI or simply towing.",
+    image: "/home/services-teaser/ser-1.webp",
+    detailEyebrow: "OVERVIEW OCEAN RO/RO",
+    detailHeroTitle: ["Roll-On/Roll-Off", "Ocean Transport"],
+    detailHeroImage: "/home/services-teaser/ser-1.webp",
+    detailOverview: {
+      label: "Roll-On/Roll-Off Ocean Transport",
+      title: ["Fast, Secure", "Helicopter Transport", "Using RoRo Vessels."],
+      paragraphs: [
+        para([
+          reg("Shipped on a "),
+          bold("MAFI Roll Trailer"),
+          reg(" or "),
+          bold("towed inside the vessel"),
+          reg(
+            ", helicopters are stowed and transported safely under deck. With Ro/Ro vessels, loading and unloading is fast and efficient, saving valuable time on the transportation journey.",
+          ),
+        ]),
+        para([
+          reg(
+            "Heli Skycargo contracts with the very best global Ro/Ro carriers, including NYK, Höegh Autoliners, Wallenius Wilhelmsen, ",
+          ),
+          bold("MOL (Mitsui O.S.K. Lines)"),
+          reg(", K Line, Armacup, "),
+          bold("EUKOR"),
+          reg(", the Grimaldi Group, Bahri Shipping and many others."),
+        ]),
+      ],
+      image: "/services/detail/ocean-roro-overview.webp",
+      hasVideoBadge: true,
+    },
+    detailWhenToChoose: {
+      title: SHARED_WHEN_TO_CHOOSE.title,
+      intro: SHARED_WHEN_TO_CHOOSE.intro,
+      image: "/services/detail/ocean-roro-when.webp",
+      cards: SHARED_WHEN_TO_CHOOSE.cards,
+    },
+  },
+  {
+    slug: "ocean-lolo",
+    name: "Ocean LO/LO",
+    description: "Safe Lift-on/Lift-off into cargo load of container vessel or MPV Breakbulk ship.",
+    image: "/home/services-teaser/ser-2.webp",
+    detailEyebrow: "OVERVIEW OCEAN LO/LO",
+    detailHeroTitle: ["Ocean Lift-On / Lift-Off", "Transport Method"],
+    detailHeroImage: "/home/services-teaser/ser-2.webp",
+    detailOverview: {
+      label: "Lift-on / Lift-off Shipping",
+      title: ["Container & Heavy", "Lift Shipping Options"],
+      paragraphs: [
+        para([
+          reg("Alternatively, helicopters can be transported using a "),
+          bold("Lift-On/Lift-Off method"),
+          reg(" – either via container ships or a multipurpose "),
+          bold("heavy lift vessel"),
+          reg(
+            ". The cargo is lifted on and off the shipping vessel by crane, before being safely stored and secured for travel.",
+          ),
+        ]),
+        para([
+          reg(
+            "Though this method adds some time to your transportation schedule to account for loading and unloading, it is ideal for situations where the destination or departure port is not served by Ro/Ro carriers, or where the Ro/Ro carrier schedule does not meet your requirements.",
+          ),
+        ]),
+      ],
+      image: "/services/detail/ocean-lolo-overview.webp",
+      hasVideoBadge: true,
+    },
+    detailWhenToChoose: {
+      title: SHARED_WHEN_TO_CHOOSE.title,
+      intro: SHARED_WHEN_TO_CHOOSE.intro,
+      image: "/services/detail/ocean-lolo-when.webp",
+      cards: SHARED_WHEN_TO_CHOOSE.cards,
+    },
+  },
+  {
+    slug: "ocean-fcl",
+    name: "Ocean FCL",
+    description: "Flat Rack is an alternative and cost effective way of shipping.",
+    image: "/home/services-teaser/ser-3.webp",
+    detailEyebrow: "OVERVIEW OCEAN FCL",
+    detailHeroTitle: ["Ocean FCL - Container Transport"],
+    detailHeroImage: "/home/services-teaser/ser-3.webp",
+    detailOverview: {
+      // TODO: client review of FCL eyebrow text — replaced "Lift-on / Lift-off
+      // Shipping" Figma value with "Full Container Load Shipping" pending
+      // content review (per M4 plan §6.4).
+      label: "Full Container Load Shipping",
+      title: ["Dedicated & Secure", "Full Container Ocean", "Solutions"],
+      paragraphs: [
+        para([
+          reg(
+            "Whether partially or fully disassembled, helicopters can be transported using 40' high cube, 40' open-top, or 40' flat rack containers.",
+          ),
+        ]),
+      ],
+      image: "/services/detail/ocean-fcl-overview.webp",
+      hasVideoBadge: true,
+    },
+    detailWhenToChoose: {
+      title: SHARED_WHEN_TO_CHOOSE.title,
+      intro: SHARED_WHEN_TO_CHOOSE.intro,
+      image: "/services/detail/ocean-fcl-when.webp",
+      cards: SHARED_WHEN_TO_CHOOSE.cards,
+    },
+  },
+  {
+    slug: "road-freight",
+    name: "Road Freight",
+    description:
+      "We deal with assets-own trucking companies providing GPS-equipped Air-ride specialised trailers.",
+    image: "/home/services-teaser/ser-4.webp",
+    imageObjectPosition: "30% 50%",
+    detailEyebrow: "OVERVIEW ROAD FREIGHT",
+    detailHeroTitle: ["Helicopter Road Freight Solutions"],
+    detailHeroImage: "/home/services-teaser/ser-4.webp",
+    detailOverview: {
+      label: "Road Freight Transport",
+      title: ["End-to-End", "Road Freight Services"],
+      paragraphs: [
+        para([
+          reg(
+            "Whether the helicopter is being exclusively transported by road, or it is just a small part of the wider journey, Heli Skycargo can arrange road freight solutions including road survey and road permit application to meet your exact requirements.",
+          ),
+        ]),
+        para([
+          reg(
+            "Our carefully selected trucking and haulage companies are on standby ready to serve, and we have exclusive contracts around the world with specialist freight companies offering exceptional transports using air ride and hydraulic trucks.",
+          ),
+        ]),
+      ],
+      image: "/services/detail/road-freight-overview.webp",
+      hasVideoBadge: true,
+    },
+    detailWhenToChoose: {
+      title: SHARED_WHEN_TO_CHOOSE.title,
+      intro: SHARED_WHEN_TO_CHOOSE.intro,
+      image: "/services/detail/road-freight-when.webp",
+      cards: SHARED_WHEN_TO_CHOOSE.cards,
+    },
+  },
+  {
+    slug: "air-commercial",
+    name: "Air Commercial",
+    description: "Ship your aircraft on B74 Freighter.",
+    image: "/home/services-teaser/ser-5.webp",
+    detailEyebrow: "OVERVIEW AIR COMMERCIAL",
+    detailHeroTitle: ["Commercial Air Freight Transport Solutions"],
+    detailHeroImage: "/home/services-teaser/ser-5.webp",
+    detailOverview: {
+      label: "Air Cargo",
+      title: ["Reliable & Flexible", "Commercial Air Cargo", "Transport"],
+      paragraphs: [
+        para([
+          reg(
+            "If you have a flexible or more generous deadline for your shipping journey, then commercial air transportation is an excellent option. Depending on the departure and arrival locations and the carrier flight schedule, door-to-door transit time typically ranges from just 7 to 10 days.",
+          ),
+        ]),
+        para([
+          reg(
+            'Once dismantled, the helicopter is securely positioned on 20" aircraft pallets and loaded on board B747-400F or modern B747-8F aircraft. We arrange transportation with only the most reputable commercial cargo freighters, including Cargolux, Korean Air, Silk Way West Airlines, China Airlines, Cathay Pacific, and Singapore Airlines.',
+          ),
+        ]),
+      ],
+      image: "/services/detail/air-commercial-overview.webp",
+      hasVideoBadge: true,
+    },
+    detailWhenToChoose: {
+      title: SHARED_WHEN_TO_CHOOSE.title,
+      intro: SHARED_WHEN_TO_CHOOSE.intro,
+      image: "/services/detail/air-commercial-when.webp",
+      cards: SHARED_WHEN_TO_CHOOSE.cards,
+    },
+  },
+  {
+    slug: "air-chartering",
+    name: "Air Chartering",
+    description:
+      "When time is of the essence or to reach places unreachable by 74F, go for the mighty Antonov124-100 or the IL76.",
+    image: "/home/services-teaser/ser-6.webp",
+    imageObjectPosition: "70% 50%",
+    detailEyebrow: "OVERVIEW AIR CHARTERING",
+    detailHeroTitle: ["Air Charter Transport for Urgent Shipments"],
+    detailHeroImage: "/home/services-teaser/ser-6.webp",
+    detailOverview: {
+      label: "Air Charter Transport",
+      title: ["Fast-Response", "Aircraft Charter", "Transport Solutions"],
+      paragraphs: [
+        para([
+          reg(
+            "If you have a flexible or more generous deadline for your shipping journey, then commercial air transportation is an excellent option. Depending on the departure and arrival locations and the carrier flight schedule, door-to-door transit time typically ranges from just 7 to 10 days.",
+          ),
+        ]),
+        para([
+          reg(
+            'Once dismantled, the helicopter is securely positioned on 20" aircraft pallets and loaded on board B747-400F or modern B747-8F aircraft. We arrange transportation with only the most reputable commercial cargo freighters, including Cargolux, Korean Air, Silk Way West Airlines, China Airlines, Cathay Pacific, and Singapore Airlines.',
+          ),
+        ]),
+      ],
+      image: "/services/detail/air-chartering-overview.webp",
+      hasVideoBadge: true,
+    },
+    detailWhenToChoose: {
+      title: SHARED_WHEN_TO_CHOOSE.title,
+      intro: SHARED_WHEN_TO_CHOOSE.intro,
+      image: "/services/detail/air-chartering-when.webp",
+      cards: SHARED_WHEN_TO_CHOOSE.cards,
+    },
+  },
+] as const;

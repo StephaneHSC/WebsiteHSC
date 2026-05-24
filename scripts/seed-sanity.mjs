@@ -49,6 +49,12 @@ if (!token) {
 }
 
 const purge = process.argv.includes("--purge");
+const formModeArg = process.argv.find((a) => a.startsWith("--form-mode="));
+const formMode = formModeArg ? formModeArg.split("=")[1] : "custom";
+if (!["custom", "embed"].includes(formMode)) {
+  console.error(`[seed] --form-mode must be 'custom' or 'embed' (got: ${formMode})`);
+  process.exit(1);
+}
 
 const client = createClient({
   projectId,
@@ -217,35 +223,90 @@ function paragraphsToPortableText(paragraphs) {
   }));
 }
 
+// Listed newest → oldest. `order` is only meaningful when multiple milestones
+// share a year (per PDF §3.2); since each year here is unique, every entry
+// gets `order: 1`. The frontend query sorts `year desc, order desc`.
+//
+// `_id` is a deterministic slug (`milestone-<year>-<kebab-headline>`) so
+// `createOrReplace` updates an existing doc on re-runs instead of inserting
+// duplicates. Photos for 2014/2015/2017/2018/2020 were pulled from the Figma
+// "milestones" frame (node 663:244) on 2026-05-22.
 const MILESTONES = [
   {
+    _id: "milestone-2026-customer-satisfaction",
     year: 2026,
     headline: "Customer Satisfaction",
     description:
       "Global customer satisfaction survey is launched to receive our customers' feedback in the aim to exceed our customer's expectation.",
     imagePath: "/milestones/2026-customer-satisfaction.webp",
-    order: 4,
+    order: 1,
   },
   {
+    _id: "milestone-2024-hq-relocates",
     year: 2024,
     headline: "Global Headquarter Relocates",
     description: "Heli Skycargo Corporate office and Global Customer Support Center to Dubai, UAE.",
     imagePath: "/milestones/2024-hq-relocates.webp",
-    order: 3,
+    order: 1,
   },
   {
+    _id: "milestone-2023-japan-desk-expansion",
     year: 2023,
     headline: "Customer Support Expansion for Japan",
     description: "Our Japan desk is opened to cater to our Japanese customers.",
     imagePath: "/milestones/2023-japan-desk.webp",
-    order: 2,
+    order: 1,
   },
   {
+    _id: "milestone-2021-on-the-road",
     year: 2021,
     headline: "On the Road",
     description:
       "Heli Skycargo starts exhibiting at HAI Atlanta, European Rotors in Madrid, Spain and Verticon Anaheim.",
     imagePath: "/milestones/2021-on-the-road.webp",
+    order: 1,
+  },
+  {
+    _id: "milestone-2020-expanding-global-network",
+    year: 2020,
+    headline: "Expanding Global Network",
+    description: "Opened Global Control Tower (Manila), USA Office, and Kuala Lumpur Warehouse.",
+    imagePath: "/milestones/2020-expanding-global-network.webp",
+    order: 1,
+  },
+  {
+    _id: "milestone-2018-digitalisation",
+    year: 2018,
+    headline: "Digitalisation",
+    description: "Launch of Heli Skycargo's mobile and desktop application.",
+    imagePath: "/milestones/2018-digitalisation.webp",
+    order: 1,
+  },
+  {
+    _id: "milestone-2017-recognition-top-logistic",
+    year: 2017,
+    headline: "Recognition as Top Logistic Player",
+    description:
+      "Leonardo Helicopters and AgustaWestland Philadelphia Corporation approve Heli Skycargo as logistic provider.",
+    imagePath: "/milestones/2017-recognition-top-logistic.webp",
+    order: 1,
+  },
+  {
+    _id: "milestone-2015-shipment-no-1",
+    year: 2015,
+    headline: "Shipment No. 1",
+    description:
+      "Transportation of 2 x AW139 from Philadelphia to Utapao Thailand by Antonov 124-100.",
+    imagePath: "/milestones/2015-shipment-no-1.webp",
+    order: 1,
+  },
+  {
+    _id: "milestone-2014-heli-skycargo-born",
+    year: 2014,
+    headline: "Heli Skycargo is Born",
+    description:
+      "Heli Skycargo is established in Hong Kong specialising in critical helicopter move.",
+    imagePath: "/milestones/2014-heli-skycargo-born.webp",
     order: 1,
   },
 ];
@@ -268,38 +329,43 @@ const SITE_STATS = {
   ],
 };
 
+// `_id` is a deterministic slug so `createOrReplace` updates the existing doc
+// on re-runs instead of inserting duplicates.
 const TESTIMONIALS = [
   {
+    _id: "testimonial-morten-lufttransport",
     customer_name: "Mr. Morten H.",
     company: "Lufttransport",
     quote:
       "I would also use this oppurtunity to thank you and your team for helping us with the transportation of our AW139. Your service was high level and we will most certainly keep your name in case of future projects.",
     rating: 5,
-    service_tag: "Air Charter",
+    service_tag: "air-chartering",
     order: 1,
     is_featured: true,
     status: "published",
     logoPath: "/testimonials/lufttransport.png",
   },
   {
+    _id: "testimonial-ryosei-mitsui-bussan",
     customer_name: "Mr. Ryosei I.",
     company: "Mitsui Bussan Aerospace",
     quote:
       "Thanks to appropriate and flexible proposals of HSC team depending on the situation for worldwide logistics, import destination and Japan, we could meet the customers' expectations and delivery the Helicopter as scheduled. We are also able to grasp the transportation status in timely through HSC App which is extremely useful for us and our customers.",
     rating: 5,
-    service_tag: "Air Commercial",
+    service_tag: "air-commercial",
     order: 2,
     is_featured: true,
     status: "published",
     logoPath: "/testimonials/mitsui-bussan.png",
   },
   {
+    _id: "testimonial-rodney-sazma-aviation",
     customer_name: "Mr. Rodney L.",
     company: "Sazma Aviation",
     quote:
       "Both our AW139 helicopter shipment was handled professionally by your team and safely arrived at Subang, Malaysia. Great to have Heli Skycargo as our transporter for our helicopter transshipment globally.",
     rating: 5,
-    service_tag: "Ocean RO/RO",
+    service_tag: "ocean-roro",
     order: 3,
     is_featured: true,
     status: "published",
@@ -310,7 +376,7 @@ const TESTIMONIALS = [
 // ── Mutations ───────────────────────────────────────────────────────────────
 
 async function purgeAll() {
-  for (const type of ["teamMember", "milestone", "testimonial", "siteStats"]) {
+  for (const type of ["teamMember", "milestone", "testimonial", "siteStats", "quoteFormConfig"]) {
     const ids = await client.fetch(`*[_type == "${type}"]._id`);
     if (ids.length === 0) continue;
     console.log(`[seed] purging ${ids.length} ${type} doc(s)...`);
@@ -343,7 +409,9 @@ async function seedMilestones() {
     const asset = await uploadImage(m.imagePath);
     const { imagePath: _imagePath, ...rest } = m;
     void _imagePath;
-    const created = await client.create({
+    // createOrReplace keys on `_id` so re-running the seed updates an existing
+    // doc rather than creating a duplicate. Mirrors the team / siteStats pattern.
+    const created = await client.createOrReplace({
       _type: "milestone",
       ...rest,
       image: imageRef(asset),
@@ -358,13 +426,51 @@ async function seedSiteStats() {
   console.log(`  ✓ ${SITE_STATS.stats.length} stats → ${created._id}`);
 }
 
+/**
+ * Seeds the quoteFormConfig singleton with PDF §4.2's 6 spec fields +
+ * `form_mode` toggle. `--form-mode=custom|embed` CLI flag picks the path
+ * (defaults to `custom`).
+ *
+ * The 4 dead fields (transport_modes, helicopter_models, transaction_types,
+ * step_titles) were removed 2026-05-13 — the frontend uses hardcoded
+ * constants so CMS arrays for those changed nothing.
+ */
+async function seedQuoteFormConfig() {
+  console.log(`\n[seed] quote form config (mode=${formMode})`);
+  const sampleEmbed = `<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdHMhZhqcVJUyFIV08A47labV9BC3FKCaZ0Ve28QUP6aH5v5Q/viewform?embedded=true" width="100%" height="1975" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>`;
+  // Upload the canonical Figma-matching Antonov photo so the `hero_image`
+  // CMS field is populated out of the box (instead of relying on the
+  // hardcoded `QUOTE_HERO.photo.src` fallback). Scoped to the standalone
+  // /quote page only — the embedded shells on home/services/etc. use their
+  // own page-specific photos and ignore this CMS field.
+  const heroAsset = await uploadImage("/quote/quote-hero.webp");
+  const doc = {
+    _id: "quoteFormConfig",
+    _type: "quoteFormConfig",
+    form_mode: formMode,
+    // Pre-fill with the Figma-canonical 2-line headline so editors see what
+    // the field controls. Newlines render as line breaks in the H1/H2 stack
+    // (split + per-line block-span — see QuoteHero / QuoteFormShell).
+    hero_headline: "Share Your Shipment Details\nWe'll Handle The Rest.",
+    hero_image: imageRef(heroAsset),
+    recipient_email: "",
+    success_message: "Thank you for your enquiry. Our ops team will reply within 24 hours.",
+    form_enabled: true,
+    form_embed_code: formMode === "embed" ? sampleEmbed : "",
+  };
+  const created = await client.createOrReplace(doc);
+  console.log(`  ✓ quoteFormConfig (${formMode}) → ${created._id}`);
+}
+
 async function seedTestimonials() {
   console.log("\n[seed] testimonials");
   for (const t of TESTIMONIALS) {
     const logoAsset = await uploadImage(t.logoPath);
     const { logoPath: _logoPath, ...rest } = t;
     void _logoPath;
-    const created = await client.create({
+    // createOrReplace keys on `_id` so re-running the seed updates an existing
+    // doc rather than creating a duplicate.
+    const created = await client.createOrReplace({
       _type: "testimonial",
       ...rest,
       logo: imageRef(logoAsset),
@@ -382,6 +488,7 @@ async function main() {
   await seedMilestones();
   await seedTestimonials();
   await seedSiteStats();
+  await seedQuoteFormConfig();
   console.log(
     "\n[seed] done. Hard refresh http://localhost:3000/ to see the live data replace placeholders.",
   );

@@ -31,30 +31,43 @@ export function ServiceDetailHero({ service }: ServiceDetailHeroProps) {
           fill
           priority
           sizes="100vw"
-          className="object-cover object-center"
+          className="object-cover"
+          style={{ objectPosition: service.detailHeroImagePosition ?? "center" }}
         />
         {/* Mobile 36% / desktop 40% black overlay per Figma. */}
         <span className="bg-ink/[0.36] md:bg-ink/40 absolute inset-0" />
       </div>
 
       <Container>
-        <div className="flex min-h-[470px] flex-col justify-end pt-32 pb-10 md:min-h-[640px] md:pt-44 md:pb-16 lg:min-h-[705px] lg:pt-52 lg:pb-[63px]">
-          <Reveal>
-            <SectionEyebrow variant="red" className="px-3 py-2">
-              {service.detailEyebrow}
-            </SectionEyebrow>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <h1 className="font-body text-surface mt-6 text-[32px] leading-[42px] font-bold capitalize md:mt-8 md:text-5xl md:leading-[1.2] lg:text-[64px] lg:leading-[82px]">
-              {titleLines.map((line) => (
-                <span key={line} className="block">
-                  {line}
-                </span>
-              ))}
-            </h1>
-          </Reveal>
+        {/*
+         * Layout is bottom-anchored on mobile/md (chips + title stacked
+         * against the bottom edge), but switches to top-anchored
+         * (`justify-between`) on lg so the eyebrow + title sit at Figma's
+         * fixed coordinates (eyebrow `y=281`, title `y=342`) regardless of
+         * title line-count. The chip strip stays pinned to the bottom via
+         * `lg:pb-[63px]` (chip bottom `y=642`), and the gap between title
+         * and chips auto-fills the remaining space — matches Figma's 103px
+         * gap for 2-line titles and ~185px gap for 1-line titles.
+         */}
+        <div className="flex min-h-[470px] flex-col justify-end pt-32 pb-10 md:min-h-[640px] md:pt-44 md:pb-16 lg:min-h-[705px] lg:justify-between lg:pt-[281px] lg:pb-[63px]">
+          <div>
+            <Reveal>
+              <SectionEyebrow variant="red" className="px-3 py-2">
+                {service.detailEyebrow}
+              </SectionEyebrow>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <h1 className="font-body text-surface mt-6 text-[32px] leading-[42px] font-bold capitalize md:mt-8 md:text-5xl md:leading-[1.2] lg:mt-6 lg:text-[64px] lg:leading-[82px]">
+                {titleLines.map((line) => (
+                  <span key={line} className="block">
+                    {line}
+                  </span>
+                ))}
+              </h1>
+            </Reveal>
+          </div>
 
-          <Reveal delay={0.2} className="mt-8 md:mt-12 lg:mt-[80px]">
+          <Reveal delay={0.2} className="mt-8 md:mt-12 lg:mt-0">
             <BenefitsStrip benefits={benefits} />
           </Reveal>
         </div>
@@ -96,14 +109,15 @@ function BenefitChip({ benefit }: { benefit: ServiceBenefit }) {
       className={cn(
         "flex shrink-0 snap-start items-center gap-3 px-6",
         "h-[70px] w-[276px] lg:w-[clamp(220px,18vw,276px)]",
-        // Bumped overlay alpha from 0.31 → 0.55 so the white label hits
-        // WCAG AA contrast (4.5:1) over typical photo backgrounds; the
-        // backdrop-blur preserves the chip's frosted-glass look.
-        "bg-[rgba(0,0,0,0.55)] backdrop-blur-[16.8px]",
+        // Exact Figma chip styling — all 6 service hero frames use the same
+        // values (verified via get_design_context on node 501:447 and its
+        // 5 siblings). Note: no spaces inside the rgba(...) — Tailwind
+        // drops arbitrary values containing whitespace.
+        "bg-[rgba(0,0,0,0.31)] backdrop-blur-[16.8px]",
       )}
     >
       <Image src={benefit.icon} alt="" width={22} height={22} className="size-[22px] shrink-0" />
-      <span className="font-display-alt text-surface text-base font-semibold capitalize">
+      <span className="font-display-alt text-surface text-base font-normal capitalize">
         {benefit.label}
       </span>
     </li>

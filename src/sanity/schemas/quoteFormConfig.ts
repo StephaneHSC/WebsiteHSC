@@ -1,28 +1,35 @@
 import { defineField, defineType } from "sanity";
 
+/**
+ * Quote form configuration — singleton.
+ *
+ * Implements PDF §4.2's 6 client-spec fields verbatim:
+ *   1. hero_headline
+ *   2. hero_image
+ *   3. form_embed_code
+ *   4. recipient_email
+ *   5. success_message
+ *   6. form_enabled
+ *
+ * Plus a `form_mode` toggle (custom vs embed) so an editor can swap between
+ * the Figma-matching React form and a third-party iframe embed without a
+ * code change. When `form_mode === "embed"`, the editor pastes raw HTML in
+ * `form_embed_code` (sanitized to `<iframe>` allow-list); when `"custom"`,
+ * the React form renders.
+ *
+ * Cleanup history:
+ *   2026-05-11  Removed `form_endpoint` (Resend + `/api/quote` replaced it).
+ *   2026-05-13  Removed `transport_modes`, `helicopter_models`,
+ *               `transaction_types`, `step_titles`. These fields were dead
+ *               code paths — the frontend uses hardcoded constants
+ *               (`QUOTE_TRANSPORT_MODES`, `QUOTE_HELICOPTER_MODELS_BY_BRAND`,
+ *               `QUOTE_TRANSACTION_TYPES`) so editing them changed nothing.
+ *               Per "PDF spec verbatim" request.
+ */
 export const quoteFormConfig = defineType({
   name: "quoteFormConfig",
   title: "Quote Form Configuration",
   type: "document",
-  fieldsets: [
-    {
-      name: "common",
-      title: "Hero & general settings",
-      options: { collapsible: true, collapsed: false },
-    },
-    {
-      name: "embed",
-      title: "Path A — iframe embed (no-code form tool)",
-      description: "Used when Form path is set to Iframe embed.",
-      options: { collapsible: true, collapsed: false },
-    },
-    {
-      name: "custom",
-      title: "Path B — custom React form (matches Figma)",
-      description: "Used when Form path is set to Custom React form.",
-      options: { collapsible: true, collapsed: false },
-    },
-  ],
   fields: [
     defineField({
       name: "form_mode",
@@ -32,7 +39,7 @@ export const quoteFormConfig = defineType({
         list: [
           { title: "Custom React form (matches Figma exactly)", value: "custom" },
           {
-            title: "Iframe embed (paste HTML from Tally / Formspree / etc.)",
+            title: "Iframe embed (paste HTML from Tally / Google Forms / Typeform / etc.)",
             value: "embed",
           },
         ],
@@ -41,120 +48,62 @@ export const quoteFormConfig = defineType({
       initialValue: "custom",
       validation: (R) => R.required(),
       description:
-        "Picks which fields below the frontend uses at runtime. Switch path without a code change.",
+        "Switch between the Figma-matching React form and a third-party iframe embed. No code change needed — the frontend reads this at runtime and renders the appropriate path. `form_embed_code` below is only used when this is set to Iframe embed.",
     }),
 
-    // ── Common settings ─────────────────────────────────────────────
     defineField({
       name: "hero_headline",
       title: "Hero headline",
-      type: "string",
-      initialValue: "Share Your Shipment Details — We'll Handle The Rest.",
-      fieldset: "common",
+      type: "text",
+      rows: 3,
+      description:
+        "Multi-line override for the H1 on the dedicated /quote page only. Does NOT affect the embedded quote-form sections elsewhere on the site (home, services, service-detail, team, why-choose-us, showcase) — those use their own page-specific headlines and aren't editable from here. Each newline = a line break in the rendered headline. SPECIAL CASE: if the value is the canonical 'Share Your Shipment Details. We'll Handle The Rest.' (any casing/punctuation/whitespace), the Figma per-breakpoint break patterns are used instead — desktop 2 lines, mobile 3 lines (because the mobile layout uses a different word grouping that a single text field can't express). Edit to anything else and your own newline breaks apply uniformly.",
     }),
+
     defineField({
       name: "hero_image",
       title: "Hero background image",
       type: "image",
       options: { hotspot: true },
-      fieldset: "common",
+      description:
+        "Optional override for the hero photo on the dedicated /quote page only. Does NOT affect the embedded quote-form sections elsewhere on the site — those use their own page-specific photos and aren't editable from here. Leave blank to keep the hardcoded Antonov AN-124 loading scene.",
     }),
+
     defineField({
       name: "recipient_email",
-      title: "Recipient email (display / audit)",
+      title: "Recipient email",
       type: "string",
       description:
-        "Where submissions land. Real routing is configured inside the form provider — this field is for editor reference.",
-      fieldset: "common",
+        "Where quote submissions land. Read by /api/quote at submit time and passed to Resend's `to:` field — so editing this propagates to the next submission within ~60 seconds (no deploy). Leave blank to fall back to the OPS_INBOX_FALLBACK env var.",
     }),
+
     defineField({
       name: "success_message",
       title: "Success message",
       type: "text",
       rows: 2,
       initialValue: "Thank you for your enquiry. Our ops team will reply within 24 hours.",
-      fieldset: "common",
+      description:
+        "Body shown on the in-page success card after a successful submission. Also reused as the maintenance card body when `form_enabled` is off.",
     }),
+
     defineField({
       name: "form_enabled",
       title: "Form enabled",
       type: "boolean",
-      description: "Toggle the form on/off (e.g. during maintenance).",
+      description:
+        "Master switch. When off, the form is replaced everywhere (standalone /quote + every embedded placement) with a maintenance card.",
       initialValue: true,
-      fieldset: "common",
     }),
 
-    // ── Path A: iframe embed ────────────────────────────────────────
     defineField({
       name: "form_embed_code",
       title: "Iframe embed code",
       type: "text",
       rows: 8,
       description:
-        "Raw HTML iframe snippet from Tally, Formspree, Google Forms, Typeform, etc. The frontend will render this as-is. Form fields, validation, and submit are owned by the third-party tool.",
-      fieldset: "embed",
+        "Raw HTML iframe snippet from Tally, Google Forms, Typeform, Formspree, Calendly, etc. The frontend sanitizes to an `<iframe>` allow-list (rejects `<script>`, `on*` event handlers, non-https `src`) and renders it. Only used when Form path = Iframe embed.",
       hidden: ({ document }) => document?.form_mode !== "embed",
-    }),
-
-    // ── Path B: custom React form ───────────────────────────────────
-    // (form_endpoint removed 2026-05-11 — Resend + /api/quote replaces the
-    // editor-configurable endpoint URL; the recipient is now driven by
-    // `recipient_email` and delivery routing is hardcoded to Resend.)
-    defineField({
-      name: "transport_modes",
-      title: "Mode of Transport options (Step 1)",
-      type: "array",
-      of: [{ type: "string" }],
-      initialValue: [
-        "Air Charter",
-        "Air Commercial",
-        "Ocean Ro/Ro",
-        "Ocean Container",
-        "Land",
-        "Ocean Breakbulk",
-      ],
-      fieldset: "custom",
-      hidden: ({ document }) => document?.form_mode !== "custom",
-    }),
-    defineField({
-      name: "helicopter_models",
-      title: "Helicopter model options (Step 3)",
-      type: "array",
-      of: [{ type: "string" }],
-      initialValue: [
-        "Airbus H125",
-        "Airbus H130",
-        "Bell 206",
-        "Bell 407",
-        "Leonardo AW109",
-        "Leonardo AW139",
-      ],
-      fieldset: "custom",
-      hidden: ({ document }) => document?.form_mode !== "custom",
-    }),
-    defineField({
-      name: "transaction_types",
-      title: "Transaction Type options (Step 4)",
-      type: "array",
-      of: [{ type: "string" }],
-      fieldset: "custom",
-      hidden: ({ document }) => document?.form_mode !== "custom",
-    }),
-    defineField({
-      name: "step_titles",
-      title: "Step titles (optional copy override)",
-      type: "object",
-      description:
-        "Override the default step titles. Leave any field empty to use the code default.",
-      fieldset: "custom",
-      hidden: ({ document }) => document?.form_mode !== "custom",
-      fields: [
-        defineField({ name: "step_1", title: "Step 1 — Mode of Transport", type: "string" }),
-        defineField({ name: "step_2", title: "Step 2 — Route Information", type: "string" }),
-        defineField({ name: "step_3", title: "Step 3 — Shipment Details", type: "string" }),
-        defineField({ name: "step_4", title: "Step 4 — Transaction Details", type: "string" }),
-        defineField({ name: "step_5", title: "Step 5 — Contact & Company", type: "string" }),
-      ],
     }),
   ],
   preview: {

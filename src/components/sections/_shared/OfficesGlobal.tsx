@@ -81,7 +81,7 @@ export function OfficesGlobal({ defaultActive = "uae" }: OfficesGlobalProps = {}
 
         {/* Mobile: featured-tabs card */}
         <Reveal delay={0.3} className="mt-12 md:hidden">
-          <div className="bg-ink/80 border-surface/30 relative overflow-hidden rounded-2xl border backdrop-blur-md">
+          <div className="bg-ink/80 border-surface/30 relative overflow-hidden rounded-2xl border">
             <ul className="divide-surface/15 flex flex-col divide-y">
               {OFFICES.map((office) => {
                 const isActive = office.id === activeId;
@@ -136,7 +136,7 @@ export function OfficesGlobal({ defaultActive = "uae" }: OfficesGlobalProps = {}
 
         {/* Desktop / tablet: 4-column horizontal card */}
         <Reveal delay={0.3} className="mt-12 hidden md:block lg:mt-24">
-          <div className="bg-ink/80 border-surface/30 relative overflow-hidden rounded-2xl border backdrop-blur-md">
+          <div className="bg-ink/80 border-surface/30 relative overflow-hidden rounded-2xl border">
             {/* Sliding red highlight — absolutely positioned and translated to
                 the active column's offset so the swap animates smoothly. The
                 outer corners (first/last column) round to match the card. */}

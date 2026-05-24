@@ -1,16 +1,13 @@
-import Image from "next/image";
+// SERVER COMPONENT — no "use client"
 import { Container } from "@/components/sections/_shared/Container";
 import { Section } from "@/components/sections/_shared/Section";
 import { SectionEyebrow } from "@/components/sections/_shared/SectionEyebrow";
 import { Reveal } from "@/components/sections/_shared/Reveal";
-import { ScrollSnapRow } from "@/components/sections/_shared/ScrollSnapRow";
-import { fetchWithCmsFallback } from "@/components/sections/_shared/cmsFallback";
+import { fetchWithCmsFallback } from "../_shared/cmsFallback";
 import { milestonesQuery } from "@/lib/sanity/queries";
-import { urlFor } from "@/lib/sanity/image";
 import type { Milestone } from "@/types/sanity";
-import { cn } from "@/lib/utils";
+import { MilestonesScroller } from "./MilestonesScroller";
 
-// TODO(seed): drop once Sanity is populated.
 type PlaceholderMilestone = {
   _id: string;
   year: number;
@@ -19,6 +16,11 @@ type PlaceholderMilestone = {
   placeholderImage: string;
 };
 
+export type MilestoneRow = Milestone | PlaceholderMilestone;
+
+// Pre-seed fallback (Sanity empty). Mirrors the 9 entries in scripts/seed-sanity.mjs
+// so the home page looks identical before and after `npm run seed:sanity`.
+// Once Sanity is populated, this array is dead — the CMS path wins.
 const PLACEHOLDER_MILESTONES: readonly PlaceholderMilestone[] = [
   {
     _id: "p1",
@@ -50,193 +52,74 @@ const PLACEHOLDER_MILESTONES: readonly PlaceholderMilestone[] = [
       "Heli Skycargo starts exhibiting at HAI Atlanta, European Rotors in Madrid, Spain and Verticon Anaheim.",
     placeholderImage: "/milestones/2021-on-the-road.webp",
   },
+  {
+    _id: "p5",
+    year: 2020,
+    headline: "Expanding Global Network",
+    description: "Opened Global Control Tower (Manila), USA Office, and Kuala Lumpur Warehouse.",
+    placeholderImage: "/milestones/2020-expanding-global-network.webp",
+  },
+  {
+    _id: "p6",
+    year: 2018,
+    headline: "Digitalisation",
+    description: "Launch of Heli Skycargo's mobile and desktop application.",
+    placeholderImage: "/milestones/2018-digitalisation.webp",
+  },
+  {
+    _id: "p7",
+    year: 2017,
+    headline: "Recognition as Top Logistic Player",
+    description:
+      "Leonardo Helicopters and AgustaWestland Philadelphia Corporation approve Heli Skycargo as logistic provider.",
+    placeholderImage: "/milestones/2017-recognition-top-logistic.webp",
+  },
+  {
+    _id: "p8",
+    year: 2015,
+    headline: "Shipment No. 1",
+    description:
+      "Transportation of 2 x AW139 from Philadelphia to Utapao Thailand by Antonov 124-100.",
+    placeholderImage: "/milestones/2015-shipment-no-1.webp",
+  },
+  {
+    _id: "p9",
+    year: 2014,
+    headline: "Heli Skycargo is Born",
+    description:
+      "Heli Skycargo is established in Hong Kong specialising in critical helicopter move.",
+    placeholderImage: "/milestones/2014-heli-skycargo-born.webp",
+  },
 ];
 
-type MilestoneRow = Milestone | PlaceholderMilestone;
-
-function isPlaceholder(m: MilestoneRow): m is PlaceholderMilestone {
-  return "placeholderImage" in m;
-}
-
 export async function MilestonesTimeline() {
+  // No limit — render every milestone the CMS returns. The horizontal scroller
+  // handles arbitrary counts via scroll-snap + nav buttons. Per PDF §3.2:
+  // "When a new year's milestone is added, it automatically appears on the
+  // timeline." Capping here would silently swallow newly-added entries.
   const display = await fetchWithCmsFallback<Milestone, PlaceholderMilestone>(
     milestonesQuery,
     PLACEHOLDER_MILESTONES,
-    4,
   );
 
   return (
-    <Section tone="light" spacing="loose" className="relative overflow-hidden">
-      <Container>
+    <Section tone="light" spacing="loose" className="relative overflow-visible">
+      {/* Heading */}
+      <Container className="overflow-visible">
         <div className="flex flex-col items-center gap-4 text-center">
           <Reveal>
             <SectionEyebrow variant="outline">Our Journey</SectionEyebrow>
           </Reveal>
           <Reveal delay={0.1}>
-            <h2 className="font-display text-ink text-3xl leading-[1.1] font-bold tracking-tight uppercase md:text-4xl lg:text-[54px] lg:leading-[64px] lg:tracking-[1.08px]">
+            <h2 className="font-display text-ink text-3xl leading-[1.1] font-semibold tracking-tight uppercase md:text-4xl lg:text-[54px] lg:leading-[64px] lg:tracking-[1.08px]">
               <span className="font-extrabold">Heli Skycargo</span> Milestones
             </h2>
           </Reveal>
         </div>
       </Container>
 
-      <Container className="mt-12 lg:mt-16">
-        {/* Desktop / tablet — 4-col timeline */}
-        <div className="hidden md:block">
-          <ul
-            className="grid gap-4 lg:gap-6"
-            style={{ gridTemplateColumns: `repeat(${display.length}, minmax(0, 1fr))` }}
-          >
-            {display.map((m, i) => (
-              <li key={m._id} className="flex justify-center">
-                <Reveal delay={0.2 + i * 0.05}>
-                  <span
-                    className={cn(
-                      "font-display text-4xl font-bold tracking-tight md:text-5xl lg:text-[64px] lg:leading-[50px] lg:tracking-[1.28px]",
-                      i === 0 ? "text-brand-red" : "text-ink",
-                    )}
-                  >
-                    {m.year}
-                  </span>
-                </Reveal>
-              </li>
-            ))}
-          </ul>
-
-          {/* Helicopter sits between dot 1 and dot 2 — `1/N` from the left
-              keeps it centred there as the CMS list grows past 4. */}
-          <div className="relative mt-6">
-            <span aria-hidden="true" className="bg-ink/15 block h-px w-full" />
-            <Image
-              src="/milestones/helicopter.svg"
-              alt=""
-              width={99}
-              height={42}
-              aria-hidden="true"
-              style={{ left: `${100 / Math.max(display.length, 1)}%` }}
-              className="pointer-events-none absolute top-1/2 h-auto w-24 -translate-x-1/2 -translate-y-full -scale-x-100 lg:w-28"
-            />
-            <ul
-              className="absolute inset-x-0 top-1/2 grid gap-4 lg:gap-6"
-              style={{ gridTemplateColumns: `repeat(${display.length}, minmax(0, 1fr))` }}
-            >
-              {display.map((m, i) => (
-                <li key={m._id} className="flex justify-center">
-                  <span
-                    aria-hidden="true"
-                    className={cn(
-                      "block h-3 w-3 -translate-y-1/2 rounded-full",
-                      i === 0 ? "bg-brand-red" : "bg-ink-muted",
-                    )}
-                  />
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <ul
-            className="mt-12 grid items-stretch gap-4 lg:gap-6"
-            style={{ gridTemplateColumns: `repeat(${display.length}, minmax(0, 1fr))` }}
-          >
-            {display.map((m, i) => (
-              <li key={m._id} className="relative h-full">
-                <Image
-                  src={
-                    i === 0
-                      ? "/milestones/connector-active.svg"
-                      : "/milestones/connector-inactive.svg"
-                  }
-                  alt=""
-                  aria-hidden="true"
-                  width={128}
-                  height={27}
-                  className="pointer-events-none absolute -top-[27px] left-1/2 z-10 h-[27px] w-32 -translate-x-1/2"
-                />
-                <Reveal delay={0.3 + i * 0.08} className="h-full">
-                  <MilestoneCard milestone={m} active={i === 0} />
-                </Reveal>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Mobile — horizontal scroll-snap, one card visible with peek */}
-        <ScrollSnapRow
-          ariaLabel="Heli Skycargo milestones timeline"
-          className="gap-4 px-4 pb-4 md:hidden"
-        >
-          {display.map((m, i) => (
-            <li key={m._id} className="w-72 shrink-0 snap-center sm:w-80">
-              <Reveal delay={0.2 + i * 0.05}>
-                <div className="mb-6 flex justify-center">
-                  <span
-                    className={cn(
-                      "font-display text-4xl font-bold tracking-tight",
-                      i === 0 ? "text-brand-red" : "text-ink",
-                    )}
-                  >
-                    {m.year}
-                  </span>
-                </div>
-                <div className="relative">
-                  <Image
-                    src={
-                      i === 0
-                        ? "/milestones/connector-active.svg"
-                        : "/milestones/connector-inactive.svg"
-                    }
-                    alt=""
-                    aria-hidden="true"
-                    width={128}
-                    height={27}
-                    className="pointer-events-none absolute -top-[20px] left-1/2 z-10 h-[20px] w-24 -translate-x-1/2"
-                  />
-                  <MilestoneCard milestone={m} active={i === 0} />
-                </div>
-              </Reveal>
-            </li>
-          ))}
-        </ScrollSnapRow>
-      </Container>
+      {/* Client island — handles scroll ref + nav buttons */}
+      <MilestonesScroller milestones={display} />
     </Section>
-  );
-}
-
-type MilestoneCardProps = {
-  milestone: MilestoneRow;
-  active: boolean;
-};
-
-function MilestoneCard({ milestone: m, active }: MilestoneCardProps) {
-  const imageSrc = isPlaceholder(m)
-    ? m.placeholderImage
-    : urlFor(m.image).width(800).height(600).format("webp").quality(82).url();
-
-  return (
-    <article
-      className={cn(
-        // All 4 sides share the same color; top edge is 3px thick.
-        "bg-surface flex h-full flex-col border border-t-[3px] transition-shadow",
-        active ? "border-brand-red shadow-[0_0_10px_2px_rgba(0,0,0,0.07)]" : "border-[#f5f5f5]",
-      )}
-    >
-      <div className="flex flex-1 flex-col items-center px-6 pt-6 pb-6 text-center">
-        <h3 className="font-display text-ink text-xl leading-[36px] font-bold tracking-[0.48px] uppercase md:text-[24px]">
-          {m.headline}
-        </h3>
-        <p className="font-body text-ink-soft mt-3 text-sm leading-[22px] md:text-[15px]">
-          {m.description}
-        </p>
-      </div>
-      <div className="relative mt-auto aspect-[366/270] w-full overflow-hidden">
-        <Image
-          src={imageSrc}
-          alt={m.headline}
-          fill
-          sizes="(min-width: 1024px) 25vw, (min-width: 768px) 25vw, 320px"
-          className="object-cover"
-        />
-      </div>
-    </article>
   );
 }

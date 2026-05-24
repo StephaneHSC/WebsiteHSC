@@ -100,7 +100,7 @@ export type ProjectsMosaicProps = {
 
 const DEFAULT_HEADING: Required<ProjectsMosaicHeading> = {
   eyebrow: "Case Visuals",
-  title: { pre: "Some of ", emphasis: "Our Projects", post: " and More" },
+  title: { pre: "Some of ", emphasis: "Our Projects", post: " and More", postMobile: " & More" },
 };
 
 /**

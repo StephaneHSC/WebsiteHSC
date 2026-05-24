@@ -1,6 +1,13 @@
 import Image from "next/image";
 import { SectionEyebrow } from "@/components/sections/_shared/SectionEyebrow";
 import { Reveal } from "@/components/sections/_shared/Reveal";
+import { QuoteFormCore } from "@/components/sections/quote/QuoteFormCore";
+import { QuoteFormEmbedded } from "@/components/sections/quote/QuoteFormEmbedded";
+import { QuoteFormDisabled } from "@/components/sections/quote/QuoteFormDisabled";
+import { client } from "@/lib/sanity/client";
+import { quoteFormConfigQuery } from "@/lib/sanity/queries";
+import type { QuoteFormConfig } from "@/types/sanity";
+import type { QuoteFormPrefill, TransportMode } from "@/types/quoteForm";
 import { cn } from "@/lib/utils";
 
 export type QuoteFormShellProps = {
@@ -16,6 +23,11 @@ export type QuoteFormShellProps = {
    * with just the dark overlay.
    */
   tinted?: boolean;
+  /**
+   * Preselect a transport mode (e.g. service-detail page passes
+   * `QUOTE_MODE_BY_SERVICE_SLUG[slug]`). Honored on first render only.
+   */
+  defaultMode?: TransportMode;
 };
 
 const DEFAULT_HEADLINE = {
@@ -24,73 +36,74 @@ const DEFAULT_HEADLINE = {
   line3: "Request",
 };
 
-const TRANSPORT_MODES = [
-  "Air Charter",
-  "Air Commercial",
-  "Ocean RORO",
-  "Ocean Container",
-  "Land",
-  "Ocean Breakbulk",
-] as const;
-
 /**
- * Visual-only quote form shell — used on home and services pages, identical
- * apart from the photo prop. M8 will wire Formspree, validation, and step
- * accordion logic into this same component without redesigning the markup.
+ * Embedded quote form — the M3 split-pane layout (left photo + right form).
+ * Hosts the shared `QuoteFormCore` engine inside the right column.
  *
- * Submit button is intentionally disabled in M3.
+ * CMS fields honored here (scoped to form behavior — hero photo/headline are
+ * NOT pulled from CMS because the shell's tall-left-pane crop and 3-line H2
+ * are layout-specific and don't share assets with the standalone /quote page):
+ *   - `form_mode`         → routes between Custom React form / iframe embed
+ *   - `form_enabled`      → swaps in the maintenance card
+ *   - `form_embed_code`   → iframe HTML when form_mode === "embed"
+ *   - `recipient_email`   → read server-side in /api/quote at submit time
+ *   - `success_message`   → success state body + maintenance message
  */
-export function QuoteFormShell({
+export async function QuoteFormShell({
   photo,
   headline = DEFAULT_HEADLINE,
   eyebrow = "Request a Quote",
   tinted = false,
+  defaultMode = "Air Charter",
 }: QuoteFormShellProps) {
+  const config = await client.fetch<QuoteFormConfig | null>(
+    quoteFormConfigQuery,
+    {},
+    { next: { revalidate: 60 } },
+  );
+  const formEnabled = config?.form_enabled !== false;
+  const formMode = config?.form_mode ?? "custom";
+  const prefill: QuoteFormPrefill | undefined = defaultMode ? { mode: defaultMode } : undefined;
+
   return (
-    <section className="relative w-full md:px-6 md:py-12 lg:px-12 lg:py-16 xl:px-20 xl:py-20">
+    <section className="relative w-full px-6 py-10 md:px-6 md:py-12 lg:px-12 lg:py-16 xl:px-12 xl:py-20">
       <div className="grid grid-cols-1 lg:grid-cols-2">
         {/* Left column — photo + brand red overlay + headline */}
         <div className="bg-brand-red text-surface relative overflow-hidden">
-          {/*
-            Photo layer. When `tinted` (home variant per Figma node 344:3275),
-            the image uses mix-blend-multiply so light areas of the photo
-            bleed brand-red — needs to share a stacking context with the red
-            bg so we keep the parent un-isolated. Service variants apply a
-            black overlay on top instead so the photo renders flat.
-          */}
           <div aria-hidden="true" className="absolute inset-0">
             <Image
               src={photo.src}
               alt={photo.alt}
               fill
               sizes="(min-width: 1024px) 50vw, 100vw"
-              className={cn("object-cover object-center", tinted && "mix-blend-multiply")}
+              // `object-bottom` keeps the Antonov + helicopter loading scene
+              // visible in the tall narrow column — `object-center` was
+              // showing only the sky portion (per Figma `344:3275` framing).
+              className={cn("object-cover object-[80%_bottom]", tinted && "mix-blend-multiply")}
             />
             {!tinted && <span className="bg-ink/30 absolute inset-0" />}
           </div>
 
-          <div className="relative z-10 flex min-h-[450px] flex-col justify-center px-6 py-16 sm:px-10 md:px-16 lg:min-h-[900px] lg:px-[60px] lg:py-[99px]">
+          <div className="relative z-10 flex min-h-[450px] flex-col justify-center px-16 py-16 sm:px-16 md:px-16 lg:min-h-[900px] lg:justify-start lg:px-10 lg:py-[99px] 2xl:px-[60px]">
             <Reveal>
-              <SectionEyebrow variant="outline-white">{eyebrow}</SectionEyebrow>
+              <SectionEyebrow variant="solid-white">{eyebrow}</SectionEyebrow>
             </Reveal>
             <Reveal delay={0.1}>
-              <div className="mt-6 lg:mt-[46px]">
-                <div className="flex items-start gap-4">
-                  <h2 className="font-display text-surface text-[32px] leading-[1.18] uppercase lg:text-[54px] lg:leading-[74px]">
+              <div className="mt-3 lg:mt-[16px]">
+                <div className="flex items-start gap-4 lg:items-center lg:gap-3">
+                  <h2 className="font-display text-surface text-[24px] leading-[34px] uppercase lg:text-[54px] lg:leading-[74px] lg:whitespace-nowrap">
                     <span className="block font-black">{headline.line1}</span>
                     <span className="block font-bold">{headline.line2}</span>
                     <span className="block font-bold">{headline.line3}</span>
                   </h2>
-                  {/* Desktop: chevron at right of H2, pointing right. */}
                   <ChevronsRight
                     aria-hidden="true"
-                    className="text-surface mt-4 hidden size-[38px] shrink-0 lg:block"
+                    className="text-surface hidden size-[38px] shrink-0 rotate-90 lg:block"
                   />
                 </div>
-                {/* Mobile: chevron below H2, pointing down. */}
                 <ChevronsRight
                   aria-hidden="true"
-                  className="text-surface mt-6 size-8 rotate-90 lg:hidden"
+                  className="text-surface mt-6 size-[38px] rotate-180 lg:hidden"
                 />
               </div>
             </Reveal>
@@ -99,226 +112,40 @@ export function QuoteFormShell({
 
         {/* Right column — white form panel */}
         <div className="bg-surface relative shadow-[0_0_6px_rgba(0,0,0,0.09)]">
-          <form
-            aria-label="Request a quote"
-            className="space-y-7 px-6 py-12 sm:px-10 md:px-16 lg:px-[48px] lg:py-[85px]"
-          >
-            <FormSection number="01" label="Mode of Transport" complete>
-              {/* Mobile: collapsed dropdown showing the selected mode. */}
-              <div className="lg:hidden">
-                <span className="text-surface font-display relative flex h-[60px] w-full items-center justify-between bg-[linear-gradient(165.5deg,#e40c28_22%,#ae302b_78%)] pr-4 pl-12 text-[13px] font-semibold tracking-[0.02em] uppercase">
-                  <span
-                    aria-hidden="true"
-                    className="absolute top-1/2 left-4 size-[15px] -translate-y-1/2 rounded-full border border-white"
-                  >
-                    <span className="bg-surface absolute top-1/2 left-1/2 size-[8px] -translate-x-1/2 -translate-y-1/2 rounded-full" />
-                  </span>
-                  {TRANSPORT_MODES[0]}
-                  <ChevronDownSquare aria-hidden="true" className="text-surface size-6" />
-                </span>
-              </div>
-              {/* Desktop: full grid of radios. */}
-              <div className="hidden gap-[10px] lg:grid lg:grid-cols-3">
-                {TRANSPORT_MODES.map((mode, i) => (
-                  <ModeRadio key={mode} label={mode} selected={i === 0} />
-                ))}
-              </div>
-            </FormSection>
-
-            <FormSection number="02" label="Route Information" indicator="refresh">
-              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-[12px]">
-                <Field
-                  label="Origin — Country / City / ZIP"
-                  required
-                  placeholder="e.g. United States / Houston / 77001"
-                  active
-                />
-                <Field
-                  label="Destination — Country / City / ZIP"
-                  required
-                  placeholder="e.g. UAE / Dubai / 00000"
-                />
-              </div>
-            </FormSection>
-
-            <CollapsedSection number="03" label="Shipment Details" />
-            <CollapsedSection number="04" label="Transaction Classification" />
-            <CollapsedSection number="05" label="Contact & Company" />
-
-            <div className="pt-2">
-              <button
-                type="submit"
-                disabled
-                aria-disabled="true"
-                title="The quote form will be wired up in a later release."
-                className="font-body bg-ink text-surface inline-flex w-full max-w-[305px] cursor-not-allowed items-center justify-center px-[30px] py-[20px] text-[14px] font-bold tracking-[0.84px] uppercase opacity-90"
-              >
-                Submit
-              </button>
-              <p className="font-body text-ink mt-4 text-[11px] leading-[20px] tracking-[0.04em] uppercase lg:text-[12px]">
-                All fields marked * are required &middot; Data transmitted over secure channel
-              </p>
-            </div>
-          </form>
+          <div className="px-6 py-12 sm:px-10 md:px-16 lg:px-[48px] lg:py-[85px]">
+            {!formEnabled ? (
+              <QuoteFormDisabled
+                message={
+                  config?.success_message?.trim() ||
+                  "Quote requests are temporarily paused. Please email info@heliskycargo.com directly."
+                }
+              />
+            ) : formMode === "embed" ? (
+              <QuoteFormEmbedded code={config?.form_embed_code} />
+            ) : (
+              <QuoteFormCore variant="embedded" config={config ?? null} prefill={prefill} />
+            )}
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
-type FormSectionProps = {
-  number: string;
-  label: string;
-  complete?: boolean;
-  indicator?: "refresh";
-  children: React.ReactNode;
-};
-
-function FormSection({ number, label, complete, indicator, children }: FormSectionProps) {
-  return (
-    <div className="border-input-border border-b pb-6 last:border-b-0">
-      <div className="flex items-center justify-between">
-        <p className="font-display text-ink text-[14px] tracking-[0.06em] uppercase">
-          <span className="mr-3 inline-block">{number}</span>
-          {label}
-        </p>
-        {complete ? <CheckCircle aria-hidden="true" className="text-brand-red size-5" /> : null}
-        {indicator === "refresh" ? (
-          <RefreshIcon aria-hidden="true" className="text-ink/40 size-5" />
-        ) : null}
-      </div>
-      <div className="mt-5">{children}</div>
-    </div>
-  );
-}
-
-function CollapsedSection({ number, label }: { number: string; label: string }) {
-  return (
-    <div className="border-input-border border-b py-2">
-      <p className="font-display text-ink text-[14px] tracking-[0.06em] uppercase">
-        <span className="mr-3 inline-block">{number}</span>
-        {label}
-      </p>
-    </div>
-  );
-}
-
-type ModeRadioProps = { label: string; selected?: boolean };
-function ModeRadio({ label, selected }: ModeRadioProps) {
-  return (
-    <span
-      className={cn(
-        "relative flex h-[60px] items-center pr-4 pl-12 text-[13px] font-semibold tracking-[0.02em] uppercase",
-        "font-display",
-        selected
-          ? "text-surface bg-[linear-gradient(165.5deg,#e40c28_22%,#ae302b_78%)]"
-          : "border-input-border text-ink border bg-white",
-      )}
-    >
-      <span
-        aria-hidden="true"
-        className={cn(
-          "absolute top-1/2 left-4 size-[15px] -translate-y-1/2 rounded-full",
-          selected ? "border border-white bg-transparent" : "border-ink/30 border bg-transparent",
-        )}
-      >
-        {selected ? (
-          <span className="bg-surface absolute top-1/2 left-1/2 size-[8px] -translate-x-1/2 -translate-y-1/2 rounded-full" />
-        ) : null}
-      </span>
-      {label}
-    </span>
-  );
-}
-
-type FieldProps = {
-  label: string;
-  required?: boolean;
-  placeholder: string;
-  active?: boolean;
-};
-function Field({ label, required, placeholder, active }: FieldProps) {
-  return (
-    <label className="block">
-      <span className="font-body text-text-muted-2 text-[12px] tracking-[0.04em] uppercase">
-        {label}
-        {required ? <span className="text-brand-red"> *</span> : null}
-      </span>
-      <span
-        className={cn(
-          "mt-2 flex h-[60px] w-full items-center px-4 text-[15px]",
-          "text-ink border bg-white",
-          active ? "border-input-focus" : "border-input-border",
-        )}
-      >
-        <span className="text-input-placeholder">{placeholder}</span>
-      </span>
-    </label>
-  );
-}
-
+/**
+ * Triple wide-shallow chevron from Figma node 494:59 (Isolation_Mode).
+ * SVG ships pointing UP (`^^^`); rotate at the call site:
+ *   `rotate-90`  → right (`>>>`)
+ *   `rotate-180` → down  (`vvv`)
+ * Each chevron spans the full 38px width with shallow vertical depth, so
+ * the angle reads as a softer "movement" mark vs. a sharp lucide chevron.
+ */
 function ChevronsRight({ className }: { className?: string }) {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.5"
-      aria-hidden="true"
-      className={className}
-    >
-      <path d="m6 17 5-5-5-5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="m13 17 5-5-5-5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function CheckCircle({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      aria-hidden="true"
-      className={className}
-    >
-      <circle cx="12" cy="12" r="10" />
-      <path d="m8 12 3 3 5-6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function ChevronDownSquare({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      aria-hidden="true"
-      className={className}
-    >
-      <rect x="3" y="3" width="18" height="18" rx="3" />
-      <path d="m8 11 4 4 4-4" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function RefreshIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      aria-hidden="true"
-      className={className}
-    >
-      <path d="M3 12a9 9 0 0 1 15-6.7L21 8" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M21 3v5h-5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M21 12a9 9 0 0 1-15 6.7L3 16" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M3 21v-5h5" strokeLinecap="round" strokeLinejoin="round" />
+    <svg viewBox="0 0 38 38" fill="currentColor" aria-hidden="true" className={className}>
+      <path d="M0.075 38c-0.008-0.098-0.022-0.197-0.022-0.295-0.001-1.987-0.006-3.974 0.009-5.962 0.001-0.151 0.106-0.356 0.23-0.443 6.153-4.272 12.313-8.533 18.473-12.795 0.061-0.043 0.126-0.078 0.203-0.126 1.436 0.988 2.874 1.976 4.31 2.965 4.762 3.28 9.521 6.563 14.289 9.834 0.288 0.198 0.395 0.4 0.391 0.749-0.019 1.864-0.008 3.728-0.011 5.592 0 0.16-0.015 0.32-0.022 0.48h-0.075c-0.067-0.066-0.127-0.143-0.204-0.196-6.13-4.235-12.262-8.466-18.388-12.707-0.223-0.154-0.357-0.109-0.549 0.024-6.087 4.209-12.179 8.413-18.268 12.62-0.107 0.074-0.196 0.172-0.294 0.26H0.074L0.075 38z" />
+      <path d="M37.918 28.831C31.594 24.466 25.311 20.130 19 15.773 12.710 20.115 6.418 24.457 0.077 28.834 0.066 28.661 0.051 28.545 0.051 28.430 0.050 26.504 0.056 24.578 0.044 22.652 0.042 22.384 0.135 22.230 0.349 22.082 6.453 17.867 12.552 13.648 18.647 9.423 18.874 9.265 19.026 9.254 19.259 9.415 25.393 13.649 31.533 17.875 37.666 22.110 37.796 22.200 37.935 22.390 37.936 22.534 37.953 24.571 37.947 26.608 37.946 28.645 37.946 28.681 37.935 28.717 37.917 28.831H37.918Z" />
+      <path d="M0.077 19.670C0.065 19.500 0.052 19.395 0.051 19.289 0.050 17.351 0.053 15.412 0.046 13.474 0.045 13.242 0.108 13.096 0.309 12.958 6.453 8.715 12.593 4.466 18.733 0.218 18.804 0.169 18.877 0.123 18.964 0.066 20.199 0.917 21.432 1.765 22.665 2.614 27.651 6.049 32.635 9.487 37.627 12.913 37.874 13.083 37.957 13.258 37.955 13.546 37.943 15.435 37.949 17.323 37.949 19.212V19.687C37.761 19.560 37.642 19.483 37.524 19.402 31.461 15.218 25.396 11.035 19.339 6.842 19.084 6.666 18.921 6.662 18.663 6.840 12.605 11.033 6.541 15.216 0.477 19.401 0.360 19.482 0.240 19.560 0.077 19.670Z" />
     </svg>
   );
 }

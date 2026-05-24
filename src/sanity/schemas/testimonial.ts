@@ -34,7 +34,7 @@ export const testimonial = defineType({
       title: "Quote",
       type: "text",
       rows: 4,
-      validation: (R) => R.required().max(280),
+      validation: (R) => R.required().max(600),
     }),
     defineField({
       name: "rating",
@@ -60,12 +60,16 @@ export const testimonial = defineType({
     defineField({
       name: "order",
       title: "Display order",
+      description:
+        "Lower numbers appear first on the home page. Use 1, 2, 3… to set the exact order of testimonials.",
       type: "number",
       validation: (R) => R.required(),
     }),
     defineField({
       name: "is_featured",
       title: "Show on home page",
+      description:
+        "Turn this on to publish this testimonial to the home page. If turned off, the entry stays in the CMS but is hidden from the site.",
       type: "boolean",
       initialValue: false,
     }),
