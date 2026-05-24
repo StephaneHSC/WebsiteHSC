@@ -1519,10 +1519,6 @@ export const PLACEHOLDER_TEAM_MEMBERS: readonly TeamMemberPlaceholder[] = [
       "With 25+ years in global freight forwarding across Europe, USA, Asia and Middle East. Stephane brings deep industry expertise and a strong customer-focused approach.",
       "Having accompanied helicopter shipments onboard aircraft such as the AN-124 and IL-76, he has built a trusted worldwide network and remains closely involved in supporting clients across the globe.",
     ],
-    social_links: {
-      linkedin: "https://linkedin.com/in/stephanemarot",
-      email: "stephane@heliskycargo.com",
-    },
     is_featured: true,
   },
   {

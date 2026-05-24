@@ -34,18 +34,25 @@ const poppins = Poppins({
 const SITE_DESCRIPTION =
   "Full-service air and ocean freight forwarder. End-to-end visibility and control over your helicopter shipments through bespoke logistics.";
 
+// Resolve the public origin used for absolute URLs in metadata (OG image,
+// canonical, etc.). Order: explicit NEXT_PUBLIC_SITE_URL → Vercel-provided
+// VERCEL_URL (preview/prod deploys before DNS cutover) → hardcoded fallback.
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : SITE.url);
+
 export const metadata: Metadata = {
   title: {
     default: "Heli Skycargo — BESPOKE HELICOPTER SHIPPING",
     template: "%s | Heli Skycargo",
   },
   description: SITE_DESCRIPTION,
-  metadataBase: new URL(SITE.url),
+  metadataBase: new URL(SITE_URL),
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: SITE.url,
+    url: SITE_URL,
     siteName: "Heli Skycargo",
     title: "Heli Skycargo — BESPOKE HELICOPTER SHIPPING",
     description: SITE_DESCRIPTION,
