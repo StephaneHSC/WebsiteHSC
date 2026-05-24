@@ -61,12 +61,20 @@ export function MilestonesScroller({ milestones }: Props) {
               }}
             >
               <Image
+                src="/milestones/helicopter-red.svg"
+                alt=""
+                width={76}
+                height={33}
+                aria-hidden="true"
+                className="mb-2 h-auto w-24 -scale-x-100 md:hidden"
+              />
+              <Image
                 src="/milestones/helicopter.svg"
                 alt=""
                 width={99}
                 height={42}
                 aria-hidden="true"
-                className="mb-2 h-auto w-24 -scale-x-100 lg:w-28"
+                className="mb-2 hidden h-auto w-24 -scale-x-100 md:block lg:w-28"
               />
             </div>
 
@@ -80,8 +88,8 @@ export function MilestonesScroller({ milestones }: Props) {
                   <span
                     aria-hidden="true"
                     className={cn(
-                      "block h-3 w-3 -translate-y-1/2 rounded-full",
-                      i === 0 ? "bg-brand-red" : "bg-ink-muted",
+                      "block h-3 w-3 -translate-y-1/2 rounded-full ring-[6px]",
+                      i === 0 ? "bg-brand-red ring-brand-red/25" : "bg-ink-muted ring-ink-muted/25",
                     )}
                   />
                 </div>

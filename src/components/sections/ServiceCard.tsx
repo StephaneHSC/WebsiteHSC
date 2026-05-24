@@ -86,10 +86,12 @@ export function ServiceCard({
               "transition-all duration-500",
               active
                 ? "translate-y-0 opacity-100"
-                : "pointer-events-none translate-y-4 opacity-0 [@media(hover:none)]:pointer-events-auto [@media(hover:none)]:translate-y-0 [@media(hover:none)]:opacity-100",
+                : "pointer-events-none translate-y-4 opacity-0 max-md:!pointer-events-auto max-md:!translate-y-0 max-md:!opacity-100 [@media(hover:none)]:pointer-events-auto [@media(hover:none)]:translate-y-0 [@media(hover:none)]:opacity-100",
             )}
           >
-            <p>{service.description}</p>
+            <p className="line-clamp-2 min-h-[2lh] md:line-clamp-none md:min-h-0">
+              {service.description}
+            </p>
           </div>{" "}
           <Link
             href={`/services/${service.slug}`}

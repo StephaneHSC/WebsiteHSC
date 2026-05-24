@@ -26,7 +26,7 @@ export function OurSolutions() {
           alt=""
           width={1098}
           height={596}
-          className="h-auto w-full max-w-6xl [filter:brightness(0.92)_contrast(1.15)]"
+          className="h-auto w-[140%] max-w-none -translate-x-8 [filter:brightness(0.92)_contrast(1.15)] md:w-full md:max-w-6xl md:translate-x-0"
         />
       </div>
 

@@ -30,9 +30,9 @@ export function Hero() {
       </div>
       <Container>
         <div className="flex min-h-[560px] items-center md:min-h-[640px] lg:min-h-[720px]">
-          <div className="max-w-3xl space-y-6 py-20 md:space-y-8 md:py-28">
+          <div className="max-w-3xl space-y-6 pt-56 pb-20 md:space-y-8 md:pt-72 md:pb-28">
             <Reveal>
-              <h1 className="font-display text-3xl leading-[1.1] font-semibold tracking-tight md:text-5xl lg:text-6xl">
+              <h1 className="font-display text-[36px] leading-[46px] font-semibold tracking-tight md:text-5xl md:leading-[1.1] lg:text-6xl">
                 Innovative Global
                 <br className="md:hidden" /> Helicopter
                 <br className="hidden md:inline" /> Freight

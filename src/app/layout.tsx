@@ -71,7 +71,10 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     images: ["/og-default.jpg"],
   },
-  robots: { index: true, follow: true },
+  robots:
+    process.env.VERCEL_ENV === "production"
+      ? { index: true, follow: true }
+      : { index: false, follow: false, googleBot: { index: false, follow: false } },
 };
 
 export const viewport: Viewport = {

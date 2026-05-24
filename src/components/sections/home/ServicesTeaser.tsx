@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Container } from "@/components/sections/_shared/Container";
 import { Section } from "@/components/sections/_shared/Section";
 import { SectionHeading } from "@/components/sections/_shared/SectionHeading";
@@ -11,9 +11,20 @@ import { cn } from "@/lib/utils";
 export function ServicesTeaser() {
   const [rowHovered, setRowHovered] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const scrollerRef = useRef<HTMLDivElement>(null);
 
   // Default-active = 3rd card (Ocean FCL). On hover, the hovered card takes over.
   const activeIndex = rowHovered ? hoveredIndex : 2;
+
+  // Mobile only: on mount, scroll the carousel so the 3rd card is in view —
+  // mirrors the desktop default-active behaviour and hints that the row scrolls.
+  useEffect(() => {
+    if (window.matchMedia("(min-width: 768px)").matches) return;
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+    const third = scroller.querySelectorAll<HTMLLIElement>("li")[2];
+    if (third) scroller.scrollTo({ left: third.offsetLeft - 16, behavior: "smooth" });
+  }, []);
 
   return (
     <Section tone="light" spacing="loose" className="overflow-hidden">
@@ -40,6 +51,7 @@ export function ServicesTeaser() {
       </Container>
 
       <div
+        ref={scrollerRef}
         role="region"
         aria-label="Helicopter transport service offerings"
         tabIndex={0}
