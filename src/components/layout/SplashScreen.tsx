@@ -73,7 +73,7 @@ export function SplashScreen({ children }: { children: React.ReactNode }) {
                   : "none",
             }}
           >
-            <h1 className="font-display px-6 text-center text-[2rem] leading-[1.1] font-black tracking-tight text-white uppercase md:pb-[15rem] md:text-4xl lg:text-6xl">
+            <h1 className="font-display px-6 text-center text-[2rem] leading-[1.1] font-black tracking-tight text-white uppercase md:pb-[30rem] md:text-4xl lg:text-6xl">
               Welcome to Heli Skycargo
             </h1>
           </div>

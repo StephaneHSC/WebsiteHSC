@@ -108,10 +108,6 @@ const TEAM_MEMBERS = [
     department: "Leadership",
     short_bio: "Captains the HSC mission across global ops.",
     bioParagraphs: [STEPHANE_BIO_1, STEPHANE_BIO_2],
-    social_links: {
-      linkedin: "https://linkedin.com/in/stephanemarot",
-      email: "stephane@heliskycargo.com",
-    },
     order: 1,
     is_featured: true,
     status: "published",

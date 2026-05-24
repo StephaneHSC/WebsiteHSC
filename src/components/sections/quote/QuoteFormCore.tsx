@@ -39,21 +39,26 @@ type SubmissionResult =
   | { kind: "success"; message: string }
   | { kind: "error"; message: string };
 
+// Derive per-step completion from `validateAll` so the heading icon and the
+// submit-time error state can never disagree. (Previously this function
+// duplicated a subset of the rules, which produced two bugs: step 5 showed a
+// green tick for an invalid `companyWebsite` because the URL regex was only
+// in `validateAll`; step 3 showed a red refresh when only `shippingPeriod`
+// was filled because completion required the OPTIONAL helicopter brand/model.)
 function stepCompletion(state: QuoteFormState): Record<1 | 2 | 3 | 4 | 5, boolean> {
+  const errs = validateAll(state);
+  const ok = (...keys: QuoteFieldKey[]) => keys.every((k) => !errs[k]);
+  const routesOk = state.routes.every(
+    (_, i) =>
+      !errs[`routes.${i}.origin` as QuoteFieldKey] &&
+      !errs[`routes.${i}.destination` as QuoteFieldKey],
+  );
   return {
-    1: true, // mode always has a default
-    2: state.routes.every((r) => r.origin.trim().length >= 2 && r.destination.trim().length >= 2),
-    3:
-      state.shippingPeriod.trim().length > 0 &&
-      !!state.helicopterBrand &&
-      !!state.helicopterModel &&
-      state.helicopterQuantity.length > 0,
-    4: state.additionalInformation.trim().length > 0,
-    5:
-      state.companyName.trim().length > 0 &&
-      state.companyWebsite.trim().length > 0 &&
-      state.fullName.trim().length >= 2 &&
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.email.trim()),
+    1: ok("mode"),
+    2: routesOk,
+    3: ok("shippingPeriod", "helicopterBrand", "helicopterModel", "helicopterQuantity"),
+    4: ok("transactionType", "additionalInformation"),
+    5: ok("companyName", "companyWebsite", "fullName", "email"),
   };
 }
 
