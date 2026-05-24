@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Container } from "@/components/sections/_shared/Container";
 import { Reveal } from "@/components/sections/_shared/Reveal";
@@ -43,6 +43,23 @@ export function TestimonialsList({ testimonials }: TestimonialsListProps) {
   const visible = expanded ? testimonials : testimonials.slice(0, INITIAL_VISIBLE);
   const showButton = hasMore && !expanded;
 
+  // Mobile carousel: default the initial scroll position to the 2nd review
+  // (if it exists) so users land in the middle of the snap row, with the 1st
+  // card peeking on the left as a "more here" affordance. Desktop is hidden
+  // via `md:hidden`, so setting scrollLeft there is a no-op.
+  const mobileRef = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    if (visible.length < 2) return;
+    const ul = mobileRef.current?.querySelector("ul");
+    if (!ul) return;
+    const items = ul.querySelectorAll<HTMLLIElement>(":scope > li");
+    const second = items[1];
+    if (!second) return;
+    // Center the 2nd item in the scroller (matches the `snap-center` alignment
+    // on each <li>, so the browser doesn't immediately snap us off this point).
+    ul.scrollLeft = second.offsetLeft + second.offsetWidth / 2 - ul.clientWidth / 2;
+  }, [visible.length]);
+
   return (
     <>
       {/* Desktop / tablet: 3-col grid. Extra rows wrap naturally; if the last
@@ -77,7 +94,7 @@ export function TestimonialsList({ testimonials }: TestimonialsListProps) {
       {/* Mobile: scroll-snap carousel. Initial 3 cards; after expand, the full
           list is rendered in the same carousel (still horizontal scroll). */}
 
-      <div className="mt-12 md:hidden">
+      <div ref={mobileRef} className="mt-12 md:hidden">
         <ScrollSnapRow
           ariaLabel="Customer testimonials"
           className="items-stretch gap-4 px-6 pb-4" // ← items-stretch here
