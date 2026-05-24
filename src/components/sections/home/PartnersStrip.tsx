@@ -4,6 +4,7 @@ import { Section } from "@/components/sections/_shared/Section";
 import { SectionEyebrow } from "@/components/sections/_shared/SectionEyebrow";
 import { Reveal } from "@/components/sections/_shared/Reveal";
 import { HELICOPTER_BRANDS } from "@/lib/constants";
+import { PartnersMarquee } from "./PartnersMarquee";
 
 /**
  * Home page · "Our partners" / clients strip.
@@ -32,8 +33,12 @@ export function PartnersStrip() {
           <hr className="border-ink/10" />
         </Reveal>
 
+        <Reveal delay={0.3} className="mt-10 md:hidden">
+          <PartnersMarquee />
+        </Reveal>
+
         <Reveal delay={0.3}>
-          <ul className="mt-10 grid grid-cols-5 items-center gap-x-3 sm:gap-x-6 md:gap-x-10">
+          <ul className="mt-10 hidden grid-cols-5 items-center gap-x-3 sm:gap-x-6 md:grid md:gap-x-10">
             {HELICOPTER_BRANDS.map((brand) => (
               <li key={brand.name} className="flex justify-center">
                 <Image
