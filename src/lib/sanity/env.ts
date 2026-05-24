@@ -13,4 +13,4 @@ export const apiVersion = process.env.NEXT_PUBLIC_SANITY_API_VERSION ?? "2024-01
  * Token used for authenticated mutations / drafts. NEVER ship to the client.
  * Reserved for server-side operations (revalidation webhooks, etc.).
  */
-export const readToken = process.env.SANITY_API_READ_TOKEN ?? "";
+export const readToken = process.env.SANITY_AUTH_TOKEN ?? "";
