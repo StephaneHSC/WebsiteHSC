@@ -77,7 +77,8 @@ export async function CustomerTestimonials() {
               className="font-display text-ink text-3xl leading-[1.1] font-bold tracking-tight uppercase md:text-4xl lg:text-[54px] lg:leading-[74px]"
             >
               <span aria-hidden="true">
-                Customers <span className="text-brand-red">L</span>
+                Customers <br className="sm:hidden" />
+                <span className="text-brand-red font-black">L</span>
                 <Image
                   src="/testimonials/heart-3d.webp"
                   alt=""
@@ -85,14 +86,14 @@ export async function CustomerTestimonials() {
                   height={56}
                   className="mx-1 -mt-2 inline-block h-[0.85em] w-auto align-middle md:mx-2"
                 />
-                <span className="text-brand-red">ve</span> Heli Skycargo
+                <span className="text-brand-red font-black">ve</span> Heli Skycargo
               </span>
             </h2>
           </Reveal>
           {/* Hearts row sits ON the divider — render hearts over the line with
               a white bg interrupt to mask the line behind them. */}
           <Reveal delay={0.2} className="relative mt-6 w-full max-w-5xl">
-            <hr className="border-brand-red/20" />
+            <hr className="border-brand-red border-t-2 border-solid" />
             <div
               aria-hidden="true"
               className="bg-surface text-brand-red absolute top-1/2 left-9 flex -translate-y-1/2 items-center gap-2 px-4"
