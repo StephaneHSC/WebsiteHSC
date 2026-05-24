@@ -138,7 +138,7 @@ export async function POST(req: Request) {
       from: fromAddress,
       to: [recipient],
       replyTo: submitterEmail,
-      subject: `Quote: ${companyName} — ${mode}`,
+      subject: `${process.env.VERCEL_ENV === "production" ? "" : "[STG] "}Quote: ${companyName} — ${mode}`,
       html,
     });
     if (error) {

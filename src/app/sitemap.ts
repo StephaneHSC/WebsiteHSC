@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { SERVICES_TEASER, SITE } from "@/lib/constants";
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  if (process.env.VERCEL_ENV !== "production") return [];
   const now = new Date();
   const base = SITE.url.replace(/\/$/, "");
 
