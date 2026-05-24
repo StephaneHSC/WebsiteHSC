@@ -98,12 +98,12 @@ export function VaiBadge({ inline = false }: { inline?: boolean } = {}) {
   );
   const logo = (
     <Image
-      src="/partners/vai.svg"
+      src="/partners/vai.png"
       alt={PARTNERS.vai.name}
-      width={500}
-      height={90}
+      width={504}
+      height={92}
       className={cn(
-        "w-auto [clip-path:inset(1px_0.5px_0_0)]",
+        "w-auto",
         // Inline layout (mobile) uses a shorter logo so the label stays on
         // one line; stacked layout (desktop) keeps the original size.
         inline ? "h-5" : "h-7",
