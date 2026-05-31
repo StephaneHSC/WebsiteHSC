@@ -33,10 +33,10 @@ export function PartnersStrip() {
           <hr className="border-ink/10" />
         </Reveal>
 
-        <Reveal delay={0.3} className="mt-10 md:hidden">
+        <Reveal delay={0.3} className="mt-10">
           <PartnersMarquee />
         </Reveal>
-
+        {/* 
         <Reveal delay={0.3}>
           <ul className="mt-10 hidden grid-cols-5 items-center gap-x-3 sm:gap-x-6 md:grid md:gap-x-10">
             {HELICOPTER_BRANDS.map((brand) => (
@@ -51,7 +51,7 @@ export function PartnersStrip() {
               </li>
             ))}
           </ul>
-        </Reveal>
+        </Reveal> */}
       </Container>
     </Section>
   );

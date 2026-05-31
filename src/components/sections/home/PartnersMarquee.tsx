@@ -43,7 +43,7 @@ export function PartnersMarquee() {
       aria-label="Helicopter brands we ship"
     >
       <ul
-        className="hsc-marquee flex w-max items-center gap-10"
+        className="hsc-marquee flex w-max items-center gap-10 md:gap-16 lg:gap-24"
         style={{ animationPlayState: active ? "running" : "paused" }}
       >
         {items.map((brand, i) => {
@@ -55,7 +55,7 @@ export function PartnersMarquee() {
                 alt={isClone ? "" : brand.name}
                 width={brand.width}
                 height={brand.height}
-                className="h-7 w-auto object-contain"
+                className="h-7 w-auto object-contain md:h-10 lg:h-14"
               />
             </li>
           );
