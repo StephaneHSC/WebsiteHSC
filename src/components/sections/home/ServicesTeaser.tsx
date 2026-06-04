@@ -28,31 +28,46 @@ export function ServicesTeaser() {
     const scroller = scrollerRef.current;
     if (!scroller) return;
 
-    const third = itemRefs.current[2];
-    if (third) {
-      const target = third.offsetLeft + third.offsetWidth / 2 - scroller.clientWidth / 2;
-      scroller.scrollTo({ left: Math.max(0, target), behavior: "smooth" });
-    }
+    // Helper: find which card center is closest to the scroller's center
+    const getClosestIdx = () => {
+      const scrollerCenter = scroller.scrollLeft + scroller.clientWidth / 2;
+      let bestIdx = 0;
+      let bestDist = Infinity;
+      itemRefs.current.forEach((el, i) => {
+        if (!el) return;
+        const cardCenter = el.offsetLeft + el.offsetWidth / 2;
+        const dist = Math.abs(cardCenter - scrollerCenter);
+        if (dist < bestDist) {
+          bestDist = dist;
+          bestIdx = i;
+        }
+      });
+      return bestIdx;
+    };
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        let bestRatio = 0;
-        let bestIdx = -1;
-        entries.forEach((entry) => {
-          if (entry.intersectionRatio > bestRatio) {
-            const idx = itemRefs.current.indexOf(entry.target as HTMLLIElement);
-            if (idx !== -1) {
-              bestRatio = entry.intersectionRatio;
-              bestIdx = idx;
-            }
-          }
-        });
-        if (bestIdx !== -1) setMobileInViewIndex(bestIdx);
-      },
-      { root: scroller, threshold: [0.55, 0.7, 0.85, 0.95, 1] },
-    );
-    itemRefs.current.forEach((el) => el && observer.observe(el));
-    return () => observer.disconnect();
+    // Wait for layout before scrolling so offsetLeft is accurate.
+    // Double-check mobile inside the RAF in case viewport changed between
+    // effect scheduling and execution.
+    const rafId = requestAnimationFrame(() => {
+      if (!window.matchMedia("(max-width: 767px)").matches) return;
+      const third = itemRefs.current[2];
+      if (third) {
+        const target = third.offsetLeft + third.offsetWidth / 2 - scroller.clientWidth / 2;
+        scroller.scrollLeft = Math.max(0, target);
+        setMobileInViewIndex(2);
+      }
+    });
+
+    const onScroll = () => {
+      if (!window.matchMedia("(max-width: 767px)").matches) return;
+      setMobileInViewIndex(getClosestIdx());
+    };
+    scroller.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      scroller.removeEventListener("scroll", onScroll);
+    };
   }, []);
 
   return (
