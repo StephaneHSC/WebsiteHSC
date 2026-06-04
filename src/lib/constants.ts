@@ -875,6 +875,8 @@ export const VALUE_ADDED_SERVICES: readonly ValueAddedService[] = [
     slug: "equipment-rental",
     label: "Equipment Rental",
     thumb: "/services/value-added/equipment-rental.webp",
+    description:
+      "We have our own dedicated S76C++ airfreight cradle and AW139 saddle for oceanfreight and road freight that can be rented out for the transportation of Sikorski 76C++ and Leonardo Helicopter AW139.",
     shortDescription: "Lifting tool, transport saddle and other shipping kits available for rental",
     iconM4: "/services/detail/value-added/equipment-rental.png",
   },
@@ -882,6 +884,8 @@ export const VALUE_ADDED_SERVICES: readonly ValueAddedService[] = [
     slug: "aog",
     label: "AOG",
     thumb: "/services/value-added/aog.webp",
+    description:
+      "Helicopter On Ground ! Get your AOG parts on the next flight out. We shipped from any part of the world to anywhere, every day, weekend included.",
     shortDescription: "Grounded aircraft? We arrange parts and engineers to restore service fast.",
     iconM4: "/services/detail/value-added/aog.png",
   },
@@ -889,6 +893,8 @@ export const VALUE_ADDED_SERVICES: readonly ValueAddedService[] = [
     slug: "obc",
     label: "OBC",
     thumb: "/services/value-added/obc.webp",
+    description:
+      "Our hand carry team is ready to hop on a plane to get your parts delivered with speed at destination. It takes 60 minutes Chrono to come up with a solution upon receipt of your request.",
     shortDescription:
       "Our hand-carry team ensures supervised transport and secure delivery of critical aeroparts.",
     iconM4: "/services/detail/value-added/obc.png",
@@ -898,7 +904,7 @@ export const VALUE_ADDED_SERVICES: readonly ValueAddedService[] = [
     label: "Ferry Flight Clearance",
     thumb: "/services/value-added/ferry-flight-clearance.webp",
     description:
-      "For remote locations, helicopters may require a ferry flight to a nearby transport hub.",
+      "Remote location may not have appropriate air and ocean connection resulting in ferry flighting the helicopter to another country where the transport will take place. We can take care of the ferry flight clearance with ease.",
     detail: {
       leadBold: "Heli Skycargo ",
       leadRest:
@@ -915,12 +921,16 @@ export const VALUE_ADDED_SERVICES: readonly ValueAddedService[] = [
     thumb: "/services/value-added/customs-brokerage.webp",
     shortDescription:
       "We connect you with expert customs brokers for smooth import clearance at destination.",
+    description:
+      "We select the best player with strong custom knowledge in order to provide you with country import regulation.",
     iconM4: "/services/detail/value-added/customs-brokerage.png",
   },
   {
     slug: "crates-manufacturing",
     label: "Crates Manufacturing",
     thumb: "/services/value-added/crates-manufacturing.webp",
+    description:
+      "We are currently able to manufacture high quality crates in Malaysia, Italy, USA, Gabon, Cameroon for packing blades and spares.",
     shortDescription: "We source bespoke crates to safely transport blades and accessories",
     iconM4: "/services/detail/value-added/crates-manufacturing.png",
   },
@@ -928,6 +938,8 @@ export const VALUE_ADDED_SERVICES: readonly ValueAddedService[] = [
     slug: "shrink-wrapping",
     label: "Shrink Wrapping",
     thumb: "/services/value-added/shrink-wrapping.webp",
+    description:
+      "We provide shrink wrapping for preservation and for transportation. Each wrap comes fully suited with access hatches, warning labels, shockwatch and tiltwatch.",
     shortDescription:
       "Shrink-wrapping services to protect and preserve your helicopter during transport.",
     iconM4: "/services/detail/value-added/shrink-wrapping.png",
@@ -936,6 +948,8 @@ export const VALUE_ADDED_SERVICES: readonly ValueAddedService[] = [
     slug: "cargo-insurance",
     label: "Cargo Insurance",
     thumb: "/services/value-added/cargo-insurance.webp",
+    description:
+      "We provide a comprehensive all-risk marine insurance at a very competitive price.",
     shortDescription:
       "We prioritise protecting high-value cargo from loss, damage, or risk during transit.",
     iconM4: "/services/detail/value-added/cargo-insurance.png",
@@ -1360,7 +1374,6 @@ export const QUOTE_HELICOPTER_BRANDS = [
   "Robinson",
   "Boeing",
   "Kaman model",
-  "K-Max",
 ] as const;
 
 export const QUOTE_HELICOPTER_MODELS_BY_BRAND: Readonly<Record<string, readonly string[]>> = {
@@ -1377,14 +1390,32 @@ export const QUOTE_HELICOPTER_MODELS_BY_BRAND: Readonly<Record<string, readonly 
     "AS365N3",
     "BK117",
   ],
-  // TODO(content): client to confirm full per-brand model catalogs.
-  Leonardo: ["AW109", "AW119", "AW139", "AW169", "AW189"],
-  Sikorsky: ["S-76", "S-92", "CH-53"],
-  Bell: ["206", "407", "412", "429", "505", "525"],
-  Robinson: ["R22", "R44", "R66"],
-  Boeing: ["CH-47", "AH-6", "MH-6"],
-  "Kaman model": ["K-MAX", "SH-2G"],
-  "K-Max": ["K-1200", "K-MAX-TITAN"],
+  Leonardo: ["AW109", "AW119", "AW139", "AW169", "AW149", "AW189", "AW609", "AW09"],
+  Sikorsky: [
+    "S76C++",
+    "S92",
+    "UH-60 Black Hawk",
+    "S70",
+    "CH-53E Super Stallion",
+    "CH-53K King Stallion",
+    "SH-3 Sea King",
+  ],
+  Bell: [
+    "Bell 505",
+    "Bell 407",
+    "Bell 429",
+    "Bell 525",
+    "Bell412EP",
+    "Bell212",
+    "Bell204",
+    "Bell205",
+    "Bell214",
+  ],
+  Robinson: ["R22", "R44", "R66", "R88"],
+  //CH-47 Chinook
+
+  Boeing: ["CH-47 Chinook"],
+  "Kaman model": ["K-MAX"],
 };
 
 export const QUOTE_QUANTITIES = ["01", "02", "03", "04", "05", "06"] as const;

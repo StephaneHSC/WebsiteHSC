@@ -23,10 +23,8 @@ export default function MarketingLayout({ children }: Readonly<{ children: React
         strategy="afterInteractive"
       />
       <Header />
-      <SplashScreen>
-        {children}
-        <Footer />
-      </SplashScreen>
+      {children}
+      <Footer />
     </div>
   );
 }

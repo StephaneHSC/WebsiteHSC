@@ -112,7 +112,7 @@ export function MilestonesScroller({ milestones }: Props) {
         className="mt-4 w-full scroll-pl-6 overflow-x-auto [scrollbar-width:none] lg:mt-6 lg:scroll-pl-12 [&::-webkit-scrollbar]:hidden"
         style={{ scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}
       >
-        <div className="inline-flex flex-col pb-4 pl-6 lg:pl-12">
+        <div className="mt-[15px] inline-flex flex-col md:pb-4 md:pl-6 lg:pl-12">
           {/* Timeline row — line + helicopter + dots */}
           <div className="relative mt-8 lg:mt-12">
             {/* Line */}

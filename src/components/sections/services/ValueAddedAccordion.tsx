@@ -168,14 +168,14 @@ function ValueAddedRow({ service, number, isOpen, onToggle }: RowProps) {
                   <span className="font-body block text-[14px] leading-[22px] xl:text-[17px] xl:leading-[25px]">
                     {service.description}
                   </span>
-                  {service.detail ? (
+                  {/* {service.detail ? (
                     <span className="font-body mt-3 block text-[14px] leading-[22px] xl:mt-4 xl:text-[17px] xl:leading-[25px]">
                       <span className="font-bold">{service.detail.leadBold}</span>
                       {service.detail.leadRest}
                       <span className="font-bold">{service.detail.midBold}</span>
                       {service.detail.tail}
                     </span>
-                  ) : null}
+                  ) : null} */}
                 </span>
               </span>
             </span>
