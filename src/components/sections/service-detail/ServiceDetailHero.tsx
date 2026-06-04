@@ -64,6 +64,10 @@ export function ServiceDetailHero({ service }: ServiceDetailHeroProps) {
                   </span>
                 ))}
               </h1>
+
+              <p className="line-clamp-2 min-h-[2lh] md:line-clamp-none md:min-h-0">
+                {service.description}
+              </p>
             </Reveal>
           </div>
 

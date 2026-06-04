@@ -25,7 +25,7 @@ type Props = {
  * carousel centers the first member (row index 1) so it lands "active".
  */
 export function TeamCarousel({ items }: Props) {
-  const [inViewIdx, setInViewIdx] = useState(1);
+  const [inViewIdx, setInViewIdx] = useState(-1);
   const rowRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
