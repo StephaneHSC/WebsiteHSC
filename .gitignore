@@ -31,7 +31,9 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env files (can opt-in for committing if needed)
-.env*
+.env
+.env.*
+!.env.example
 
 # vercel
 .vercel
@@ -42,12 +44,12 @@ next-env.d.ts
 
 # --- HSC project additions ---
 
-# Claude Code local config (project rules + agents + settings — local to dev only)
-/CLAUDE.md
-/.claude/
+# Claude Code per-developer settings (tool allowlist etc) — local only.
+# CLAUDE.md, .claude/PROJECT_BRIEF.md, .claude/FIGMA_GUIDE.md, and docs/TIMELINE.md
+# are committed so every dev's Claude operates from the same context.
+/.claude/settings.local.json
 
-# Confidential or fluid working docs (not for repo)
-/docs/TIMELINE.md
+# Client PDFs — share via password manager / Drive, not git
 *.pdf
 
 # OS / editor cruft
@@ -57,3 +59,4 @@ Thumbs.db
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json.example
+.env*
