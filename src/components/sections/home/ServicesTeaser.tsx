@@ -53,7 +53,9 @@ export function ServicesTeaser() {
       const third = itemRefs.current[2];
       if (third) {
         const target = third.offsetLeft + third.offsetWidth / 2 - scroller.clientWidth / 2;
-        scroller.scrollLeft = Math.max(0, target);
+        // behavior:'instant' overrides CSS scroll-behavior:smooth so card 03
+        // jumps into place without animating from card 01 on every page load.
+        scroller.scrollTo({ left: Math.max(0, target), behavior: "instant" });
         setMobileInViewIndex(2);
       }
     });
