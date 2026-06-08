@@ -450,7 +450,7 @@ async function seedQuoteFormConfig() {
     hero_headline: "Share Your Shipment Details\nWe'll Handle The Rest.",
     hero_image: imageRef(heroAsset),
     recipient_email: "",
-    success_message: "Thank you for your enquiry. Our ops team will reply within 24 hours.",
+    success_message: "Thank you for your enquiry. Our commercial team will reply within 24 hours.",
     form_enabled: true,
     form_embed_code: formMode === "embed" ? sampleEmbed : "",
   };

@@ -114,7 +114,7 @@
 
 ## 6. 🟠 Auto-reply email body
 
-**What we shipped**: NONE. Currently only the ops team gets an email; the submitter just sees a success card on the page. The success-card body comes from Sanity `quoteFormConfig.success_message` (currently: _"Thank you for your enquiry. Our ops team will reply within 24 hours."_).
+**What we shipped**: NONE. Currently only the commercial team gets an email; the submitter just sees a success card on the page. The success-card body comes from Sanity `quoteFormConfig.success_message` (currently: _"Thank you for your enquiry. Our commercial team will reply within 24 hours."_).
 
 **What we need from the client**:
 

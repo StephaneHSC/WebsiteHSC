@@ -16,7 +16,7 @@ export function QuoteFormSuccess({ message, onReset }: QuoteFormSuccessProps) {
       </Reveal>
       <Reveal delay={0.1}>
         <h2 className="font-display text-ink mb-[16px] text-[24px] leading-[1.2] font-bold lg:text-[32px]">
-          Request received
+          Request received!
         </h2>
       </Reveal>
       <Reveal delay={0.2}>
@@ -24,7 +24,7 @@ export function QuoteFormSuccess({ message, onReset }: QuoteFormSuccessProps) {
           {message}
         </p>
       </Reveal>
-      <Reveal delay={0.3}>
+      {/* <Reveal delay={0.3}>
         <button
           type="button"
           onClick={onReset}
@@ -32,7 +32,7 @@ export function QuoteFormSuccess({ message, onReset }: QuoteFormSuccessProps) {
         >
           Submit another request
         </button>
-      </Reveal>
+      </Reveal> */}
     </div>
   );
 }
