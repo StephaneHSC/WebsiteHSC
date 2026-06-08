@@ -433,7 +433,7 @@ After a successful submission:
 - The entire form card body is replaced with a centered success card. Hero stays visible above. Offices + Footer stay below.
 - Success card layout:
   - Green tick-circle icon (64×64), centered top.
-  - H2 `Request received` (or first sentence of the CMS `success_message`) — Inter Tight Bold 32px desktop / 24px mobile, ink, centered.
+  - H2 `Request received!` (or first sentence of the CMS `success_message`) — Inter Tight Bold 32px desktop / 24px mobile, ink, centered.
   - Body paragraph (rest of `success_message`) — PT Sans Regular 16px desktop / 14px mobile, `text-ink-soft`, max-w-[480px] centered.
   - Outline pill button `Submit another request` — `border border-ink text-ink hover:bg-ink hover:text-surface rounded-full px-[30px] py-[16px]` PT Sans Bold 14px tracking-[0.06em] capitalize. Clicking resets the form to initial state (preserving prefill if any).
 - Reveal stagger: tick (0) → H2 (0.1) → body (0.2) → button (0.3).
@@ -715,7 +715,7 @@ export const QUOTE_HERO = {
 } as const;
 
 export const QUOTE_FORM_DEFAULTS = {
-  successMessage: "Thank you for your enquiry. Our ops team will reply within 24 hours.",
+  successMessage: "Thank you for your enquiry. Our commercial team will reply within 24 hours.",
   submitLabel: "Submit",
   disclaimer: "All fields marked * are required · Data transmitted over secure channel",
   recaptchaAttribution:
@@ -1266,7 +1266,7 @@ Walk this list at every viewport (320 / 375 / 430 / 768 / 1024 / 1440 / 1920) ag
 
 - [ ] Replaces form card body
 - [ ] Green tick (64×64) centered top
-- [ ] H2 `Request received` Inter Tight Bold 32px desktop / 24px mobile centered
+- [ ] H2 `Request received!` Inter Tight Bold 32px desktop / 24px mobile centered
 - [ ] Body = CMS `success_message` PT Sans Regular 16px / 14px mobile text-ink-soft max-w-[480px] centered
 - [ ] Outline pill `Submit another request` works (resets form, preserving prefill)
 
@@ -1360,7 +1360,7 @@ Walk this list at every viewport (320 / 375 / 430 / 768 / 1024 / 1440 / 1920) ag
 ### §10.9 Success state
 
 - [ ] Form card body swaps to success card (form not visible).
-- [ ] `Submit another request` resets state to initial (prefill preserved); form card returns.
+- [ ] `Submit another request` resets state to initial (prefill preserved); form card returns. --> deleted now by client request
 
 ### §10.10 Prefill
 

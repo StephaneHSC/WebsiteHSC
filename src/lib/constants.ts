@@ -1459,7 +1459,7 @@ export const QUOTE_HERO = {
 } as const;
 
 export const QUOTE_FORM_DEFAULTS = {
-  successMessage: "Thank you for your enquiry. Our ops team will reply within 24 hours.",
+  successMessage: "Thank you for your enquiry. Our commercial team will reply within 24 hours.",
   submitLabel: "Submit",
   submittingLabel: "Submitting…",
   disclaimer: "All fields marked * are required · Data transmitted over secure channel",

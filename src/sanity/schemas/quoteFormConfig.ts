@@ -82,7 +82,7 @@ export const quoteFormConfig = defineType({
       title: "Success message",
       type: "text",
       rows: 2,
-      initialValue: "Thank you for your enquiry. Our ops team will reply within 24 hours.",
+      initialValue: "Thank you for your enquiry. Our commercial team will reply within 24 hours.",
       description:
         "Body shown on the in-page success card after a successful submission. Also reused as the maintenance card body when `form_enabled` is off.",
     }),

@@ -81,7 +81,7 @@ Service-detail prefill verified directly from the rendered HTML (every page show
 1. Open `http://localhost:3000/quote` in a normal Chrome window (not the DevTools-controlled one).
 2. Fill all required fields with real-looking data.
 3. Click Submit.
-4. Expected: success card "Request received" appears within ~5 seconds.
+4. Expected: success card "Request received!" appears within ~5 seconds.
 5. Expected: an email arrives at your `OPS_INBOX_FALLBACK` inbox (`ahmed.youssef@blink22.com`) within ~10 seconds — subject `Quote: <company> — Air Commercial`, body using the branded HTML template.
 
 If the success card appears but no email arrives, check Resend dashboard → Logs to see whether the email was sent / blocked / bounced.
