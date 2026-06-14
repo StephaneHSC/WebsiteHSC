@@ -4,6 +4,7 @@ import { SectionEyebrow } from "@/components/sections/_shared/SectionEyebrow";
 import { Reveal } from "@/components/sections/_shared/Reveal";
 import { SHARED_DETAIL_HERO_BENEFITS, type Service, type ServiceBenefit } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { BackBreadcrumb } from "@/components/sections/_shared/BackBreadcrumb";
 
 export type ServiceDetailHeroProps = {
   service: Service;
@@ -24,6 +25,7 @@ export function ServiceDetailHero({ service }: ServiceDetailHeroProps) {
 
   return (
     <section className="text-surface relative isolate w-full overflow-hidden">
+      <BackBreadcrumb href="/services" label="Back to Services" />
       <div aria-hidden="true" className="absolute inset-0 -z-10">
         <Image
           src={service.detailHeroImage}
@@ -91,7 +93,7 @@ function BenefitsStrip({ benefits }: { benefits: readonly ServiceBenefit[] }) {
         // 24px page padding via the parent Container; chips overflow to the
         // right and snap into view as the user swipes. Tabbable on mobile so
         // keyboard users can scroll the strip with arrow keys.
-        "-mx-4 flex snap-x snap-mandatory gap-2 overflow-x-auto px-4 sm:-mx-6 sm:px-6",
+        "-mx-4 flex snap-x snap-mandatory gap-2 overflow-x-auto px-6 sm:-mx-6 sm:px-8",
         // Desktop: 4 fixed-width chips spread edge-to-edge so the dark photo
         // shows through the gaps (Figma frame `345:8253` shows ~108px gaps
         // at 1600 viewport — `justify-between` matches that proportion at

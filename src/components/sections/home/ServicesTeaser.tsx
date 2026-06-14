@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { Container } from "@/components/sections/_shared/Container";
 import { Section } from "@/components/sections/_shared/Section";
 import { SectionHeading } from "@/components/sections/_shared/SectionHeading";
@@ -72,28 +73,56 @@ export function ServicesTeaser() {
     };
   }, []);
 
+  // Desktop: intercept vertical wheel and redirect as horizontal scroll.
+  useEffect(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+    function onWheel(e: WheelEvent) {
+      if (!scroller) return;
+      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+      const max = scroller.scrollWidth - scroller.clientWidth;
+      const atStart = scroller.scrollLeft <= 0;
+      const atEnd = scroller.scrollLeft >= max - 1;
+      if ((atStart && e.deltaY < 0) || (atEnd && e.deltaY > 0)) return;
+      e.preventDefault();
+      scroller.scrollBy({ left: e.deltaY, behavior: "auto" });
+    }
+    scroller.addEventListener("wheel", onWheel, { passive: false });
+    return () => scroller.removeEventListener("wheel", onWheel);
+  }, []);
+
   return (
     <Section tone="light" spacing="loose" className="overflow-hidden">
       <Container className="max-w-[1440px] lg:px-12">
-        <SectionHeading
-          eyebrow="Our Services"
-          eyebrowVariant="outline"
-          title={
-            <>
-              Explore Our Flexible Helicopter
-              <br className="hidden md:inline" />
-            </>
-          }
-          subtitle="Transport Solutions Worldwide."
-          lede={
-            <>
-              Enables end-to-end visibility on your helicopter <br className="md:hidden" />
-              shipments for you and your team
-            </>
-          }
-          align="left"
-          uppercase
-        />
+        <div className="flex items-center justify-between gap-6">
+          <SectionHeading
+            eyebrow="Our Services"
+            eyebrowVariant="outline"
+            title={
+              <>
+                Explore Our Flexible Helicopter
+                <br className="hidden md:inline" />
+              </>
+            }
+            subtitle="Transport Solutions Worldwide."
+            lede={
+              <>
+                Enables end-to-end visibility on your helicopter <br className="md:hidden" />
+                shipments for you and your team
+              </>
+            }
+            align="left"
+            uppercase
+          />
+          <Reveal delay={0.2} className="hidden shrink-0 lg:block">
+            <Link
+              href="/services"
+              className="font-body border-ink text-ink focus-visible:ring-brand-red inline-flex items-center justify-center rounded-full border border-current bg-white px-6 py-4 text-[14px] font-bold tracking-[0.06em] capitalize transition-colors duration-200 hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+            >
+              View Our Transport Solutions
+            </Link>
+          </Reveal>
+        </div>
       </Container>
 
       <div

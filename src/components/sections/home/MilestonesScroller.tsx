@@ -51,7 +51,7 @@ export function MilestonesScroller({ milestones }: Props) {
       const heliW = isLg ? HELI_W_PX.lg : HELI_W_PX.base;
       // Center helicopter on the active card's dot
       const dotCenter = activeIndex * (w + g) + w / 2;
-      setHeliX(dotCenter - heliW / 2 + 60);
+      setHeliX(dotCenter - heliW / 2);
     }
     calc();
     window.addEventListener("resize", calc);
@@ -65,6 +65,8 @@ export function MilestonesScroller({ milestones }: Props) {
     const w = isLg ? CARD_W_PX.lg : CARD_W_PX.base;
     const gap = isLg ? GAP_PX.lg : GAP_PX.base;
     el.scrollBy({ left: count * (w + gap), behavior: "smooth" });
+    // Move helicopter with the arrow press
+    setActiveIndex((prev) => Math.max(0, Math.min(milestones.length - 1, prev + count)));
   }
 
   useEffect(() => {
@@ -94,6 +96,12 @@ export function MilestonesScroller({ milestones }: Props) {
       const max = el.scrollWidth - el.clientWidth;
       setCanPrev(el.scrollLeft > 1);
       setCanNext(el.scrollLeft < max - 1);
+      // Update active index based on scroll position so helicopter tracks drag/swipe
+      const isLg = window.innerWidth >= 1024;
+      const w = isLg ? CARD_W_PX.lg : CARD_W_PX.base;
+      const g = isLg ? GAP_PX.lg : GAP_PX.base;
+      const idx = Math.round(el.scrollLeft / (w + g));
+      setActiveIndex(Math.max(0, Math.min(milestones.length - 1, idx)));
     }
     update();
     el.addEventListener("scroll", update, { passive: true });
@@ -103,7 +111,7 @@ export function MilestonesScroller({ milestones }: Props) {
       el.removeEventListener("scroll", update);
       ro.disconnect();
     };
-  }, []);
+  }, [milestones.length]);
 
   return (
     <div ref={wrapperRef} className="relative">

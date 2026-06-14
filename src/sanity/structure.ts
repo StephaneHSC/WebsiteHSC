@@ -1,4 +1,4 @@
-import type { StructureBuilder } from "sanity/structure";
+﻿import type { StructureBuilder } from "sanity/structure";
 
 /**
  * Document types that should appear as singletons (one document per type)

@@ -1333,28 +1333,28 @@ export const WHY_CHOOSE_TRACKABILITY = {
  *
  * Replaces the earlier 6-string list in QuoteFormShell.tsx (Figma-canonical).
  */
+// Row 1: Air Charter | Air Commercial | Land
+// Row 2: Ocean RoRo  | Ocean Container | Ocean Breakbulk
 export const QUOTE_TRANSPORT_MODES = [
-  "Air Commercial",
   "Air Charter",
-  "Ocean RoRo",
-  "Ocean Breakbulk (Lo/Lo)",
-  "Ocean Container",
+  "Air Commercial",
   "Land",
+  "Ocean RoRo",
+  "Ocean Container",
+  "Ocean Breakbulk (Lo/Lo)",
 ] as const;
 
 /**
- * Shell-variant mode-of-transport list. Per Figma `344:3275` (home shell) the
- * 6 radios render in a 3×2 grid with this order — Air Charter first, no
- * "(Lo/Lo)" suffix on Breakbulk. The canonical full list above is still the
- * source of truth for validation (server-side accepts both shell and standalone
- * orderings); the shell variant is purely a presentation override.
+ * Shell-variant mirrors the canonical order above (both now use the same
+ * 3×2 layout: Air Charter / Air Commercial / Land on top row,
+ * Ocean RoRo / Ocean Container / Ocean Breakbulk on bottom row).
  */
 export const QUOTE_SHELL_TRANSPORT_MODES = [
   "Air Charter",
   "Air Commercial",
+  "Land",
   "Ocean RoRo",
   "Ocean Container",
-  "Land",
   "Ocean Breakbulk (Lo/Lo)",
 ] as const;
 
@@ -1421,7 +1421,7 @@ export const QUOTE_HELICOPTER_MODELS_BY_BRAND: Readonly<Record<string, readonly 
 export const QUOTE_QUANTITIES = ["01", "02", "03", "04", "05", "06"] as const;
 
 // TODO(content): client to confirm transaction-type options + ordering.
-export const QUOTE_TRANSACTION_TYPES = ["Purchase", "Sale", "Lease", "Trade-in", "Other"] as const;
+export const QUOTE_TRANSACTION_TYPES = ["Civilian", "Military"] as const;
 
 /**
  * Service-slug → prefilled mode-of-transport. Used by the service-detail

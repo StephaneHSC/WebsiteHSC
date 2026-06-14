@@ -54,10 +54,16 @@ function stepCompletion(state: QuoteFormState): Record<1 | 2 | 3 | 4 | 5, boolea
       !errs[`routes.${i}.destination` as QuoteFieldKey],
   );
   return {
-    1: ok("mode"),
+    1: ok("modes"),
     2: routesOk,
-    3: ok("shippingPeriod", "helicopterBrand", "helicopterModel", "helicopterQuantity"),
-    4: ok("transactionType", "additionalInformation"),
+    3: ok(
+      "shippingPeriod",
+      "helicopterBrand",
+      "helicopterModels",
+      "helicopterQuantity",
+      "transactionType",
+    ),
+    4: ok("additionalInformation"),
     5: ok("companyName", "companyWebsite", "fullName", "email"),
   };
 }
@@ -68,7 +74,7 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
   // layout for each step (origin+destination side-by-side, etc.) — NOT a
   // forced single-column stack. Mobile remains stacked via responsive Tailwind.
   const stackFields = false;
-  const step04Label = isShell ? "Transaction Classification" : "Transaction Details";
+  const step04Label = "Additional Information";
 
   const [state, setState] = useState<QuoteFormState>(() => initialQuoteFormState(prefill));
   const [errors, setErrors] = useState<QuoteFormErrors>({});
@@ -207,13 +213,13 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
       // Drop invalid mode values defensively — the showcase modal maps tile
       // labels to canonical values, but a stray free-text dispatch shouldn't
       // corrupt the form state.
-      const validMode =
-        detail.mode && (QUOTE_TRANSPORT_MODES as readonly string[]).includes(detail.mode)
-          ? detail.mode
+      const validModes =
+        detail.modes && detail.modes.length > 0
+          ? detail.modes.filter((m) => (QUOTE_TRANSPORT_MODES as readonly string[]).includes(m))
           : undefined;
       setState((prev) => ({
         ...prev,
-        ...(validMode ? { mode: validMode } : {}),
+        ...(validModes && validModes.length > 0 ? { modes: validModes } : {}),
         ...(detail.routes && detail.routes.length > 0
           ? {
               routes: [
@@ -275,8 +281,9 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
       3:
         state.shippingPeriod.length > 0 ||
         state.helicopterBrand !== null ||
-        state.helicopterModel !== null,
-      4: state.transactionType !== null || state.additionalInformation.length > 0,
+        state.helicopterModels.length > 0 ||
+        state.transactionType !== null,
+      4: state.additionalInformation.length > 0,
       5:
         state.companyName.length > 0 ||
         state.companyWebsite.length > 0 ||
@@ -287,7 +294,7 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
       state.routes,
       state.shippingPeriod,
       state.helicopterBrand,
-      state.helicopterModel,
+      state.helicopterModels,
       state.transactionType,
       state.additionalInformation,
       state.companyName,
@@ -380,11 +387,12 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
           if (
             validation.shippingPeriod ||
             validation.helicopterBrand ||
-            validation.helicopterModel ||
-            validation.helicopterQuantity
+            validation.helicopterModels ||
+            validation.helicopterQuantity ||
+            validation.transactionType
           )
             next.add(3);
-          if (validation.transactionType || validation.additionalInformation) next.add(4);
+          if (validation.additionalInformation) next.add(4);
           if (
             validation.companyName ||
             validation.companyWebsite ||
@@ -485,8 +493,8 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
           controlsId="step-01-body"
         >
           <Step01ModeOfTransport
-            value={state.mode}
-            onChange={(mode: TransportMode) => updateState({ mode })}
+            values={state.modes}
+            onChange={(modes: TransportMode[]) => updateState({ modes })}
             desktopLayout={isShell ? "two-rows" : "single-row"}
             variant={isShell ? "shell" : "standalone"}
           />
@@ -497,8 +505,8 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
             <StepHeading number="01" label="Mode of Transport" status={statusFor(1)} />
           </div>
           <Step01ModeOfTransport
-            value={state.mode}
-            onChange={(mode: TransportMode) => updateState({ mode })}
+            values={state.modes}
+            onChange={(modes: TransportMode[]) => updateState({ modes })}
             desktopLayout={isShell ? "two-rows" : "single-row"}
             variant={isShell ? "shell" : "standalone"}
           />
@@ -618,7 +626,7 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
           aria-disabled={submitting || undefined}
           className={cn(
             "font-body inline-flex h-[56px] items-center justify-center px-[30px] text-[14px] font-bold tracking-[0.04em] capitalize transition-colors lg:text-[15px]",
-            "bg-ink text-surface hover:bg-[#2a2f38] disabled:cursor-not-allowed disabled:opacity-60",
+            "bg-ink text-surface hover:bg-ink/80 disabled:cursor-not-allowed disabled:opacity-60",
             variant === "standalone" ? "w-full lg:w-[510px]" : "w-full",
           )}
         >

@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Reveal } from "@/components/sections/_shared/Reveal";
 import { SectionEyebrow } from "@/components/sections/_shared/SectionEyebrow";
 import { QUOTE_HERO } from "@/lib/constants";
+import { BackBreadcrumb } from "@/components/sections/_shared/BackBreadcrumb";
 
 export type QuoteHeroProps = {
   /**
@@ -55,6 +56,7 @@ export function QuoteHero({ cmsHeadline, imageSrc, imageAlt }: QuoteHeroProps) {
 
   return (
     <section className="relative w-full overflow-hidden">
+      <BackBreadcrumb href="/" label="Back to Home" />
       <div className="relative aspect-[430/470] w-full lg:aspect-[1600/700]">
         <Image
           src={photoSrc}

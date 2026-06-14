@@ -11,6 +11,7 @@ import { ShowcaseModal } from "@/components/sections/_shared/ShowcaseModal";
 import { buttonVariants } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { SHOWCASE_TILES, type ShowcaseTile, type TileShape } from "@/lib/constants";
+import type { ShowcaseGalleryImage } from "@/types/sanity";
 
 const MOBILE_BATCH_INCREMENT = 4;
 const GAP_PX_DESKTOP = 26;
@@ -96,6 +97,12 @@ export type ProjectsMosaicProps = {
   ctaLabel?: string;
   /** Override heading copy (eyebrow + mixed-weight title parts). */
   heading?: ProjectsMosaicHeading;
+  /**
+   * CMS gallery images keyed by showcase tile slug. Fetched server-side by
+   * the parent page and passed here so the modal can render thumbnail strips
+   * without a client-side Sanity fetch.
+   */
+  galleries?: Record<string, ShowcaseGalleryImage[]>;
 };
 
 const DEFAULT_HEADING: Required<ProjectsMosaicHeading> = {
@@ -125,6 +132,7 @@ export function ProjectsMosaic({
   ctaHref = "/showcase",
   ctaLabel = "View All Showcase",
   heading,
+  galleries,
 }: ProjectsMosaicProps) {
   const filteredTiles = useMemo(() => {
     if (!serviceSlug) return tiles;
@@ -222,7 +230,7 @@ export function ProjectsMosaic({
                 (Figma 505:6417 — width 384, ~17px tall). md/lg unchanged. */}
             <h2 className="font-display text-ink text-[20px] leading-[1.1] font-bold tracking-tight whitespace-nowrap uppercase md:text-4xl md:whitespace-normal lg:text-5xl">
               {headingCopy.title.pre}
-              <span className="font-extrabold">{headingCopy.title.emphasis}</span>
+              <span className="font-black">{headingCopy.title.emphasis}</span>
               {headingCopy.title.postMobile ? (
                 <>
                   <span className="md:hidden">{headingCopy.title.postMobile}</span>
@@ -302,9 +310,9 @@ export function ProjectsMosaic({
               onClick={() =>
                 setMobileVisible((v) => Math.min(mobileTotal, v + MOBILE_BATCH_INCREMENT))
               }
-              className="border-input-border text-ink font-body focus-visible:ring-brand-red inline-flex items-center justify-center rounded-[30px] border bg-white px-5 py-4 text-[12px] font-bold tracking-[0.72px] capitalize transition hover:scale-[1.02] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+              className="border-input-border text-ink font-body focus-visible:ring-brand-red inline-flex items-center justify-center rounded-[30px] border bg-white px-5 py-2.5 text-[12px] font-bold tracking-[0.72px] capitalize transition hover:scale-[1.02] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
             >
-              Load More
+              Loading More...
             </button>
           </Reveal>
         ) : null}
@@ -313,9 +321,9 @@ export function ProjectsMosaic({
             <button
               type="button"
               onClick={() => setDesktopVisible(total)}
-              className="text-ink font-body focus-visible:ring-brand-red inline-flex items-center justify-center rounded-[30px] bg-white px-[30px] py-[20px] text-[14px] font-bold tracking-[0.84px] capitalize transition hover:scale-[1.02] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+              className="text-ink font-body focus-visible:ring-brand-red inline-flex items-center justify-center rounded-[30px] bg-white px-[30px] py-[10px] text-[14px] font-bold tracking-[0.84px] capitalize transition hover:scale-[1.02] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
             >
-              Load More
+              Loading More...
             </button>
           </Reveal>
         ) : null}
@@ -335,7 +343,11 @@ export function ProjectsMosaic({
         ) : null}
       </Container>
 
-      <ShowcaseModal tile={activeTile} onClose={() => setActiveTile(null)} />
+      <ShowcaseModal
+        tile={activeTile}
+        onClose={() => setActiveTile(null)}
+        galleryImages={activeTile ? (galleries?.[activeTile.id] ?? undefined) : undefined}
+      />
     </Section>
   );
 }

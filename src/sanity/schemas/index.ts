@@ -1,9 +1,10 @@
-import type { SchemaTypeDefinition } from "sanity";
+﻿import type { SchemaTypeDefinition } from "sanity";
 import { teamMember } from "./teamMember";
 import { testimonial } from "./testimonial";
 import { milestone } from "./milestone";
 import { quoteFormConfig } from "./quoteFormConfig";
 import { siteStats } from "./siteStats";
+import { showcaseItem } from "./showcaseItem";
 
 export const schemaTypes: SchemaTypeDefinition[] = [
   teamMember,
@@ -11,4 +12,5 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   milestone,
   quoteFormConfig,
   siteStats,
+  showcaseItem,
 ];

@@ -113,7 +113,7 @@ export function MobileNav({ inverted = false }: MobileNavProps = {}) {
                         onClick={() =>
                           setExpanded((prev) => (prev === item.label ? null : item.label))
                         }
-                        className="bg-surface-alt text-ink hover:bg-border focus-visible:ring-brand-red flex w-full items-center justify-between rounded-full px-5 py-3 text-base font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                        className="text-ink hover:bg-surface-alt focus-visible:ring-brand-red flex w-full items-center justify-between rounded-full px-5 py-3 text-base font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none"
                       >
                         <span>{item.label}</span>
                         <ChevronIcon

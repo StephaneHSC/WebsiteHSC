@@ -113,15 +113,30 @@ export async function POST(req: Request) {
   }[];
 
   const companyName = String(fd.get("company_name") ?? "");
-  const mode = String(fd.get("mode") ?? "");
+  const modes = (() => {
+    try {
+      const parsed = JSON.parse(String(fd.get("modes") ?? "[]"));
+      return Array.isArray(parsed) ? (parsed as string[]) : [];
+    } catch {
+      return [] as string[];
+    }
+  })();
+  const helicopterModels = (() => {
+    try {
+      const parsed = JSON.parse(String(fd.get("helicopter_models") ?? "[]"));
+      return Array.isArray(parsed) ? (parsed as string[]) : [];
+    } catch {
+      return [] as string[];
+    }
+  })();
   const submitterEmail = String(fd.get("email") ?? "");
 
   const html = buildQuoteEmailHtml({
-    mode,
+    modes,
     routes,
     shippingPeriod: String(fd.get("shipping_period") ?? ""),
     helicopterBrand: String(fd.get("helicopter_brand") ?? ""),
-    helicopterModel: String(fd.get("helicopter_model") ?? ""),
+    helicopterModels,
     helicopterQuantity: String(fd.get("helicopter_quantity") ?? ""),
     transactionType: String(fd.get("transaction_type") ?? ""),
     additionalInformation: String(fd.get("additional_information") ?? ""),
@@ -138,7 +153,7 @@ export async function POST(req: Request) {
       from: fromAddress,
       to: [recipient],
       replyTo: submitterEmail,
-      subject: `${process.env.VERCEL_ENV === "production" ? "" : "[STG] "}Quote: ${companyName} — ${mode}`,
+      subject: `${process.env.VERCEL_ENV === "production" ? "" : "[STG] "}Quote: ${companyName} — ${modes.join(", ")}`,
       html,
     });
     if (error) {

@@ -80,3 +80,31 @@ export const siteStatsQuery = /* groq */ `
     }
   }
 `;
+
+/**
+ * Showcase gallery images for a specific item, matched by slug.
+ * Returns null when no document exists for the given slug (galleries are optional).
+ */
+export const showcaseGalleryQuery = /* groq */ `
+  *[_type == "showcaseItem" && slug == $slug][0]{
+    slug,
+    "gallery_images": gallery_images[] {
+      image,
+      caption
+    }
+  }
+`;
+
+/**
+ * All showcase gallery images, keyed by slug. Returns an array of
+ * `{ slug, gallery_images }` entries — the caller maps to a Record.
+ */
+export const allShowcaseGalleriesQuery = /* groq */ `
+  *[_type == "showcaseItem" && defined(gallery_images) && count(gallery_images) > 0]{
+    slug,
+    "gallery_images": gallery_images[] {
+      image,
+      caption
+    }
+  }
+`;

@@ -65,3 +65,13 @@ export type SiteStat = {
 export type SiteStats = {
   stats: SiteStat[];
 };
+
+export type ShowcaseGalleryImage = {
+  image: SanityImage;
+  caption?: string;
+};
+
+export type ShowcaseItemGallery = {
+  slug: string;
+  gallery_images: ShowcaseGalleryImage[];
+};

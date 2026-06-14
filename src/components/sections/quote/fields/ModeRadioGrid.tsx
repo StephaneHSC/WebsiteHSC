@@ -6,8 +6,8 @@ import { QUOTE_SHELL_TRANSPORT_MODES, QUOTE_TRANSPORT_MODES } from "@/lib/consta
 import type { TransportMode } from "@/types/quoteForm";
 
 export type ModeRadioGridProps = {
-  value: TransportMode;
-  onChange: (mode: TransportMode) => void;
+  values: TransportMode[];
+  onChange: (modes: TransportMode[]) => void;
   /** Embedded shell renders inside half-width column → 3x2 grid; standalone → single row. */
   layout?: "single-row" | "two-rows";
   /**
@@ -19,18 +19,18 @@ export type ModeRadioGridProps = {
 };
 
 /**
- * Step 01 desktop — 6 transport-mode radios.
+ * Step 01 desktop — 6 transport-mode checkboxes (multi-select).
  *
  * Layout strategy:
  * - `single-row` (standalone /quote): CSS grid with fractional column widths
- *   (180fr / 150fr / 150fr / 230fr / 180fr / 120fr) so the radios fit on one
+ *   (180fr / 150fr / 150fr / 230fr / 180fr / 120fr) so the tiles fit on one
  *   row at every desktop breakpoint (1024 → 1440 → 1920). Proportions match
  *   Figma's 1196px frame widths but scale fluidly. Mobile keeps a flex-wrap
  *   row that breaks naturally (it's hidden behind the mobile pill anyway).
  * - `two-rows` (embedded shell, half-width column): 3×2 grid.
  *
- * Roving-tabindex pattern: only the selected radio is in the tab order;
- * Arrow keys move focus within the group.
+ * Each tile acts as a checkbox — clicking toggles it in/out of the selection.
+ * Arrow keys move focus; Space toggles the focused item.
  */
 const SINGLE_ROW_GRID_TEMPLATE = "180fr 150fr 150fr 230fr 180fr 120fr";
 
@@ -39,32 +39,42 @@ const SHELL_LABEL_OVERRIDES: Partial<Record<TransportMode, string>> = {
 };
 
 export function ModeRadioGrid({
-  value,
+  values,
   onChange,
   layout = "single-row",
   variant = "standalone",
 }: ModeRadioGridProps) {
   const groupId = useId();
   const modes = variant === "shell" ? QUOTE_SHELL_TRANSPORT_MODES : QUOTE_TRANSPORT_MODES;
-  const selectedIndex = modes.indexOf(value);
 
-  const onKey = (event: KeyboardEvent<HTMLDivElement>, index: number) => {
-    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+  const toggle = (mode: TransportMode) => {
+    if (values.includes(mode)) {
+      // Keep at least one selected
+      if (values.length === 1) return;
+      onChange(values.filter((m) => m !== mode));
+    } else {
+      onChange([...values, mode]);
+    }
+  };
+
+  const onKey = (event: KeyboardEvent<HTMLDivElement>, index: number, mode: TransportMode) => {
+    if (event.key === " ") {
+      event.preventDefault();
+      toggle(mode);
+    } else if (event.key === "ArrowRight" || event.key === "ArrowDown") {
       event.preventDefault();
       const next = (index + 1) % modes.length;
-      onChange(modes[next]!);
-      (document.getElementById(`${groupId}-radio-${next}`) as HTMLElement | null)?.focus();
+      (document.getElementById(`${groupId}-cb-${next}`) as HTMLElement | null)?.focus();
     } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
       event.preventDefault();
       const next = (index - 1 + modes.length) % modes.length;
-      onChange(modes[next]!);
-      (document.getElementById(`${groupId}-radio-${next}`) as HTMLElement | null)?.focus();
+      (document.getElementById(`${groupId}-cb-${next}`) as HTMLElement | null)?.focus();
     }
   };
 
   return (
     <div
-      role="radiogroup"
+      role="group"
       aria-label="Mode of Transport"
       style={
         layout === "single-row"
@@ -79,18 +89,18 @@ export function ModeRadioGrid({
       )}
     >
       {modes.map((mode, index) => {
-        const selected = mode === value;
+        const selected = values.includes(mode);
         const label =
           SHELL_LABEL_OVERRIDES[mode] && variant === "shell" ? SHELL_LABEL_OVERRIDES[mode] : mode;
         return (
           <div
             key={mode}
-            id={`${groupId}-radio-${index}`}
-            role="radio"
+            id={`${groupId}-cb-${index}`}
+            role="checkbox"
             aria-checked={selected}
-            tabIndex={selectedIndex === index ? 0 : -1}
-            onKeyDown={(e) => onKey(e, index)}
-            onClick={() => onChange(mode)}
+            tabIndex={0}
+            onKeyDown={(e) => onKey(e, index, mode)}
+            onClick={() => toggle(mode)}
             className={cn(
               "font-display relative flex h-[50px] flex-1 cursor-pointer items-center pr-[12px] pl-[36px] text-[12px] font-semibold tracking-[0.02em] uppercase select-none lg:h-[60px] lg:flex-none lg:pl-[40px] lg:text-[12px]",
               "focus-visible:ring-brand-red focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",

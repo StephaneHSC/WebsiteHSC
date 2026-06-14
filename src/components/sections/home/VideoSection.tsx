@@ -23,7 +23,7 @@ export function VideoSection() {
             type="button"
             onClick={() => setPlaying(true)}
             aria-label="Play video"
-            className="group relative block h-full w-full cursor-pointer"
+            className="group absolute inset-0 cursor-pointer"
           >
             <Image
               src="/home/video-poster.webp"
