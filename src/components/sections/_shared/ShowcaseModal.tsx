@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -6,11 +6,15 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Modal } from "@/components/ui/Modal";
 import { cn } from "@/lib/utils";
 import type { ShowcaseMedia, ShowcaseTile } from "@/lib/constants";
+import type { ShowcaseGalleryImage } from "@/types/sanity";
+import { urlFor } from "@/lib/sanity/image";
 
 export type ShowcaseModalProps = {
   /** Tile to display. `null` keeps the modal closed. */
   tile: ShowcaseTile | null;
   onClose: () => void;
+  /** CMS-managed gallery thumbnails for the active tile. */
+  galleryImages?: ShowcaseGalleryImage[];
 };
 
 /**
@@ -23,7 +27,7 @@ export type ShowcaseModalProps = {
  * Body scroll-lock is applied while open so wheel events on the backdrop
  * don't scroll the underlying page.
  */
-export function ShowcaseModal({ tile, onClose }: ShowcaseModalProps) {
+export function ShowcaseModal({ tile, onClose, galleryImages }: ShowcaseModalProps) {
   const router = useRouter();
   const [mediaIdx, setMediaIdx] = useState(0);
   // `playingMediaIdx` tracks which media item is actively playing (videos
@@ -33,6 +37,8 @@ export function ShowcaseModal({ tile, onClose }: ShowcaseModalProps) {
   const [playingMediaIdx, setPlayingMediaIdx] = useState<number | null>(null);
   const [lastTileId, setLastTileId] = useState<string | null>(tile?.id ?? null);
   const [lastMediaIdx, setLastMediaIdx] = useState(mediaIdx);
+  // Gallery thumbnail selected index — -1 means the main tile media is active.
+  const [galleryIdx, setGalleryIdx] = useState<number>(-1);
 
   // Reset carousel when the active tile changes — React 19 in-render reset
   // pattern (https://react.dev/reference/react/useState#storing-information-from-previous-renders).
@@ -40,6 +46,7 @@ export function ShowcaseModal({ tile, onClose }: ShowcaseModalProps) {
     setLastTileId(tile?.id ?? null);
     setMediaIdx(0);
     setPlayingMediaIdx(null);
+    setGalleryIdx(-1);
   }
   // Stop the active video whenever the carousel moves to a different item.
   if (mediaIdx !== lastMediaIdx) {
@@ -68,16 +75,23 @@ export function ShowcaseModal({ tile, onClose }: ShowcaseModalProps) {
     return [{ type: "photo", src: tile.src }];
   }, [tile]);
 
+  // When a gallery thumbnail is selected, override what's shown in the main viewer.
+  const activeGalleryImage =
+    galleryIdx >= 0 && galleryImages && galleryImages[galleryIdx]
+      ? galleryImages[galleryIdx]
+      : null;
+
   const mediaCount = media.length;
   const isPlayingCurrent = playingMediaIdx === mediaIdx;
-  // Hide arrows + dots while a video is playing so they don't sit over the
-  // video controls (and so accidental clicks don't change the slide).
-  const showArrows = mediaCount > 1 && !isPlayingCurrent;
+  // Hide arrows + dots while a video is playing or a gallery image is active.
+  const showArrows = mediaCount > 1 && !isPlayingCurrent && galleryIdx < 0;
 
   const next = useCallback(() => {
+    setGalleryIdx(-1);
     setMediaIdx((i) => (i + 1) % mediaCount);
   }, [mediaCount]);
   const prev = useCallback(() => {
+    setGalleryIdx(-1);
     setMediaIdx((i) => (i - 1 + mediaCount) % mediaCount);
   }, [mediaCount]);
 
@@ -188,142 +202,225 @@ export function ShowcaseModal({ tile, onClose }: ShowcaseModalProps) {
               arrows + dots paginate across both types. On desktop the parent
               uses `lg:flex-row lg:items-stretch` so this column self-stretches
               to the content column's natural height (no fixed aspect needed). */}
-          <div className="bg-ink relative aspect-[382/345] w-full overflow-hidden lg:aspect-auto lg:w-1/2">
-            {media.map((item, idx) => {
-              const isActive = idx === mediaIdx;
-              const isVideoPlaying = item.type === "video" && playingMediaIdx === idx;
-              const posterSrc = item.type === "video" ? (item.poster ?? tile.src) : item.src;
-              return (
-                <div
-                  key={`${item.type}-${item.src}`}
-                  className={cn(
-                    "absolute inset-0 transition-opacity duration-300",
-                    isActive ? "z-10 opacity-100" : "pointer-events-none opacity-0",
-                  )}
-                  aria-hidden={!isActive}
-                >
-                  {item.type === "video" && isVideoPlaying ? (
-                    <video
-                      key={`play-${item.src}`}
-                      src={item.src}
-                      poster={item.poster ?? tile.src}
-                      controls
-                      autoPlay
-                      playsInline
-                      className="h-full w-full bg-black object-contain"
-                    />
-                  ) : (
-                    <Image
-                      src={posterSrc}
-                      alt={tile.alt}
-                      fill
-                      sizes="(min-width: 1024px) 50vw, 100vw"
-                      priority={idx === 0}
-                      className="object-cover"
-                    />
-                  )}
-
-                  {/* Play overlay — only on idle video items. */}
-                  {item.type === "video" && !isVideoPlaying ? (
-                    <button
-                      type="button"
-                      onClick={() => setPlayingMediaIdx(idx)}
-                      aria-label="Play video"
-                      className="group/play absolute inset-0 z-10 flex cursor-pointer items-center justify-center focus-visible:outline-none"
+          <div className="bg-ink relative flex w-full flex-col overflow-hidden lg:w-1/2">
+            {/* Main viewer */}
+            <div className="relative aspect-[382/345] w-full shrink-0 overflow-hidden lg:aspect-auto lg:flex-1">
+              {/* Gallery image override — shown instead of carousel when a thumbnail is active */}
+              {activeGalleryImage ? (
+                <div className="absolute inset-0 z-10">
+                  <Image
+                    src={urlFor(activeGalleryImage.image)
+                      .width(900)
+                      .format("webp")
+                      .quality(80)
+                      .url()}
+                    alt={activeGalleryImage.caption ?? "Gallery image"}
+                    fill
+                    sizes="(min-width: 1024px) 50vw, 100vw"
+                    className="object-cover"
+                  />
+                  {/* Back to carousel button */}
+                  <button
+                    type="button"
+                    onClick={() => setGalleryIdx(-1)}
+                    aria-label="Back to main photo"
+                    className="bg-surface/90 text-ink hover:bg-surface border-ink/15 absolute top-3 left-3 z-20 grid h-9 w-9 place-items-center rounded-full border shadow transition hover:scale-105 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none lg:top-4 lg:left-4 lg:h-10 lg:w-10"
+                  >
+                    <svg aria-hidden="true" viewBox="0 0 16 16" width="14" height="14">
+                      <path
+                        d="M13 8H3M3 8l4-4M3 8l4 4"
+                        stroke="currentColor"
+                        strokeWidth="1.6"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        fill="none"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              ) : (
+                media.map((item, idx) => {
+                  const isActive = idx === mediaIdx;
+                  const isVideoPlaying = item.type === "video" && playingMediaIdx === idx;
+                  const posterSrc = item.type === "video" ? (item.poster ?? tile.src) : item.src;
+                  return (
+                    <div
+                      key={`${item.type}-${item.src}`}
+                      className={cn(
+                        "absolute inset-0 transition-opacity duration-300",
+                        isActive ? "z-10 opacity-100" : "pointer-events-none opacity-0",
+                      )}
+                      aria-hidden={!isActive}
                     >
-                      <span aria-hidden="true" className="bg-ink/15 absolute inset-0" />
+                      {item.type === "video" && isVideoPlaying ? (
+                        <video
+                          key={`play-${item.src}`}
+                          src={item.src}
+                          poster={item.poster ?? tile.src}
+                          controls
+                          autoPlay
+                          playsInline
+                          className="h-full w-full bg-black object-contain"
+                        />
+                      ) : (
+                        <Image
+                          src={posterSrc}
+                          alt={tile.alt}
+                          fill
+                          sizes="(min-width: 1024px) 50vw, 100vw"
+                          priority={idx === 0}
+                          className="object-cover"
+                        />
+                      )}
+
+                      {/* Play overlay — only on idle video items. */}
+                      {item.type === "video" && !isVideoPlaying ? (
+                        <button
+                          type="button"
+                          onClick={() => setPlayingMediaIdx(idx)}
+                          aria-label="Play video"
+                          className="group/play absolute inset-0 z-10 flex cursor-pointer items-center justify-center focus-visible:outline-none"
+                        >
+                          <span aria-hidden="true" className="bg-ink/15 absolute inset-0" />
+                          <Image
+                            src="/showcase/icon-play.svg"
+                            alt=""
+                            width={113}
+                            height={113}
+                            className="relative h-[80px] w-[80px] transition-transform duration-300 group-hover/play:scale-110 group-focus-visible/play:scale-110 lg:h-[113px] lg:w-[113px]"
+                          />
+                        </button>
+                      ) : null}
+
+                      {/* Stop-video button — only while a video is actively
+                          playing. Returns to the idle (poster + play overlay)
+                          state and re-shows the carousel arrows. */}
+                      {item.type === "video" && isVideoPlaying ? (
+                        <button
+                          type="button"
+                          onClick={() => setPlayingMediaIdx(null)}
+                          aria-label="Stop video and return to gallery"
+                          className="bg-surface/90 text-ink hover:bg-surface border-ink/15 absolute top-3 left-3 z-30 grid h-9 w-9 place-items-center rounded-full border shadow transition hover:scale-105 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none lg:top-4 lg:left-4 lg:h-10 lg:w-10"
+                        >
+                          <svg aria-hidden="true" viewBox="0 0 16 16" width="14" height="14">
+                            <path
+                              d="M13 8H3M3 8l4-4M3 8l4 4"
+                              stroke="currentColor"
+                              strokeWidth="1.6"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              fill="none"
+                            />
+                          </svg>
+                        </button>
+                      ) : null}
+                    </div>
+                  );
+                })
+              )}
+
+              {showArrows ? (
+                <>
+                  {/* Arrows per Figma node `674:475` (right) / `674:480` (left,
+                      same icon flipped). The SVG `/showcase/icon-arrow.svg` is
+                      the exact Figma asset (red filled circle + 1.5px white
+                      chevron) — the button is transparent so the SVG visually
+                      *is* the button. Hover/focus get a scale + ring; no color
+                      change since the fill is baked into the SVG. */}
+                  <button
+                    type="button"
+                    onClick={prev}
+                    aria-label="Previous item"
+                    className="focus-visible:ring-brand-red absolute top-1/2 left-4 z-20 h-12 w-12 -translate-y-1/2 transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none lg:left-6 lg:h-16 lg:w-16"
+                  >
+                    <Image
+                      src="/showcase/icon-arrow.svg"
+                      alt=""
+                      width={80}
+                      height={80}
+                      className="h-full w-full -scale-x-100 drop-shadow-md"
+                    />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={next}
+                    aria-label="Next item"
+                    className="focus-visible:ring-brand-red absolute top-1/2 right-4 z-20 h-12 w-12 -translate-y-1/2 transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none lg:right-6 lg:h-16 lg:w-16"
+                  >
+                    <Image
+                      src="/showcase/icon-arrow.svg"
+                      alt=""
+                      width={80}
+                      height={80}
+                      className="h-full w-full drop-shadow-md"
+                    />
+                  </button>
+                </>
+              ) : null}
+
+              {showArrows ? (
+                <div className="absolute right-0 bottom-3 left-0 z-20 flex items-center justify-center gap-3 lg:bottom-5">
+                  {media.map((item, idx) => (
+                    <button
+                      key={`${item.type}-${item.src}-dot`}
+                      type="button"
+                      aria-label={`Show ${item.type} ${idx + 1}`}
+                      aria-current={idx === mediaIdx ? "true" : undefined}
+                      onClick={() => setMediaIdx(idx)}
+                      className={cn(
+                        "h-1.5 rounded-full transition",
+                        idx === mediaIdx
+                          ? "bg-brand-red w-4"
+                          : "bg-surface/40 hover:bg-surface/70 w-1.5",
+                      )}
+                    />
+                  ))}
+                </div>
+              ) : null}
+            </div>
+
+            {/* CMS gallery thumbnail strip — shown when at least 1 gallery image exists. */}
+            {galleryImages && galleryImages.length > 0 ? (
+              <div
+                role="list"
+                aria-label="Gallery thumbnails"
+                className="bg-ink flex shrink-0 gap-1.5 overflow-x-auto p-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              >
+                {galleryImages.map((img, idx) => {
+                  const thumbUrl = urlFor(img.image)
+                    .width(200)
+                    .height(140)
+                    .fit("crop")
+                    .format("webp")
+                    .quality(75)
+                    .url();
+                  const isActive = galleryIdx === idx;
+                  return (
+                    <button
+                      key={idx}
+                      role="listitem"
+                      type="button"
+                      aria-label={img.caption ?? `Gallery image ${idx + 1}`}
+                      aria-pressed={isActive}
+                      onClick={() => setGalleryIdx(isActive ? -1 : idx)}
+                      className={cn(
+                        "relative h-[70px] w-[100px] shrink-0 overflow-hidden rounded transition",
+                        "focus-visible:ring-brand-red focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none",
+                        isActive
+                          ? "ring-brand-red ring-2 ring-offset-1"
+                          : "opacity-80 hover:opacity-100",
+                      )}
+                    >
                       <Image
-                        src="/showcase/icon-play.svg"
-                        alt=""
-                        width={113}
-                        height={113}
-                        className="relative h-[80px] w-[80px] transition-transform duration-300 group-hover/play:scale-110 group-focus-visible/play:scale-110 lg:h-[113px] lg:w-[113px]"
+                        src={thumbUrl}
+                        alt={img.caption ?? ""}
+                        fill
+                        sizes="100px"
+                        className="object-cover"
                       />
                     </button>
-                  ) : null}
-
-                  {/* Stop-video button — only while a video is actively
-                      playing. Returns to the idle (poster + play overlay)
-                      state and re-shows the carousel arrows. */}
-                  {item.type === "video" && isVideoPlaying ? (
-                    <button
-                      type="button"
-                      onClick={() => setPlayingMediaIdx(null)}
-                      aria-label="Stop video and return to gallery"
-                      className="bg-surface/90 text-ink hover:bg-surface border-ink/15 absolute top-3 left-3 z-30 grid h-9 w-9 place-items-center rounded-full border shadow transition hover:scale-105 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none lg:top-4 lg:left-4 lg:h-10 lg:w-10"
-                    >
-                      <svg aria-hidden="true" viewBox="0 0 16 16" width="14" height="14">
-                        <path
-                          d="M13 8H3M3 8l4-4M3 8l4 4"
-                          stroke="currentColor"
-                          strokeWidth="1.6"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          fill="none"
-                        />
-                      </svg>
-                    </button>
-                  ) : null}
-                </div>
-              );
-            })}
-
-            {showArrows ? (
-              <>
-                {/* Arrows per Figma node `674:475` (right) / `674:480` (left,
-                    same icon flipped). The SVG `/showcase/icon-arrow.svg` is
-                    the exact Figma asset (red filled circle + 1.5px white
-                    chevron) — the button is transparent so the SVG visually
-                    *is* the button. Hover/focus get a scale + ring; no color
-                    change since the fill is baked into the SVG. */}
-                <button
-                  type="button"
-                  onClick={prev}
-                  aria-label="Previous item"
-                  className="focus-visible:ring-brand-red absolute top-1/2 left-4 z-20 h-12 w-12 -translate-y-1/2 transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none lg:left-6 lg:h-16 lg:w-16"
-                >
-                  <Image
-                    src="/showcase/icon-arrow.svg"
-                    alt=""
-                    width={80}
-                    height={80}
-                    className="h-full w-full -scale-x-100 drop-shadow-md"
-                  />
-                </button>
-                <button
-                  type="button"
-                  onClick={next}
-                  aria-label="Next item"
-                  className="focus-visible:ring-brand-red absolute top-1/2 right-4 z-20 h-12 w-12 -translate-y-1/2 transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none lg:right-6 lg:h-16 lg:w-16"
-                >
-                  <Image
-                    src="/showcase/icon-arrow.svg"
-                    alt=""
-                    width={80}
-                    height={80}
-                    className="h-full w-full drop-shadow-md"
-                  />
-                </button>
-              </>
-            ) : null}
-
-            {showArrows ? (
-              <div className="absolute right-0 bottom-3 left-0 z-20 flex items-center justify-center gap-3 lg:bottom-5">
-                {media.map((item, idx) => (
-                  <button
-                    key={`${item.type}-${item.src}-dot`}
-                    type="button"
-                    aria-label={`Show ${item.type} ${idx + 1}`}
-                    aria-current={idx === mediaIdx ? "true" : undefined}
-                    onClick={() => setMediaIdx(idx)}
-                    className={cn(
-                      "h-1.5 rounded-full transition",
-                      idx === mediaIdx
-                        ? "bg-brand-red w-4"
-                        : "bg-surface/40 hover:bg-surface/70 w-1.5",
-                    )}
-                  />
-                ))}
+                  );
+                })}
               </div>
             ) : null}
           </div>
@@ -440,7 +537,7 @@ function Section({ heading, body }: { heading: string; body: string }) {
       <h3 className="font-display text-ink text-[16px] leading-tight font-bold uppercase lg:text-[20px]">
         {heading}
       </h3>
-      <p className="font-body text-ink mt-[12px] max-w-[585px] text-[14px] leading-[20px] lg:mt-[10px] lg:text-[15px] lg:leading-[28px]">
+      <p className="font-body text-ink mt-[12px] max-w-[320px] text-[14px] leading-[20px] lg:mt-[10px] lg:max-w-[380px] lg:text-[15px] lg:leading-[28px]">
         {body}
       </p>
     </div>

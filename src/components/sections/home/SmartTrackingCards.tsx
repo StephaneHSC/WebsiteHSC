@@ -53,8 +53,26 @@ export function SmartTrackingCards() {
     el.addEventListener("scroll", update, { passive: true });
     const ro = new ResizeObserver(update);
     ro.observe(el);
+
+    // Intercept vertical wheel events and redirect them as horizontal scroll
+    // so the user doesn't accidentally scroll past the carousel.
+    function onWheel(e: WheelEvent) {
+      if (!el) return;
+      const max = el.scrollWidth - el.clientWidth;
+      const atStart = el.scrollLeft <= 0;
+      const atEnd = el.scrollLeft >= max - 1;
+      // Only intercept if there's actually horizontal content to scroll and
+      // the scroll is primarily vertical (not a two-finger horizontal swipe).
+      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+      if ((atStart && e.deltaY < 0) || (atEnd && e.deltaY > 0)) return;
+      e.preventDefault();
+      el.scrollBy({ left: e.deltaY, behavior: "auto" });
+    }
+    el.addEventListener("wheel", onWheel, { passive: false });
+
     return () => {
       el.removeEventListener("scroll", update);
+      el.removeEventListener("wheel", onWheel);
       ro.disconnect();
     };
   }, []);

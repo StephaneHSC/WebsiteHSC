@@ -4,6 +4,9 @@ import { QuoteFormShell } from "@/components/sections/_shared/QuoteFormShell";
 import { OfficesGlobal } from "@/components/sections/_shared/OfficesGlobal";
 import { SHOWCASE_GALLERY, SHOWCASE_TILES, type ShowcaseTile } from "@/lib/constants";
 import { pageMetadata } from "@/lib/seo";
+import { client } from "@/lib/sanity/client";
+import { allShowcaseGalleriesQuery } from "@/lib/sanity/queries";
+import type { ShowcaseItemGallery } from "@/types/sanity";
 
 export const revalidate = 60;
 
@@ -110,7 +113,10 @@ const SHOWCASE_PAGE_MOBILE_TILES: readonly ShowcaseTile[] = (() => {
  * /showcase — M7. Hero → 14-tile masonry with Load More + lightbox modal
  * → Quote form (USA office anchor) → Offices (USA featured).
  */
-export default function ShowcasePage() {
+export default async function ShowcasePage() {
+  const galleryDocs = await client.fetch<ShowcaseItemGallery[]>(allShowcaseGalleriesQuery);
+  const galleries = Object.fromEntries(galleryDocs.map((doc) => [doc.slug, doc.gallery_images]));
+
   return (
     <main className="flex flex-1 flex-col">
       <ShowcaseHero />
@@ -124,6 +130,7 @@ export default function ShowcasePage() {
         // reveals all 14 via Load More.
         mobileMaxVisible={SHOWCASE_PAGE_MOBILE_TILES.length}
         ctaHref={null}
+        galleries={galleries}
         heading={{
           eyebrow: SHOWCASE_GALLERY.eyebrow,
           title: {

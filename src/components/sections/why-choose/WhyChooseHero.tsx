@@ -3,6 +3,7 @@ import { Container } from "@/components/sections/_shared/Container";
 import { SectionEyebrow } from "@/components/sections/_shared/SectionEyebrow";
 import { Reveal } from "@/components/sections/_shared/Reveal";
 import { WHY_CHOOSE_HERO } from "@/lib/constants";
+import { BackBreadcrumb } from "@/components/sections/_shared/BackBreadcrumb";
 
 /**
  * /why-choose-us hero (Figma `344:6116` desktop / `505:7165` mobile).
@@ -20,6 +21,7 @@ import { WHY_CHOOSE_HERO } from "@/lib/constants";
 export function WhyChooseHero() {
   return (
     <section className="bg-ink text-surface relative isolate w-full overflow-hidden">
+      <BackBreadcrumb href="/" label="Back to Home" />
       <div aria-hidden="true" className="absolute inset-0 -z-10">
         <div className="absolute inset-0 overflow-hidden">
           {/* Mobile crop (Figma 505:7166): left=-34.42% top=-51.91%

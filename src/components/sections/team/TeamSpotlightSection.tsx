@@ -394,7 +394,7 @@ const TeamCard = forwardRef<HTMLButtonElement, TeamCardProps>(function TeamCard(
         "focus-visible:ring-brand-red focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
         active
           ? "bg-brand-red text-surface border-brand-red"
-          : "text-ink bg-surface border-[#f5f5f5] md:hover:-translate-y-0.5",
+          : "text-ink bg-surface md:hover:bg-brand-red md:hover:border-brand-red border-[#f5f5f5] md:hover:-translate-y-0.5",
       )}
     >
       {/* Plate (the colored area below the photo edge) — 184px tall starting
@@ -403,7 +403,7 @@ const TeamCard = forwardRef<HTMLButtonElement, TeamCardProps>(function TeamCard(
         aria-hidden="true"
         className={cn(
           "absolute inset-x-0 top-[11px] bottom-0 transition-colors duration-200",
-          active ? "bg-brand-red" : "bg-surface md:group-hover:bg-brand-red/15",
+          active ? "bg-brand-red" : "bg-surface md:group-hover:bg-brand-red",
         )}
       />
 
@@ -412,7 +412,10 @@ const TeamCard = forwardRef<HTMLButtonElement, TeamCardProps>(function TeamCard(
           radial paint gives a soft halo within the square outline. */}
       <span
         aria-hidden="true"
-        className="absolute top-[19.5px] left-1/2 h-[128px] w-[129px] -translate-x-1/2"
+        className={cn(
+          "absolute top-[19.5px] left-1/2 h-[128px] w-[129px] -translate-x-1/2 transition-opacity duration-200",
+          active ? "opacity-0" : "md:group-hover:opacity-0",
+        )}
         style={{
           background: "radial-gradient(circle, #ffffff 0%, #e4e4e4 100%)",
         }}
@@ -442,7 +445,7 @@ const TeamCard = forwardRef<HTMLButtonElement, TeamCardProps>(function TeamCard(
         <span
           className={cn(
             "font-display block text-[12px] leading-[14px] font-bold capitalize uppercase",
-            active ? "text-surface" : "text-ink",
+            active ? "text-surface" : "text-ink md:group-hover:text-surface",
           )}
         >
           {member.full_name}
@@ -451,7 +454,7 @@ const TeamCard = forwardRef<HTMLButtonElement, TeamCardProps>(function TeamCard(
           <span
             className={cn(
               "font-body mt-1 block text-[10px] leading-[12px]",
-              active ? "text-surface" : "text-ink",
+              active ? "text-surface" : "text-ink md:group-hover:text-surface",
             )}
           >
             {role}

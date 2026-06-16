@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Container } from "@/components/sections/_shared/Container";
 import { Reveal } from "@/components/sections/_shared/Reveal";
+import { CountingStatValue } from "@/components/sections/_shared/CountingStatValue";
 import { client } from "@/lib/sanity/client";
 import { siteStatsQuery } from "@/lib/sanity/queries";
 import { urlFor } from "@/lib/sanity/image";
@@ -128,14 +129,13 @@ function StatCell({ stat }: { stat: StatRow }) {
           className="mt-3 h-10 w-10 object-contain md:h-12 md:w-12"
         />
       ) : null}
-      <p
+      <CountingStatValue
+        value={stat.value}
         className={cn(
           "font-display text-ink mt-2 font-black tabular-nums",
           "text-[36px] leading-[40px] md:text-[40px] md:leading-[44px] lg:text-[48px] lg:leading-[48px]",
         )}
-      >
-        {stat.value}
-      </p>
+      />
       {description ? (
         <p className="font-body text-ink mt-3 text-[12px] leading-[16px] md:text-[13px] md:leading-[18px]">
           {description[0]}

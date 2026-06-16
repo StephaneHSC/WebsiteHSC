@@ -221,7 +221,7 @@ export function SelectField({
             node?.focus();
           }}
           onKeyDown={onListKey}
-          className="border-input-border absolute left-0 z-30 mt-[4px] max-h-[300px] w-full overflow-y-auto border bg-white shadow-[0_4px_12px_rgba(0,0,0,0.13)] outline-none"
+          className="border-input-border absolute left-0 z-30 mt-[4px] max-h-[300px] w-full origin-top [animation:dropdown-open_150ms_ease-out] overflow-y-auto border bg-white shadow-[0_4px_12px_rgba(0,0,0,0.13)] outline-none"
         >
           {options.map((option, index) => {
             const isActive = index === activeIndex;

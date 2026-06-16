@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Container } from "@/components/sections/_shared/Container";
 import { Reveal } from "@/components/sections/_shared/Reveal";
 import { AppBadgeRow } from "@/components/ui/AppBadge";

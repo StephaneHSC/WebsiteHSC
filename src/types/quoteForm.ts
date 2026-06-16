@@ -16,7 +16,7 @@ export type TransportMode =
   | "Ocean Container"
   | "Land";
 
-export type TransactionType = "Purchase" | "Sale" | "Lease" | "Trade-in" | "Other";
+export type TransactionType = "Civilian" | "Military";
 
 export interface QuoteFormRoute {
   origin: string;
@@ -24,11 +24,11 @@ export interface QuoteFormRoute {
 }
 
 export interface QuoteFormState {
-  mode: TransportMode;
+  modes: TransportMode[];
   routes: QuoteFormRoute[];
   shippingPeriod: string;
   helicopterBrand: string | null;
-  helicopterModel: string | null;
+  helicopterModels: string[];
   helicopterQuantity: string;
   transactionType: TransactionType | null;
   additionalInformation: string;
@@ -40,10 +40,10 @@ export interface QuoteFormState {
 }
 
 export type QuoteFieldKey =
-  | "mode"
+  | "modes"
   | "shippingPeriod"
   | "helicopterBrand"
-  | "helicopterModel"
+  | "helicopterModels"
   | "helicopterQuantity"
   | "transactionType"
   | "additionalInformation"
@@ -62,7 +62,7 @@ export type QuoteFormSubmitResult =
 
 /** URL/CustomEvent prefill payload — every field optional. */
 export type QuoteFormPrefill = Partial<
-  Pick<QuoteFormState, "mode" | "routes" | "companyName" | "email">
+  Pick<QuoteFormState, "modes" | "routes" | "companyName" | "email">
 >;
 
 export type { QuoteFormConfig } from "@/types/sanity";

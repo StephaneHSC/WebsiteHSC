@@ -33,7 +33,7 @@ function parsePrefill(params: SearchParams): QuoteFormPrefill {
   const prefill: QuoteFormPrefill = {};
   const mode = pickOne(params, "mode");
   if (mode && (QUOTE_TRANSPORT_MODES as readonly string[]).includes(mode)) {
-    prefill.mode = mode as TransportMode;
+    prefill.modes = [mode as TransportMode];
   }
   const origin = pickOne(params, "origin")?.slice(0, 200);
   const destination = pickOne(params, "destination")?.slice(0, 200);

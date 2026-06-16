@@ -146,7 +146,7 @@ function TeamCard({ item, active }: { item: TeamCarouselItem; active: boolean })
       <div
         className={cn(
           "relative aspect-[244/280] w-full transition-colors duration-300",
-          active ? "bg-[#F5D5D2]" : "bg-[#F2F2F2] md:group-hover:bg-[#F5D5D2]",
+          "bg-[#F2F2F2]",
         )}
       >
         {item.photoSrc ? (

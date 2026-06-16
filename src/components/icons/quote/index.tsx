@@ -10,7 +10,7 @@ type IconProps = SVGProps<SVGSVGElement>;
 export function TickCircle({ className, ...props }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={className} {...props}>
-      <circle cx="12" cy="12" r="11" fill="#22C55E" />
+      <circle cx="12" cy="12" r="11" fill="#e91313" />
       <path
         d="m8 12 2.5 2.5L16 9"
         stroke="#FFFFFF"

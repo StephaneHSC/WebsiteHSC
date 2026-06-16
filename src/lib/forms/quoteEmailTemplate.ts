@@ -52,11 +52,11 @@ function row(label: string, value: string): string {
 }
 
 export interface QuoteEmailInput {
-  mode: string;
+  modes: string[];
   routes: QuoteFormRoute[];
   shippingPeriod: string;
   helicopterBrand: string;
-  helicopterModel: string;
+  helicopterModels: string[];
   helicopterQuantity: string;
   transactionType: string;
   additionalInformation: string;
@@ -106,14 +106,14 @@ export function buildQuoteEmailHtml(input: QuoteEmailInput): string {
             <td style="padding: 0 32px 32px 32px;">
               <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
                 ${sectionHeading("Mode of Transport")}
-                <tr><td style="padding: 4px 0; font-family: Arial, sans-serif; font-size: 16px; font-weight: 700; color: ${INK};">${escapeHtml(input.mode)}</td></tr>
+                <tr><td style="padding: 4px 0; font-family: Arial, sans-serif; font-size: 16px; font-weight: 700; color: ${INK};">${escapeHtml(input.modes.join(", "))}</td></tr>
 
                 ${sectionHeading("Routes")}
                 ${routesRows}
 
                 ${sectionHeading("Shipment Details")}
                 ${row("Shipping period", input.shippingPeriod)}
-                ${row("Helicopter", `${input.helicopterBrand} ${input.helicopterModel} × ${input.helicopterQuantity}`)}
+                ${row("Helicopter", `${input.helicopterBrand || "—"} ${input.helicopterModels.length > 0 ? input.helicopterModels.join(", ") : "—"} × ${input.helicopterQuantity}`)}
 
                 ${sectionHeading("Transaction")}
                 ${row("Type", input.transactionType || "—")}

@@ -32,14 +32,14 @@ const URL_RE = /^(https?:\/\/)?[a-z0-9-]+(\.[a-z0-9-]+)+(\/.*)?$/i;
 
 export function initialQuoteFormState(prefill?: Partial<QuoteFormState>): QuoteFormState {
   return {
-    mode: prefill?.mode ?? "Air Commercial",
+    modes: prefill?.modes && prefill.modes.length > 0 ? prefill.modes : ["Air Commercial"],
     routes:
       prefill?.routes && prefill.routes.length > 0
         ? prefill.routes.map((r) => ({ origin: r.origin ?? "", destination: r.destination ?? "" }))
         : [{ origin: "", destination: "" }],
     shippingPeriod: "",
     helicopterBrand: null,
-    helicopterModel: null,
+    helicopterModels: [],
     helicopterQuantity: "01",
     transactionType: null,
     additionalInformation: "",
@@ -54,8 +54,8 @@ export function initialQuoteFormState(prefill?: Partial<QuoteFormState>): QuoteF
 export function validateAll(state: QuoteFormState): QuoteFormErrors {
   const errors: QuoteFormErrors = {};
 
-  if (!QUOTE_TRANSPORT_MODES.includes(state.mode)) {
-    errors.mode = "Please pick a mode of transport.";
+  if (state.modes.length === 0 || state.modes.some((m) => !QUOTE_TRANSPORT_MODES.includes(m))) {
+    errors.modes = "Please pick at least one mode of transport.";
   }
 
   state.routes.forEach((route, i) => {
@@ -82,12 +82,11 @@ export function validateAll(state: QuoteFormState): QuoteFormErrors {
   if (state.helicopterBrand && !QUOTE_HELICOPTER_MODELS_BY_BRAND[state.helicopterBrand]) {
     errors.helicopterBrand = "Please pick a brand from the list.";
   }
-  if (
-    state.helicopterBrand &&
-    state.helicopterModel &&
-    !QUOTE_HELICOPTER_MODELS_BY_BRAND[state.helicopterBrand]?.includes(state.helicopterModel)
-  ) {
-    errors.helicopterModel = "This model isn't available for the selected brand.";
+  if (state.helicopterBrand && state.helicopterModels.length > 0) {
+    const validModels = QUOTE_HELICOPTER_MODELS_BY_BRAND[state.helicopterBrand] ?? [];
+    if (state.helicopterModels.some((m) => !validModels.includes(m))) {
+      errors.helicopterModels = "One or more models aren't available for the selected brand.";
+    }
   }
   if (
     state.helicopterQuantity &&
@@ -101,8 +100,7 @@ export function validateAll(state: QuoteFormState): QuoteFormErrors {
   }
 
   const info = state.additionalInformation.trim();
-  if (info.length === 0) errors.additionalInformation = "Please add a brief note for our team.";
-  else if (info.length > 2000)
+  if (info.length > 2000)
     errors.additionalInformation = "Please shorten your note (max 2000 chars).";
 
   if (state.companyName.trim().length === 0) errors.companyName = "Please enter your company name.";
@@ -171,11 +169,11 @@ export async function submitQuoteForm(
   }
 
   const fd = new FormData();
-  fd.append("mode", state.mode);
+  fd.append("modes", JSON.stringify(state.modes));
   fd.append("routes", JSON.stringify(state.routes));
   fd.append("shipping_period", state.shippingPeriod);
   fd.append("helicopter_brand", state.helicopterBrand ?? "");
-  fd.append("helicopter_model", state.helicopterModel ?? "");
+  fd.append("helicopter_models", JSON.stringify(state.helicopterModels));
   fd.append("helicopter_quantity", state.helicopterQuantity);
   fd.append("transaction_type", state.transactionType ?? "");
   fd.append("additional_information", state.additionalInformation);
@@ -228,9 +226,17 @@ export function validateServerSide(fd: FormData): ServerValidationError | null {
     return isStringValue(v) ? v : "";
   };
 
-  const mode = get("mode") as TransportMode;
-  if (!QUOTE_TRANSPORT_MODES.includes(mode)) {
-    return { message: "Invalid mode of transport.", field: "mode" };
+  let modes: TransportMode[] = [];
+  try {
+    const raw = get("modes");
+    const parsed = JSON.parse(raw || "[]");
+    if (!Array.isArray(parsed) || parsed.length === 0) throw new Error();
+    modes = parsed;
+  } catch {
+    return { message: "Please pick at least one mode of transport.", field: "modes" };
+  }
+  if (modes.some((m) => !QUOTE_TRANSPORT_MODES.includes(m as TransportMode))) {
+    return { message: "Invalid mode of transport.", field: "modes" };
   }
 
   let routes: { origin: string; destination: string }[] = [];
@@ -273,9 +279,18 @@ export function validateServerSide(fd: FormData): ServerValidationError | null {
   if (brand && !QUOTE_HELICOPTER_MODELS_BY_BRAND[brand]) {
     return { message: "Please select a brand from the list.", field: "helicopterBrand" };
   }
-  const model = get("helicopter_model");
-  if (brand && model && !QUOTE_HELICOPTER_MODELS_BY_BRAND[brand]?.includes(model)) {
-    return { message: "Please select a model from the list.", field: "helicopterModel" };
+  let helicopterModels: string[] = [];
+  try {
+    const raw = get("helicopter_models");
+    if (raw) helicopterModels = JSON.parse(raw);
+  } catch {
+    return { message: "Invalid helicopter models payload.", field: "helicopterModels" };
+  }
+  if (brand && helicopterModels.length > 0) {
+    const validModels = QUOTE_HELICOPTER_MODELS_BY_BRAND[brand] ?? [];
+    if (helicopterModels.some((m) => !validModels.includes(m))) {
+      return { message: "Please select models from the list.", field: "helicopterModels" };
+    }
   }
   const quantity = get("helicopter_quantity");
   if (quantity && !QUOTE_QUANTITIES.includes(quantity as (typeof QUOTE_QUANTITIES)[number])) {
@@ -287,8 +302,11 @@ export function validateServerSide(fd: FormData): ServerValidationError | null {
     return { message: "Invalid transaction type.", field: "transactionType" };
 
   const info = get("additional_information").trim();
-  if (info.length === 0 || info.length > 2000)
-    return { message: "Please add a brief note.", field: "additionalInformation" };
+  if (info.length > 2000)
+    return {
+      message: "Please shorten your note (max 2000 chars).",
+      field: "additionalInformation",
+    };
 
   const companyName = get("company_name").trim();
   if (companyName.length === 0 || companyName.length > 200)

@@ -9,6 +9,9 @@ import { QuoteFormShell } from "@/components/sections/_shared/QuoteFormShell";
 import { OfficesGlobal } from "@/components/sections/_shared/OfficesGlobal";
 import { SERVICES, SHOWCASE_TILES, QUOTE_MODE_BY_SERVICE_SLUG } from "@/lib/constants";
 import { pageMetadata } from "@/lib/seo";
+import { client } from "@/lib/sanity/client";
+import { allShowcaseGalleriesQuery } from "@/lib/sanity/queries";
+import type { ShowcaseItemGallery } from "@/types/sanity";
 
 type RouteParams = Promise<{ slug: string }>;
 
@@ -38,6 +41,9 @@ export default async function ServiceDetailPage({ params }: { params: RouteParam
   const service = SERVICES.find((s) => s.slug === slug);
   if (!service) notFound();
 
+  const galleryDocs = await client.fetch<ShowcaseItemGallery[]>(allShowcaseGalleriesQuery);
+  const galleries = Object.fromEntries(galleryDocs.map((doc) => [doc.slug, doc.gallery_images]));
+
   return (
     <main className="flex flex-1 flex-col">
       <ServiceDetailHero service={service} />
@@ -50,7 +56,7 @@ export default async function ServiceDetailPage({ params }: { params: RouteParam
         but wiring it on per service requires curated `relatedServices` data
         — punt to M9 polish.
       */}
-      <ProjectsMosaic tiles={SHOWCASE_TILES.slice(0, 8)} />
+      <ProjectsMosaic tiles={SHOWCASE_TILES.slice(0, 8)} galleries={galleries} />
       <div id="request-quote" className="scroll-mt-24">
         <QuoteFormShell
           photo={{

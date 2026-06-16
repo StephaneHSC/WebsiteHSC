@@ -8,8 +8,8 @@ import type { TransportMode } from "@/types/quoteForm";
 import { ArrowSquareDown } from "@/components/icons/quote";
 
 export type ModeMobilePillProps = {
-  value: TransportMode;
-  onChange: (mode: TransportMode) => void;
+  values: TransportMode[];
+  onChange: (modes: TransportMode[]) => void;
   variant?: "standalone" | "shell";
 };
 
@@ -17,21 +17,26 @@ const SHELL_LABEL_OVERRIDES: Partial<Record<TransportMode, string>> = {
   "Ocean Breakbulk (Lo/Lo)": "Ocean Breakbulk",
 };
 
+function getDisplayLabel(values: TransportMode[], variant: "standalone" | "shell"): string {
+  if (values.length === 0) return "Select mode";
+  if (values.length === 1) {
+    const mode = values[0]!;
+    return variant === "shell" && SHELL_LABEL_OVERRIDES[mode] ? SHELL_LABEL_OVERRIDES[mode]! : mode;
+  }
+  return `${values.length} Modes Selected`;
+}
+
 /**
- * Mobile Step 01 — single full-width gradient pill that reveals the 6
- * options when tapped (in-place expansion, no drawer). Figma doesn't show
- * the open state, so the expanded list reuses the desktop dropdown active-
- * item visual (pale-green bg) plus the gradient pill style for the current
- * selection.
+ * Mobile Step 01 — multi-select pill that reveals the 6 options when tapped.
+ * Multiple modes can be toggled; the pill summarises the selection.
  */
-export function ModeMobilePill({ value, onChange, variant = "standalone" }: ModeMobilePillProps) {
+export function ModeMobilePill({ values, onChange, variant = "standalone" }: ModeMobilePillProps) {
   const buttonId = useId();
   const listId = `${buttonId}-list`;
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const modes = variant === "shell" ? QUOTE_SHELL_TRANSPORT_MODES : QUOTE_TRANSPORT_MODES;
-  const pillLabel =
-    variant === "shell" && SHELL_LABEL_OVERRIDES[value] ? SHELL_LABEL_OVERRIDES[value]! : value;
+  const pillLabel = getDisplayLabel(values, variant);
 
   useEffect(() => {
     if (!open) return;
@@ -49,6 +54,16 @@ export function ModeMobilePill({ value, onChange, variant = "standalone" }: Mode
     }
   };
 
+  const toggle = (mode: TransportMode) => {
+    if (values.includes(mode)) {
+      // Keep at least one selected
+      if (values.length === 1) return;
+      onChange(values.filter((m) => m !== mode));
+    } else {
+      onChange([...values, mode]);
+    }
+  };
+
   return (
     <div ref={containerRef} className="relative" onKeyDown={onKey}>
       <button
@@ -62,9 +77,9 @@ export function ModeMobilePill({ value, onChange, variant = "standalone" }: Mode
       >
         <span
           aria-hidden="true"
-          className="absolute top-1/2 left-[14px] size-[15px] -translate-y-1/2 rounded-full bg-white"
+          className="absolute top-1/2 left-[14px] size-[15px] -translate-y-1/2 rounded-[3px] bg-white"
         >
-          <span className="bg-brand-red absolute inset-[3px] rounded-full" />
+          <span className="bg-brand-red absolute inset-[3px] rounded-[2px]" />
         </span>
         <span className="truncate text-left">{pillLabel}</span>
         <ArrowSquareDown
@@ -77,6 +92,7 @@ export function ModeMobilePill({ value, onChange, variant = "standalone" }: Mode
           <motion.ul
             id={listId}
             role="listbox"
+            aria-multiselectable="true"
             aria-label="Mode of transport options"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
@@ -85,7 +101,7 @@ export function ModeMobilePill({ value, onChange, variant = "standalone" }: Mode
             className="border-input-border absolute left-0 z-20 mt-[6px] w-full overflow-hidden border bg-white shadow-[0_4px_12px_rgba(0,0,0,0.13)]"
           >
             {modes.map((mode) => {
-              const selected = mode === value;
+              const selected = values.includes(mode);
               const label =
                 variant === "shell" && SHELL_LABEL_OVERRIDES[mode]
                   ? SHELL_LABEL_OVERRIDES[mode]!
@@ -95,15 +111,31 @@ export function ModeMobilePill({ value, onChange, variant = "standalone" }: Mode
                   key={mode}
                   role="option"
                   aria-selected={selected}
-                  onClick={() => {
-                    onChange(mode);
-                    setOpen(false);
-                  }}
+                  onClick={() => toggle(mode)}
                   className={cn(
-                    "font-display flex h-[44px] cursor-pointer items-center px-[16px] text-[13px] font-semibold tracking-[0.02em] uppercase",
+                    "font-display flex h-[44px] cursor-pointer items-center gap-[10px] px-[16px] text-[13px] font-semibold tracking-[0.02em] uppercase",
                     selected ? "text-ink bg-[#efffe7]" : "text-ink hover:bg-surface-alt",
                   )}
                 >
+                  <span
+                    aria-hidden="true"
+                    className={cn(
+                      "inline-flex size-[14px] shrink-0 items-center justify-center rounded-[3px]",
+                      selected ? "bg-brand-red" : "border border-[#D9D9D9] bg-white",
+                    )}
+                  >
+                    {selected ? (
+                      <svg viewBox="0 0 10 8" fill="none" className="size-[8px]">
+                        <path
+                          d="M1 3.5L3.8 6.5L9 1"
+                          stroke="white"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    ) : null}
+                  </span>
                   {label}
                 </li>
               );

@@ -2,26 +2,31 @@
 
 import { TextField } from "@/components/sections/quote/fields/TextField";
 import { SelectField } from "@/components/sections/quote/fields/SelectField";
+import { MultiSelectField } from "@/components/sections/quote/fields/MultiSelectField";
 import {
   QUOTE_HELICOPTER_BRANDS,
   QUOTE_HELICOPTER_MODELS_BY_BRAND,
   QUOTE_QUANTITIES,
+  QUOTE_TRANSACTION_TYPES,
 } from "@/lib/constants";
-import type { QuoteFormErrors, QuoteFormState } from "@/types/quoteForm";
+import type { QuoteFormErrors, QuoteFormState, TransactionType } from "@/types/quoteForm";
 
 export type Step03Props = {
   state: Pick<
     QuoteFormState,
-    "shippingPeriod" | "helicopterBrand" | "helicopterModel" | "helicopterQuantity"
+    | "shippingPeriod"
+    | "helicopterBrand"
+    | "helicopterModels"
+    | "helicopterQuantity"
+    | "transactionType"
   >;
   onChange: (patch: Partial<QuoteFormState>) => void;
   errors: QuoteFormErrors;
-  /** Embedded variant stacks all 4 fields vertically (half-width column). */
+  /** Embedded variant stacks all fields vertically (half-width column). */
   stackFields?: boolean;
   /**
-   * Shell variant: keep the outer 2-col grid (Period | Model column) but
-   * stack Brand/Model/Quantity vertically inside the right column — the
-   * narrow shell pane can't fit all three side-by-side.
+   * Shell variant: keep the outer 2-col grid but stack Brand/Model/Quantity
+   * vertically inside the right column.
    */
   compactRow?: boolean;
 };
@@ -47,16 +52,28 @@ export function Step03ShipmentDetails({
             : "flex flex-col gap-[20px] lg:grid lg:grid-cols-2 lg:gap-[20px]"
         }
       >
-        <TextField
-          label="Helicopter Shipping Period"
-          required
-          placeholder="e.g. Q3 2026"
-          value={state.shippingPeriod}
-          onChange={(e) => onChange({ shippingPeriod: e.currentTarget.value })}
-          maxLength={80}
-          error={errors.shippingPeriod}
-        />
+        {/* Left column: Shipping Period + Transaction Type */}
+        <div className="flex flex-col gap-[20px]">
+          <TextField
+            label="Helicopter Shipping Period"
+            required
+            placeholder="e.g. Q3 2026"
+            value={state.shippingPeriod}
+            onChange={(e) => onChange({ shippingPeriod: e.currentTarget.value })}
+            maxLength={80}
+            error={errors.shippingPeriod}
+          />
+          <SelectField
+            label="Transaction Type"
+            options={QUOTE_TRANSACTION_TYPES}
+            value={state.transactionType}
+            onChange={(value) => onChange({ transactionType: value as TransactionType })}
+            placeholder="Select level"
+            error={errors.transactionType}
+          />
+        </div>
 
+        {/* Right column: Helicopter Model & Quantity */}
         <div>
           <span className="font-body text-text-muted-2 mb-[6px] block text-[10px] tracking-[0.04em] uppercase lg:mb-[8px] lg:text-[12px]">
             Helicopter Model &amp; Quantity
@@ -73,23 +90,22 @@ export function Step03ShipmentDetails({
               placeholder="Brand"
               options={QUOTE_HELICOPTER_BRANDS}
               value={state.helicopterBrand}
-              onChange={(brand) => onChange({ helicopterBrand: brand, helicopterModel: null })}
+              onChange={(brand) => onChange({ helicopterBrand: brand, helicopterModels: [] })}
               className={stackFields || compactRow ? "" : "lg:w-[180px]"}
               ariaLabel="Helicopter brand"
               error={errors.helicopterBrand}
             />
             {compactRow ? (
               <div className="flex gap-[7px]">
-                <SelectField
-                  compact
+                <MultiSelectField
                   placeholder="Select e.g. Airbus H125"
                   options={models}
-                  value={state.helicopterModel}
-                  onChange={(model) => onChange({ helicopterModel: model })}
+                  values={state.helicopterModels}
+                  onChange={(helicopterModels) => onChange({ helicopterModels })}
                   disabled={!state.helicopterBrand}
                   className="min-w-0 flex-1"
                   ariaLabel="Helicopter model"
-                  error={errors.helicopterModel}
+                  error={errors.helicopterModels}
                 />
                 <SelectField
                   compact
@@ -104,16 +120,15 @@ export function Step03ShipmentDetails({
               </div>
             ) : (
               <>
-                <SelectField
-                  compact
+                <MultiSelectField
                   placeholder="Select e.g. Airbus H125"
                   options={models}
-                  value={state.helicopterModel}
-                  onChange={(model) => onChange({ helicopterModel: model })}
+                  values={state.helicopterModels}
+                  onChange={(helicopterModels) => onChange({ helicopterModels })}
                   disabled={!state.helicopterBrand}
                   className={stackFields ? "" : "lg:flex-1"}
                   ariaLabel="Helicopter model"
-                  error={errors.helicopterModel}
+                  error={errors.helicopterModels}
                 />
                 <SelectField
                   compact
