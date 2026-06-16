@@ -143,7 +143,12 @@ function TeamCard({ item, active }: { item: TeamCarouselItem; active: boolean })
           : "bg-surface text-ink border-ink/10 md:hover:bg-brand-red md:hover:text-surface border md:hover:border-transparent",
       )}
     >
-      <div className="relative aspect-[244/280] w-full">
+      <div
+        className={cn(
+          "relative aspect-[244/280] w-full transition-colors duration-300",
+          "bg-[#F2F2F2]",
+        )}
+      >
         {item.photoSrc ? (
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[108%] overflow-hidden">
             <Image
