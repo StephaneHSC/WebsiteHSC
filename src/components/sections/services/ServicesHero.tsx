@@ -15,11 +15,11 @@ export function ServicesHero() {
       <BackBreadcrumb href="/" label="Back to Home" />
       <div aria-hidden="true" className="absolute inset-0 -z-10">
         <Image
-          src="/hero/services-hero.webp"
+          src="/hero/services-hero-2.png"
           alt=""
           fill
           priority
-          sizes="100vw"
+          sizes="99vw"
           className="object-cover object-center"
         />
         <span className="bg-ink/40 md:bg-ink/40 absolute inset-0" />

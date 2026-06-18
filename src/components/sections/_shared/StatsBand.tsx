@@ -124,18 +124,19 @@ function StatCell({ stat }: { stat: StatRow }) {
         <Image
           src={iconUrl}
           alt=""
-          width={48}
-          height={48}
-          className="mt-3 h-10 w-10 object-contain md:h-12 md:w-12"
+          width={170}
+          height={170}
+          className="mt-2 h-[100px] w-auto self-start object-contain md:h-[110px] lg:h-[120px]"
         />
-      ) : null}
-      <CountingStatValue
-        value={stat.value}
-        className={cn(
-          "font-display text-ink mt-2 font-black tabular-nums",
-          "text-[36px] leading-[40px] md:text-[40px] md:leading-[44px] lg:text-[48px] lg:leading-[48px]",
-        )}
-      />
+      ) : (
+        <CountingStatValue
+          value={stat.value}
+          className={cn(
+            "font-display text-ink mt-2 font-black tabular-nums",
+            "text-[36px] leading-[40px] md:text-[40px] md:leading-[44px] lg:text-[48px] lg:leading-[48px]",
+          )}
+        />
+      )}
       {description ? (
         <p className="font-body text-ink mt-3 text-[12px] leading-[16px] md:text-[13px] md:leading-[18px]">
           {description[0]}
