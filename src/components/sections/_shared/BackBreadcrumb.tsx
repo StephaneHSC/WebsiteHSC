@@ -16,9 +16,7 @@ type BackBreadcrumbProps = {
  */
 export function BackBreadcrumb({ href, label, variant = "light", className }: BackBreadcrumbProps) {
   return (
-    <div
-      className={cn("absolute top-[72px] right-0 left-0 z-10 px-4 sm:px-6 md:hidden", className)}
-    >
+    <div className={cn("absolute top-[72px] right-0 left-0 z-10 px-4 sm:px-6", className)}>
       <Link
         href={href}
         className={cn(

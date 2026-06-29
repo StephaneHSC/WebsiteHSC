@@ -59,7 +59,7 @@ export function Header() {
             href="/quote"
             className={cn(
               buttonVariants({ variant: scrolled ? "primary" : "secondary", size: "sm" }),
-              "hidden md:inline-flex",
+              "inline-flex",
             )}
           >
             Request Quote

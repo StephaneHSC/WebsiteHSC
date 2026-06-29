@@ -379,6 +379,58 @@ export function ShowcaseModal({ tile, onClose, galleryImages }: ShowcaseModalPro
               ) : null}
             </div>
 
+            {/* Media thumbnail strip — shown when the tile has 2+ media items. */}
+            {media.length > 1 ? (
+              <div
+                role="list"
+                aria-label="Media thumbnails"
+                className="bg-ink flex shrink-0 gap-1.5 overflow-x-auto p-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              >
+                {media.map((item, idx) => {
+                  const thumbSrc =
+                    item.type === "video" && "poster" in item
+                      ? (item.poster ?? item.src)
+                      : item.src;
+                  const isActive = mediaIdx === idx;
+                  return (
+                    <button
+                      key={idx}
+                      role="listitem"
+                      type="button"
+                      aria-label={`${item.type === "video" ? "Video" : "Photo"} ${idx + 1}`}
+                      aria-pressed={isActive}
+                      onClick={() => {
+                        setMediaIdx(idx);
+                        setPlayingMediaIdx(null);
+                      }}
+                      className={cn(
+                        "relative h-[70px] w-[100px] shrink-0 overflow-hidden rounded transition",
+                        "focus-visible:ring-brand-red focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none",
+                        isActive
+                          ? "ring-brand-red ring-2 ring-offset-1"
+                          : "opacity-60 hover:opacity-100",
+                      )}
+                    >
+                      <Image src={thumbSrc} alt="" fill sizes="100px" className="object-cover" />
+                      {item.type === "video" ? (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                          <svg
+                            viewBox="0 0 16 16"
+                            width="18"
+                            height="18"
+                            fill="white"
+                            aria-hidden="true"
+                          >
+                            <path d="M5 3.5l8 4.5-8 4.5V3.5z" />
+                          </svg>
+                        </div>
+                      ) : null}
+                    </button>
+                  );
+                })}
+              </div>
+            ) : null}
+
             {/* CMS gallery thumbnail strip — shown when at least 1 gallery image exists. */}
             {galleryImages && galleryImages.length > 0 ? (
               <div
@@ -450,16 +502,22 @@ export function ShowcaseModal({ tile, onClose, galleryImages }: ShowcaseModalPro
                   Aircraft: <span className="text-brand-red">{modal.aircraft}</span>
                 </p>
 
-                {/* Meta strip — 2-col on mobile, 3-col on desktop. */}
-                <div className="mt-[28px] grid grid-cols-2 gap-x-6 gap-y-4 lg:mt-10 lg:flex lg:gap-x-[42px]">
-                  <MetaCell label="Route:" value={modal.route} />
-                  <MetaCell label="Transport Mode:" value={modal.transportMode} />
-                  <MetaCell
-                    label="Timeline:"
-                    value={modal.timeline}
-                    className="col-span-2 lg:col-auto"
-                  />
-                </div>
+                {/* Meta strip — hidden when all three fields are empty (e.g. Japan Desk). */}
+                {(modal.route || modal.transportMode || modal.timeline) && (
+                  <div className="mt-[28px] grid grid-cols-2 gap-x-6 gap-y-4 lg:mt-10 lg:flex lg:gap-x-[42px]">
+                    {modal.route && <MetaCell label="Route:" value={modal.route} />}
+                    {modal.transportMode && (
+                      <MetaCell label="Transport Mode:" value={modal.transportMode} />
+                    )}
+                    {modal.timeline && (
+                      <MetaCell
+                        label="Timeline:"
+                        value={modal.timeline}
+                        className="col-span-2 lg:col-auto"
+                      />
+                    )}
+                  </div>
+                )}
 
                 {/* Sections */}
                 <Section heading="The Challenge" body={modal.challenge} />
@@ -518,7 +576,7 @@ function MetaCell({
   className,
 }: {
   label: string;
-  value: string;
+  value: string | undefined;
   className?: string;
 }) {
   return (
