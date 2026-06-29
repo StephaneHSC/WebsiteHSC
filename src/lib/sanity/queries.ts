@@ -75,7 +75,7 @@ export const siteStatsQuery = /* groq */ `
     "stats": stats[] | order(order asc) {
       value,
       label,
-      icon,
+      icon { ..., asset->{ url, mimeType } },
       order
     }
   }

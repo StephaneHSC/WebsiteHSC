@@ -244,9 +244,9 @@ export type ShowcaseTile = {
     /** Pre-formatted uppercase header line, e.g. "FROM ITALY TO GABON". */
     title: string;
     aircraft: string;
-    route: string;
-    transportMode: string;
-    timeline: string;
+    route?: string;
+    transportMode?: string;
+    timeline?: string;
     challenge: string;
     solution: string;
     result: string;
@@ -353,9 +353,6 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
     modal: {
       title: "Our Japan Desk",
       aircraft: "Multiple Models",
-      route: "Tokyo, Japan",
-      transportMode: "Local Coordination",
-      timeline: "Year-Round",
       challenge:
         "Japanese clients required Japanese-speaking specialists able to handle local export formalities, port nominations, and time-zone-aligned support.",
       solution:

@@ -4,7 +4,6 @@ import { Reveal } from "@/components/sections/_shared/Reveal";
 import { CountingStatValue } from "@/components/sections/_shared/CountingStatValue";
 import { client } from "@/lib/sanity/client";
 import { siteStatsQuery } from "@/lib/sanity/queries";
-import { urlFor } from "@/lib/sanity/image";
 import { PLACEHOLDER_SITE_STATS, STAT_DESCRIPTIONS } from "@/lib/constants";
 import type { SanityImage, SiteStats } from "@/types/sanity";
 import { cn } from "@/lib/utils";
@@ -112,31 +111,49 @@ type StatRow = { value: string; label: string; icon?: SanityImage };
 
 function StatCell({ stat }: { stat: StatRow }) {
   const description = STAT_DESCRIPTIONS[stat.label];
-  const iconUrl = stat.icon?.asset?._ref
-    ? urlFor(stat.icon).width(96).height(96).fit("max").format("webp").quality(82).url()
-    : null;
+
+  // When Sanity has an icon for this stat, use the locally-hosted SVG instead
+  // of the Sanity CDN URL — the original SVG has a corrected viewBox so it
+  // renders without whitespace padding.
+  const hasIcon = Boolean(stat.icon?.asset?.url);
+
+  if (hasIcon) {
+    return (
+      <div className="flex h-full flex-col px-4 py-6 md:px-5 md:py-8 lg:px-5 lg:py-10">
+        <p className="font-display text-ink text-[12px] leading-[16px] font-bold tracking-[0.06em] uppercase md:leading-[20px]">
+          {stat.label}
+        </p>
+        <Image
+          src="/icons/247-support.svg"
+          alt={stat.label}
+          width={120}
+          height={120}
+          className="mt-2 h-[60px] w-auto self-start object-contain md:h-[64px] lg:h-[68px]"
+        />
+        {description ? (
+          <p className="font-body text-ink mt-3 text-[12px] leading-[16px] md:text-[13px] md:leading-[18px]">
+            {description[0]}
+            <br />
+            {description[1]}
+          </p>
+        ) : null}
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-full flex-col px-4 py-6 md:px-5 md:py-8 lg:px-5 lg:py-10">
       <p className="font-display text-ink text-[12px] leading-[16px] font-bold tracking-[0.06em] uppercase md:leading-[20px]">
         {stat.label}
       </p>
-      {iconUrl ? (
-        <Image
-          src={iconUrl}
-          alt=""
-          width={170}
-          height={170}
-          className="mt-2 h-[100px] w-auto self-start object-contain md:h-[110px] lg:h-[120px]"
-        />
-      ) : (
-        <CountingStatValue
-          value={stat.value}
-          className={cn(
-            "font-display text-ink mt-2 font-black tabular-nums",
-            "text-[36px] leading-[40px] md:text-[40px] md:leading-[44px] lg:text-[48px] lg:leading-[48px]",
-          )}
-        />
-      )}
+      <CountingStatValue
+        value={stat.value}
+        className={cn(
+          "font-display text-ink mt-2 font-black tabular-nums",
+          "text-[36px] leading-[40px] md:text-[40px] md:leading-[44px] lg:text-[48px] lg:leading-[48px]",
+          "min-h-[60px] md:min-h-[64px] lg:min-h-[68px]",
+        )}
+      />
       {description ? (
         <p className="font-body text-ink mt-3 text-[12px] leading-[16px] md:text-[13px] md:leading-[18px]">
           {description[0]}
