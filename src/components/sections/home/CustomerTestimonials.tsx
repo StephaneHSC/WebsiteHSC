@@ -27,7 +27,7 @@ const PLACEHOLDER_TESTIMONIALS: readonly PlaceholderTestimonial[] = [
     quote:
       "I would also use this oppurtunity to thank you and your team for helping us with the transportation of our AW139. Your service was high level and we will most certainly keep your name in case of future projects.",
     rating: 5,
-    placeholderLogo: "/testimonials/lufttransport.png",
+    placeholderLogo: "/testimonials/lufttrasport2.png",
   },
   {
     _id: "p2",
@@ -36,7 +36,7 @@ const PLACEHOLDER_TESTIMONIALS: readonly PlaceholderTestimonial[] = [
     quote:
       "Thanks to appropriate and flexible proposals of HSC team depending on the situation for worldwide logistics, import destination and Japan, we could meet the customers' expectations and delivery the Helicopter as scheduled. We are also able to grasp the transportation status in timely through HSC App which is extremely useful for us and our customers.",
     rating: 5,
-    placeholderLogo: "/testimonials/mitsui-bussan.png",
+    placeholderLogo: "/testimonials/mitsui2.png",
   },
   {
     _id: "p3",
@@ -45,7 +45,7 @@ const PLACEHOLDER_TESTIMONIALS: readonly PlaceholderTestimonial[] = [
     quote:
       "Both our AW139 helicopter shipment was handled professionally by your team and safely arrived at Subang, Malaysia. Great to have Heli Skycargo as our transporter for our helicopter transshipment globally.",
     rating: 5,
-    placeholderLogo: "/testimonials/sazma-aviation.png",
+    placeholderLogo: "/testimonials/sazma2.png",
   },
 ];
 

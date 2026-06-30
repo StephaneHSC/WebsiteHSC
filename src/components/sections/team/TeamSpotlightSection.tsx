@@ -390,77 +390,44 @@ const TeamCard = forwardRef<HTMLButtonElement, TeamCardProps>(function TeamCard(
       aria-pressed={active}
       aria-label={`Show details for ${member.full_name}`}
       className={cn(
-        "group relative block h-[195px] w-[146px] overflow-hidden border transition-[transform,colors] duration-200",
+        "group flex w-[146px] flex-col items-center px-3 pt-3 pb-4 transition-colors duration-300",
         "focus-visible:ring-brand-red focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
         active
-          ? "bg-brand-red text-surface border-brand-red"
-          : "text-ink bg-surface md:hover:bg-brand-red md:hover:border-brand-red border-[#f5f5f5] md:hover:-translate-y-0.5",
+          ? "bg-brand-red text-surface border-brand-red border"
+          : "bg-surface text-ink md:hover:bg-brand-red md:hover:text-surface border border-[#e8e8e8] md:hover:border-transparent",
       )}
     >
-      {/* Plate (the colored area below the photo edge) — 184px tall starting
-          11px from the top, so the head pokes ~11px above the plate. */}
-      <span
-        aria-hidden="true"
-        className={cn(
-          "absolute inset-x-0 top-[11px] bottom-0 transition-colors duration-200",
-          active ? "bg-brand-red" : "bg-surface md:group-hover:bg-brand-red",
-        )}
-      />
-
-      {/* Radial gradient bg behind the portrait — Figma `505:7097` is a
-          128×128 SQUARE with a radial gradient fill (not a circle). The
-          radial paint gives a soft halo within the square outline. */}
-      <span
-        aria-hidden="true"
-        className={cn(
-          "absolute top-[19.5px] left-1/2 h-[128px] w-[129px] -translate-x-1/2 transition-opacity duration-200",
-          active ? "opacity-0" : "md:group-hover:opacity-0",
-        )}
-        style={{
-          background: "radial-gradient(circle, #ffffff 0%, #e4e4e4 100%)",
-        }}
-      />
-
-      {/* Portrait — top:0, height 140, ~120px wide centered. Shorter than
-          Figma's 148px so there's an extra ~8 px breathing room between the
-          portrait's bottom edge and the name label below. Head still extends
-          above the plate (plate starts at top:11). */}
-      <span className="absolute top-0 left-1/2 z-10 block h-[140px] w-[120px] -translate-x-1/2 overflow-visible">
+      {/* Photo area — same gray bg as home page cards */}
+      <div className="relative aspect-[244/280] w-full bg-[#F2F2F2]">
         {photoSrc ? (
-          <Image
-            src={photoSrc}
-            alt=""
-            fill
-            sizes="146px"
-            className="object-contain object-bottom"
-          />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[108%] overflow-hidden">
+            <Image
+              src={photoSrc}
+              alt=""
+              fill
+              sizes="146px"
+              className="object-cover object-top transition-transform duration-500 md:group-hover:scale-[1.03]"
+            />
+          </div>
         ) : null}
-      </span>
+      </div>
 
-      {/* Labels — absolute pinned to the bottom of the card. `bottom-1`
-          (4 px) instead of `bottom-2` so 2-line roles (e.g. "Deployment &
-          Lead Coordinator") have room to grow downward instead of squeezing
-          the name up against the portrait. */}
-      <span className="absolute inset-x-0 bottom-1 z-10 block px-2 text-center">
-        <span
-          className={cn(
-            "font-display block text-[12px] leading-[14px] font-bold capitalize uppercase",
-            active ? "text-surface" : "text-ink md:group-hover:text-surface",
-          )}
-        >
+      {/* Name + role below the photo */}
+      <div className="mt-auto pt-3 text-center">
+        <span className="font-display block text-[11px] leading-[14px] font-bold uppercase">
           {member.full_name}
         </span>
         {role ? (
           <span
             className={cn(
-              "font-body mt-1 block text-[10px] leading-[12px]",
-              active ? "text-surface" : "text-ink md:group-hover:text-surface",
+              "font-body mt-1 block text-[10px] leading-[13px]",
+              active ? "text-surface/85" : "text-ink-soft md:group-hover:text-surface/85",
             )}
           >
             {role}
           </span>
         ) : null}
-      </span>
+      </div>
     </button>
   );
 });

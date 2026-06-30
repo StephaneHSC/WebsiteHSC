@@ -143,22 +143,20 @@ function TestimonialCard({ testimonial: t }: TestimonialCardProps) {
     <article className="border-brand-red relative mt-[44px] flex h-full flex-col border">
       {/* Logo circle overlaps the top edge — Figma: 89×89 with 2px red border. */}
       <div className="absolute top-0 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2">
-        <div className="bg-surface border-brand-red flex h-[89px] w-[89px] items-center justify-center overflow-hidden rounded-full border-2 shadow-md">
+        <div className="bg-surface border-brand-red flex h-[89px] w-[89px] items-center justify-center overflow-hidden rounded-full border-2 p-2 shadow-md">
           {sanityLogo ? (
-            <Image
-              src={urlFor(sanityLogo).width(140).height(140).url()}
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={urlFor(sanityLogo).width(140).fit("max").url()}
               alt={t.company}
-              width={70}
-              height={70}
-              className="object-contain p-3"
+              style={{ width: "68px", height: "58px", objectFit: "contain" }}
             />
           ) : placeholderLogoSrc ? (
-            <Image
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
               src={placeholderLogoSrc}
               alt={t.company}
-              width={70}
-              height={70}
-              className="h-auto max-h-12 w-auto max-w-[60px] object-contain"
+              style={{ width: "68px", height: "58px", objectFit: "contain" }}
             />
           ) : (
             <LogoFallback company={t.company} />

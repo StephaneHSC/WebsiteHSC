@@ -150,73 +150,14 @@ function PhoneMockup() {
 }
 
 function PhoneDevice() {
-  // Coordinates inside the phone container (276.9 × 547.2 in Figma).
-  // The screen.webp asset is the device chrome with a transparent screen
-  // area, so we layer screen content BEHIND it and let it show through.
   return (
-    <div className="relative h-full w-full">
-      {/* Phone body bg — fills behind the transparent screen area (Figma
-          373:69 — Rectangle 12 at #e8ecef). */}
-      <div className="absolute top-[5.1%] left-[0.8%] h-[94.9%] w-[98.8%] rounded-[8%/4%] bg-[#e8ecef]" />
-
-      {/* Red header (Figma 373:70 — Rectangle 13). */}
-      <div className="bg-brand-red absolute top-[5.0%] left-[0.8%] h-[33.2%] w-[98.7%] overflow-hidden rounded-t-[8%/12%]" />
-
-      {/* Back-arrow + "Delivery Information" header text (Figma 373:71). */}
-      <div className="absolute top-[13.1%] right-[8.0%] left-[8.8%] flex items-center">
-        <span className="bg-surface/0 inline-flex aspect-square w-[8%] items-center justify-center">
-          <Image
-            src="/why-choose-us/trk/arrow-back.svg"
-            alt=""
-            width={28}
-            height={28}
-            className="size-full"
-          />
-        </span>
-        <p className="font-display text-surface flex-1 -translate-x-[4%] text-center text-[8px] font-bold capitalize md:text-[9px] lg:text-[10px]">
-          Delivery Information
-        </p>
-      </div>
-
-      {/* Route card — the inner Delivery Information UI (Figma 373:77). */}
-      <div className="absolute top-[20%] left-[7.1%] h-[67.7%] w-[86.8%] overflow-hidden rounded-[3%/2%] shadow-sm">
-        <Image
-          src="/why-choose-us/trk/card-route.webp"
-          alt="Tracking app showing shipment from Vergiate, Italy to Toyoyam, Japan via Ocean RORO"
-          fill
-          sizes="(min-width: 1024px) 320px, 200px"
-          className="object-cover"
-        />
-      </div>
-
-      {/* Bottom dock strip (Figma 373:78). */}
-      <div className="absolute top-[90.4%] left-[7.1%] h-[6.3%] w-[86.8%]">
-        <Image
-          src="/why-choose-us/trk/bottom-strip.webp"
-          alt=""
-          fill
-          sizes="200px"
-          className="object-contain"
-        />
-      </div>
-
-      {/* Device chrome on top — bezel + dynamic island. Screen area is
-          transparent so the layers below show through. Figma 373:76 renders
-          image 62 at `top: 4.57% / height: 95.33% / w: 100%` of the phone
-          container — that ratio matches the asset's natural 498:938 aspect
-          exactly, so wrapping in a same-shaped div + object-cover avoids the
-          letterbox gap that object-contain produces (which was making the
-          grey body extend below the device chrome). */}
-      <div className="pointer-events-none absolute top-[4.57%] left-0 h-[95.33%] w-full">
-        <Image
-          src="/why-choose-us/trk/screen.webp"
-          alt=""
-          fill
-          sizes="(min-width: 1024px) 280px, 180px"
-          className="object-cover"
-        />
-      </div>
-    </div>
+    <Image
+      src="/why-choose-us/trk/device.svg"
+      alt="Heli Skycargo tracking app showing shipment delivery information"
+      width={277}
+      height={548}
+      className="h-full w-full object-contain"
+    />
   );
 }
 
