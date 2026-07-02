@@ -24,6 +24,17 @@ export function useHorizontalTouchScroll(ref: React.RefObject<HTMLElement | null
     let startX = 0;
     let startY = 0;
     let isVertical: boolean | null = null;
+    let consumed = false;
+
+    /** One card-width (+ column gap) — same math as the nav buttons. */
+    function cardStep(): number {
+      if (!el) return 0;
+      const item = el.querySelector("li");
+      if (!item) return el.clientWidth * 0.8;
+      const list = item.parentElement;
+      const gap = list ? parseFloat(getComputedStyle(list).columnGap || "0") : 0;
+      return item.getBoundingClientRect().width + gap;
+    }
 
     function onTouchStart(e: TouchEvent) {
       const t = e.touches[0];
@@ -31,6 +42,7 @@ export function useHorizontalTouchScroll(ref: React.RefObject<HTMLElement | null
       startX = t.clientX;
       startY = t.clientY;
       isVertical = null;
+      consumed = false;
     }
 
     function onTouchMove(e: TouchEvent) {
@@ -53,17 +65,24 @@ export function useHorizontalTouchScroll(ref: React.RefObject<HTMLElement | null
         // Carousel edge — hand the gesture to the page. touch-action: pan-x
         // suppressed native vertical panning, so scroll the window manually.
         window.scrollBy(0, -dy);
-      } else {
-        // Swipe up (dy < 0) advances the carousel; swipe down rewinds it.
-        e.preventDefault();
-        el.scrollLeft -= dy;
+        startX = t.clientX;
+        startY = t.clientY;
+        return;
       }
-      startX = t.clientX;
-      startY = t.clientY;
+
+      e.preventDefault();
+      // One swipe = one card: once the vertical movement passes the
+      // threshold, smooth-scroll a full card and ignore the rest of the
+      // gesture (next swipe advances the next card).
+      if (!consumed && Math.abs(dy) > 24) {
+        consumed = true;
+        el.scrollBy({ left: dy < 0 ? cardStep() : -cardStep(), behavior: "smooth" });
+      }
     }
 
     function onTouchEnd() {
       isVertical = null;
+      consumed = false;
     }
 
     el.addEventListener("touchstart", onTouchStart, { passive: true });
