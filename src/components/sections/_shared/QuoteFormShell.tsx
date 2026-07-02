@@ -68,10 +68,11 @@ export async function QuoteFormShell({
   return (
     <section className="relative w-full px-6 py-10 md:px-6 md:py-12 lg:px-12 lg:py-16 xl:px-12 xl:py-20">
       <div className="grid grid-cols-1 lg:grid-cols-2">
-        {/* Left column — photo + brand red overlay + headline.
-            sticky + self-start keeps it pinned while the right form column
-            expands when accordion steps open. */}
-        <div className="bg-brand-red text-surface relative overflow-hidden lg:sticky lg:top-0 lg:h-screen lg:self-start">
+        {/* Left column — photo + brand red overlay + headline. `self-start`
+            keeps the photo at its own natural height (inner min-h below): it
+            matches the collapsed form, and does NOT grow when accordion steps
+            expand — the form simply extends past it. */}
+        <div className="bg-brand-red text-surface relative overflow-hidden lg:self-start">
           <div aria-hidden="true" className="absolute inset-0">
             <Image
               src={photo.src}
