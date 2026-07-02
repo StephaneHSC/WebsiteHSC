@@ -135,7 +135,14 @@ export async function POST(req: Request) {
     modes,
     routes,
     shippingPeriod: String(fd.get("shipping_period") ?? ""),
-    helicopterBrand: String(fd.get("helicopter_brand") ?? ""),
+    helicopterBrands: (() => {
+      try {
+        const parsed = JSON.parse(String(fd.get("helicopter_brands") ?? "[]"));
+        return Array.isArray(parsed) ? parsed.map(String) : [];
+      } catch {
+        return [] as string[];
+      }
+    })(),
     helicopterModels,
     helicopterQuantity: String(fd.get("helicopter_quantity") ?? ""),
     transactionType: String(fd.get("transaction_type") ?? ""),

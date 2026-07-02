@@ -55,7 +55,7 @@ export interface QuoteEmailInput {
   modes: string[];
   routes: QuoteFormRoute[];
   shippingPeriod: string;
-  helicopterBrand: string;
+  helicopterBrands: string[];
   helicopterModels: string[];
   helicopterQuantity: string;
   transactionType: string;
@@ -113,7 +113,7 @@ export function buildQuoteEmailHtml(input: QuoteEmailInput): string {
 
                 ${sectionHeading("Shipment Details")}
                 ${row("Shipping period", input.shippingPeriod)}
-                ${row("Helicopter", `${input.helicopterBrand || "—"} ${input.helicopterModels.length > 0 ? input.helicopterModels.join(", ") : "—"} × ${input.helicopterQuantity}`)}
+                ${row("Helicopter", `${input.helicopterBrands.length > 0 ? input.helicopterBrands.join(", ") : "—"} ${input.helicopterModels.length > 0 ? input.helicopterModels.join(", ") : "—"} × ${input.helicopterQuantity}`)}
 
                 ${sectionHeading("Transaction")}
                 ${row("Type", input.transactionType || "—")}

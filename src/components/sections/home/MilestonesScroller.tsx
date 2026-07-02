@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { useHorizontalTouchScroll } from "@/lib/useHorizontalTouchScroll";
 import { Reveal } from "@/components/sections/_shared/Reveal";
 import { urlFor } from "@/lib/sanity/image";
 import type { Milestone } from "@/types/sanity";
@@ -33,6 +34,7 @@ export function MilestonesScroller({ milestones }: Props) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const cardsRowRef = useRef<HTMLDivElement>(null);
+  useHorizontalTouchScroll(scrollRef);
 
   const [cardsMidPx, setCardsMidPx] = useState<number>(0);
   const [canPrev, setCanPrev] = useState(false);
@@ -117,10 +119,10 @@ export function MilestonesScroller({ milestones }: Props) {
     <div ref={wrapperRef} className="relative">
       <div
         ref={scrollRef}
-        className="mt-4 w-full scroll-pl-6 overflow-x-auto [scrollbar-width:none] lg:mt-6 lg:scroll-pl-12 [&::-webkit-scrollbar]:hidden"
+        className="mt-4 w-full scroll-pl-6 overflow-x-auto overflow-y-hidden [scrollbar-width:none] lg:mt-6 lg:scroll-pl-12 [&::-webkit-scrollbar]:hidden"
         style={{ scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}
       >
-        <div className="mt-[15px] inline-flex flex-col md:pb-4 md:pl-6 lg:pl-12">
+        <div className="mt-[15px] inline-flex flex-col pb-4 md:pl-6 lg:pl-12">
           {/* Timeline row — line + helicopter + dots */}
           <div className="relative mt-8 lg:mt-12">
             {/* Line */}

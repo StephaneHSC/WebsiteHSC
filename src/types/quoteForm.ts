@@ -27,7 +27,7 @@ export interface QuoteFormState {
   modes: TransportMode[];
   routes: QuoteFormRoute[];
   shippingPeriod: string;
-  helicopterBrand: string | null;
+  helicopterBrands: string[];
   helicopterModels: string[];
   helicopterQuantity: string;
   transactionType: TransactionType | null;
@@ -42,7 +42,7 @@ export interface QuoteFormState {
 export type QuoteFieldKey =
   | "modes"
   | "shippingPeriod"
-  | "helicopterBrand"
+  | "helicopterBrands"
   | "helicopterModels"
   | "helicopterQuantity"
   | "transactionType"

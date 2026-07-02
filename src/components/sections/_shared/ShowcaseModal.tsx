@@ -149,16 +149,10 @@ export function ShowcaseModal({ tile, onClose, galleryImages }: ShowcaseModalPro
     };
     const rawMode = tile?.modal?.transportMode;
     const mode = rawMode ? SHOWCASE_MODE_MAP[rawMode] : undefined;
-    const route = tile?.modal?.route;
-    let origin: string | undefined;
-    let destination: string | undefined;
-    if (route) {
-      const parts = route.split(/\s*[→\-]\s*/);
-      if (parts.length === 2) {
-        origin = parts[0]?.trim();
-        destination = parts[1]?.trim();
-      }
-    }
+    // Route prefill dropped with the 2026-07 modal simplification — the modal
+    // no longer carries a structured route field.
+    const origin: string | undefined = undefined;
+    const destination: string | undefined = undefined;
 
     const target = document.getElementById("request-quote");
     if (target) {
@@ -481,48 +475,36 @@ export function ShowcaseModal({ tile, onClose, galleryImages }: ShowcaseModalPro
               Mobile padding per Figma `505:6764`: 30/30 sides + 30 top + 30
               bottom. Desktop padding per Figma `345:9782`: 68/40 sides + 65 top. */}
           <div className="flex w-full flex-1 flex-col overflow-y-auto px-[30px] pt-[30px] pb-[30px] lg:w-1/2 lg:overflow-y-auto lg:px-[68px] lg:pt-[56px] lg:pr-[40px] lg:pb-[40px]">
-            {/* Header — desktop has 2 lines (route + Aircraft), mobile drops route line. */}
+            {/* Header — client direction (2026-07): title + description only,
+                no aircraft / route / transport mode / timeline / challenge /
+                solution / result structure. */}
             {modal ? (
               <>
                 <p
                   className={cn(
-                    "font-display text-ink hidden uppercase lg:block",
-                    "text-[32px] leading-[40px] font-bold",
+                    "font-display text-ink uppercase",
+                    "text-[24px] leading-[32px] font-bold",
+                    "lg:text-[32px] lg:leading-[40px]",
                   )}
                 >
                   {modal.title}
                 </p>
-                <p
-                  className={cn(
-                    "font-display text-ink uppercase",
-                    "text-[24px] leading-[32px] font-bold",
-                    "lg:mt-1 lg:text-[40px] lg:leading-[40px]",
-                  )}
-                >
-                  Aircraft: <span className="text-brand-red">{modal.aircraft}</span>
-                </p>
+                {modal.subtitle ? (
+                  <p className="font-display text-ink mt-1 text-[18px] leading-[26px] font-bold uppercase lg:text-[24px] lg:leading-[32px]">
+                    {modal.subtitle}
+                  </p>
+                ) : null}
 
-                {/* Meta strip — hidden when all three fields are empty (e.g. Japan Desk). */}
-                {(modal.route || modal.transportMode || modal.timeline) && (
-                  <div className="mt-[28px] grid grid-cols-2 gap-x-6 gap-y-4 lg:mt-10 lg:flex lg:gap-x-[42px]">
-                    {modal.route && <MetaCell label="Route:" value={modal.route} />}
-                    {modal.transportMode && (
-                      <MetaCell label="Transport Mode:" value={modal.transportMode} />
-                    )}
-                    {modal.timeline && (
-                      <MetaCell
-                        label="Timeline:"
-                        value={modal.timeline}
-                        className="col-span-2 lg:col-auto"
-                      />
-                    )}
-                  </div>
-                )}
-
-                {/* Sections */}
-                <Section heading="The Challenge" body={modal.challenge} />
-                <Section heading="The Solution" body={modal.solution} />
-                <Section heading="The Result" body={modal.result} />
+                <div className="mt-6 space-y-4 lg:mt-8">
+                  {modal.description.map((paragraph, i) => (
+                    <p
+                      key={i}
+                      className="font-body text-ink-soft text-[14px] leading-[24px] lg:text-[15px] lg:leading-[28px]"
+                    >
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
 
                 {/* Request Quote pill */}
                 <div className="mt-[32px] lg:mt-auto lg:pt-8">
@@ -567,37 +549,5 @@ export function ShowcaseModal({ tile, onClose, galleryImages }: ShowcaseModalPro
         </div>
       ) : null}
     </Modal>
-  );
-}
-
-function MetaCell({
-  label,
-  value,
-  className,
-}: {
-  label: string;
-  value: string | undefined;
-  className?: string;
-}) {
-  return (
-    <div className={className}>
-      <p className="font-body text-ink text-[11px] leading-tight lg:text-[13px]">{label}</p>
-      <p className="font-body text-brand-red mt-1 text-[14px] leading-tight lg:text-[15px]">
-        {value}
-      </p>
-    </div>
-  );
-}
-
-function Section({ heading, body }: { heading: string; body: string }) {
-  return (
-    <div className="mt-[28px] lg:mt-[36px]">
-      <h3 className="font-display text-ink text-[16px] leading-tight font-bold uppercase lg:text-[20px]">
-        {heading}
-      </h3>
-      <p className="font-body text-ink mt-[12px] max-w-[320px] text-[14px] leading-[20px] lg:mt-[10px] lg:max-w-[380px] lg:text-[15px] lg:leading-[28px]">
-        {body}
-      </p>
-    </div>
   );
 }

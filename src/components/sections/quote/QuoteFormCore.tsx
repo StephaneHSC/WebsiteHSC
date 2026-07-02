@@ -58,7 +58,7 @@ function stepCompletion(state: QuoteFormState): Record<1 | 2 | 3 | 4 | 5, boolea
     2: routesOk,
     3: ok(
       "shippingPeriod",
-      "helicopterBrand",
+      "helicopterBrands",
       "helicopterModels",
       "helicopterQuantity",
       "transactionType",
@@ -280,7 +280,7 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
       2: state.routes.some((r) => r.origin.length > 0 || r.destination.length > 0),
       3:
         state.shippingPeriod.length > 0 ||
-        state.helicopterBrand !== null ||
+        state.helicopterBrands.length > 0 ||
         state.helicopterModels.length > 0 ||
         state.transactionType !== null,
       4: state.additionalInformation.length > 0,
@@ -293,7 +293,7 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
     [
       state.routes,
       state.shippingPeriod,
-      state.helicopterBrand,
+      state.helicopterBrands,
       state.helicopterModels,
       state.transactionType,
       state.additionalInformation,
@@ -386,7 +386,7 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
           const next = new Set(prev);
           if (
             validation.shippingPeriod ||
-            validation.helicopterBrand ||
+            validation.helicopterBrands ||
             validation.helicopterModels ||
             validation.helicopterQuantity ||
             validation.transactionType
@@ -532,7 +532,7 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
             onRemoveRoute={removeRoute}
             errors={errors}
             stackFields={stackFields}
-            hideMultiRoute={isShell}
+            hideMultiRoute={false}
           />
         </CollapsibleSection>
       ) : (
@@ -550,7 +550,7 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
             onRemoveRoute={removeRoute}
             errors={errors}
             stackFields={stackFields}
-            hideMultiRoute={isShell}
+            hideMultiRoute={false}
           />
         </section>
       )}

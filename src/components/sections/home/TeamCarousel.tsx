@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { useHorizontalTouchScroll } from "@/lib/useHorizontalTouchScroll";
 
 export type TeamCarouselItem = {
   id: string;
@@ -27,6 +28,7 @@ type Props = {
 export function TeamCarousel({ items }: Props) {
   const [inViewIdx, setInViewIdx] = useState(-1);
   const rowRef = useRef<HTMLUListElement>(null);
+  useHorizontalTouchScroll(rowRef);
 
   useEffect(() => {
     if (!window.matchMedia("(max-width: 767px)").matches) return;

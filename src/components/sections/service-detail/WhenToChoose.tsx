@@ -55,9 +55,30 @@ export function WhenToChoose({ service }: WhenToChooseProps) {
                 </h2>
               </Reveal>
               <Reveal delay={0.2}>
-                <p className="font-body text-ink mt-6 max-w-[600px] text-[14px] leading-[22px] md:text-[15px] md:leading-[28px] lg:mt-8 lg:leading-[30px]">
-                  {wtc.intro}
-                </p>
+                {typeof wtc.intro === "string" ? (
+                  <p className="font-body text-ink mt-6 max-w-[600px] text-[14px] leading-[22px] md:text-[15px] md:leading-[28px] lg:mt-8 lg:leading-[30px]">
+                    {wtc.intro}
+                  </p>
+                ) : (
+                  <div className="mt-6 max-w-[600px] space-y-4 lg:mt-8">
+                    {wtc.intro.map((paragraph, pi) => (
+                      <p
+                        key={pi}
+                        className="font-body text-ink text-[14px] leading-[22px] md:text-[15px] md:leading-[28px] lg:leading-[30px]"
+                      >
+                        {paragraph.parts.map((part, si) =>
+                          part.kind === "bold" ? (
+                            <strong key={si} className="font-bold">
+                              {part.text}
+                            </strong>
+                          ) : (
+                            <span key={si}>{part.text}</span>
+                          ),
+                        )}
+                      </p>
+                    ))}
+                  </div>
+                )}
               </Reveal>
 
               <div className="mt-8 grid w-full max-w-[280px] grid-cols-1 gap-2.5 lg:mt-10 lg:max-w-[640px] lg:grid-cols-2 lg:gap-x-2 lg:gap-y-2.5">

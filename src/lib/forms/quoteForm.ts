@@ -38,7 +38,7 @@ export function initialQuoteFormState(prefill?: Partial<QuoteFormState>): QuoteF
         ? prefill.routes.map((r) => ({ origin: r.origin ?? "", destination: r.destination ?? "" }))
         : [{ origin: "", destination: "" }],
     shippingPeriod: "",
-    helicopterBrand: null,
+    helicopterBrands: [],
     helicopterModels: [],
     helicopterQuantity: "01",
     transactionType: null,
@@ -76,16 +76,18 @@ export function validateAll(state: QuoteFormState): QuoteFormErrors {
   else if (period.length > 80)
     errors.shippingPeriod = "Shipping period is too long (max 80 chars).";
 
-  // Helicopter brand + model + quantity are OPTIONAL — customers often request
-  // quotes before they've finalized the aircraft choice. If a brand IS picked,
-  // we still validate that the model belongs to it.
-  if (state.helicopterBrand && !QUOTE_HELICOPTER_MODELS_BY_BRAND[state.helicopterBrand]) {
-    errors.helicopterBrand = "Please pick a brand from the list.";
+  // Helicopter brands + models + quantity are OPTIONAL — customers often
+  // request quotes before they've finalized the aircraft choice. If brands ARE
+  // picked, we still validate that each model belongs to one of them.
+  if (state.helicopterBrands.some((b) => !QUOTE_HELICOPTER_MODELS_BY_BRAND[b])) {
+    errors.helicopterBrands = "Please pick brands from the list.";
   }
-  if (state.helicopterBrand && state.helicopterModels.length > 0) {
-    const validModels = QUOTE_HELICOPTER_MODELS_BY_BRAND[state.helicopterBrand] ?? [];
+  if (state.helicopterBrands.length > 0 && state.helicopterModels.length > 0) {
+    const validModels = state.helicopterBrands.flatMap(
+      (b) => QUOTE_HELICOPTER_MODELS_BY_BRAND[b] ?? [],
+    );
     if (state.helicopterModels.some((m) => !validModels.includes(m))) {
-      errors.helicopterModels = "One or more models aren't available for the selected brand.";
+      errors.helicopterModels = "One or more models aren't available for the selected brands.";
     }
   }
   if (
@@ -172,7 +174,7 @@ export async function submitQuoteForm(
   fd.append("modes", JSON.stringify(state.modes));
   fd.append("routes", JSON.stringify(state.routes));
   fd.append("shipping_period", state.shippingPeriod);
-  fd.append("helicopter_brand", state.helicopterBrand ?? "");
+  fd.append("helicopter_brands", JSON.stringify(state.helicopterBrands));
   fd.append("helicopter_models", JSON.stringify(state.helicopterModels));
   fd.append("helicopter_quantity", state.helicopterQuantity);
   fd.append("transaction_type", state.transactionType ?? "");
@@ -273,11 +275,21 @@ export function validateServerSide(fd: FormData): ServerValidationError | null {
   if (period.length === 0 || period.length > 80)
     return { message: "Please enter a shipping period.", field: "shippingPeriod" };
 
-  // Helicopter brand + model + quantity are optional. Validate consistency
+  // Helicopter brands + models + quantity are optional. Validate consistency
   // only when values are present.
-  const brand = get("helicopter_brand");
-  if (brand && !QUOTE_HELICOPTER_MODELS_BY_BRAND[brand]) {
-    return { message: "Please select a brand from the list.", field: "helicopterBrand" };
+  let brands: string[] = [];
+  try {
+    const raw = get("helicopter_brands");
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) throw new Error();
+      brands = parsed.map(String);
+    }
+  } catch {
+    return { message: "Invalid helicopter brands payload.", field: "helicopterBrands" };
+  }
+  if (brands.some((b) => !QUOTE_HELICOPTER_MODELS_BY_BRAND[b])) {
+    return { message: "Please select brands from the list.", field: "helicopterBrands" };
   }
   let helicopterModels: string[] = [];
   try {
@@ -286,8 +298,8 @@ export function validateServerSide(fd: FormData): ServerValidationError | null {
   } catch {
     return { message: "Invalid helicopter models payload.", field: "helicopterModels" };
   }
-  if (brand && helicopterModels.length > 0) {
-    const validModels = QUOTE_HELICOPTER_MODELS_BY_BRAND[brand] ?? [];
+  if (brands.length > 0 && helicopterModels.length > 0) {
+    const validModels = brands.flatMap((b) => QUOTE_HELICOPTER_MODELS_BY_BRAND[b] ?? []);
     if (helicopterModels.some((m) => !validModels.includes(m))) {
       return { message: "Please select models from the list.", field: "helicopterModels" };
     }

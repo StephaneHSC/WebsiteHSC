@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Reveal } from "@/components/sections/_shared/Reveal";
 import { cn } from "@/lib/utils";
 import { SMART_TRACKING_CARDS } from "@/lib/constants";
+import { useHorizontalTouchScroll } from "@/lib/useHorizontalTouchScroll";
 
 /**
  * Horizontal scroll-snap card row with prev/next nav buttons.
@@ -22,6 +23,7 @@ export function SmartTrackingCards() {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(false);
+  useHorizontalTouchScroll(scrollerRef);
 
   const scrollByCards = (dir: 1 | -1) => {
     const el = scrollerRef.current;

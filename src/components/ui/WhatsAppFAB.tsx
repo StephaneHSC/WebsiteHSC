@@ -12,28 +12,26 @@ export function WhatsAppFAB() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="fixed right-4 bottom-6 z-50 flex flex-col items-end gap-3 lg:hidden">
+    <div className="fixed right-4 bottom-6 z-50 flex flex-col items-end gap-3">
       {open && (
-        <div className="w-[300px] overflow-hidden rounded-2xl shadow-2xl">
-          {/* Header — dark teal */}
-          <div className="flex items-center gap-3 px-4 py-3" style={{ background: "#075e54" }}>
+        <div className="w-[300px] overflow-hidden rounded-2xl bg-white shadow-2xl">
+          {/* Header — WhatsApp green */}
+          <div className="flex items-center gap-3 px-4 py-3" style={{ background: "#25D366" }}>
             {/* Avatar */}
             <div
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-lg font-bold text-white"
-              style={{ background: "#25D366" }}
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-lg font-bold"
+              style={{ color: "#25D366" }}
             >
               H
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-sm font-bold text-white">Heli Skycargo</p>
-              <p className="text-xs" style={{ color: "#a8d5a2" }}>
-                Typically replies within a day
-              </p>
+              <p className="text-xs text-white/85">Typically replies within a day</p>
             </div>
             <button
               onClick={() => setOpen(false)}
               aria-label="Close"
-              className="text-white/70 transition-colors hover:text-white"
+              className="text-white/80 transition-colors hover:text-white"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -48,17 +46,10 @@ export function WhatsAppFAB() {
             </button>
           </div>
 
-          {/* Chat body — WhatsApp beige bg with subtle pattern */}
-          <div
-            className="px-4 py-5"
-            style={{
-              backgroundImage: "url('/whatsapp.png')",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          >
+          {/* Chat body */}
+          <div className="bg-[#f0f2f5] px-4 py-5">
             {/* Message bubble */}
-            <div className="relative max-w-[85%] rounded-lg rounded-tl-none bg-white px-3 pt-1 pb-4 shadow-sm">
+            <div className="relative max-w-[85%] rounded-lg rounded-tl-none bg-white px-3 pt-2 pb-4 shadow-sm">
               {/* bubble tail */}
               <span
                 className="absolute top-0 -left-2 h-0 w-0"
@@ -67,9 +58,6 @@ export function WhatsAppFAB() {
                   borderLeft: "8px solid transparent",
                 }}
               />
-              <p className="mb-1 text-xs font-semibold" style={{ color: "#075e54" }}>
-                Heli Skycargo
-              </p>
               <p className="text-sm leading-snug text-gray-800">
                 👋 Hi there!
                 <br />

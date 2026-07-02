@@ -1,4 +1,8 @@
+"use client";
+
+import { useRef } from "react";
 import { cn } from "@/lib/utils";
+import { useHorizontalTouchScroll } from "@/lib/useHorizontalTouchScroll";
 
 type ScrollSnapRowProps = {
   ariaLabel: string;
@@ -13,8 +17,9 @@ type ScrollSnapRowProps = {
  *
  * Bakes in the boilerplate that every carousel needs: keyboard scrolling
  * (`tabIndex={0}` + a focus ring), screen-reader region role, hidden native
- * scrollbar, and snap-x behaviour. Per-section gap, padding, and breakpoint
- * overrides (e.g. `md:grid` to swap to a desktop grid) come in via `className`.
+ * scrollbar, snap-x behaviour, and vertical-swipe → horizontal-scroll on
+ * touch devices. Per-section gap, padding, and breakpoint overrides come in
+ * via `className`.
  */
 export function ScrollSnapRow({
   ariaLabel,
@@ -23,8 +28,12 @@ export function ScrollSnapRow({
   onMouseEnter,
   onMouseLeave,
 }: ScrollSnapRowProps) {
+  const ref = useRef<HTMLUListElement>(null);
+  useHorizontalTouchScroll(ref);
+
   return (
     <ul
+      ref={ref}
       role="region"
       aria-label={ariaLabel}
       tabIndex={0}

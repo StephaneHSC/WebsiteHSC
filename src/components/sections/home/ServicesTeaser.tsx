@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useHorizontalTouchScroll } from "@/lib/useHorizontalTouchScroll";
 import { Container } from "@/components/sections/_shared/Container";
 import { Section } from "@/components/sections/_shared/Section";
 import { SectionHeading } from "@/components/sections/_shared/SectionHeading";
@@ -18,6 +19,7 @@ export function ServicesTeaser() {
   const [mobileInViewIndex, setMobileInViewIndex] = useState(2);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<Array<HTMLLIElement | null>>([]);
+  useHorizontalTouchScroll(scrollerRef);
 
   // Desktop default-active = 3rd card. On hover, the hovered card takes over.
   const desktopActive = rowHovered ? hoveredIndex : 2;

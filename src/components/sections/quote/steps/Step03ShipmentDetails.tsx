@@ -15,7 +15,7 @@ export type Step03Props = {
   state: Pick<
     QuoteFormState,
     | "shippingPeriod"
-    | "helicopterBrand"
+    | "helicopterBrands"
     | "helicopterModels"
     | "helicopterQuantity"
     | "transactionType"
@@ -38,9 +38,21 @@ export function Step03ShipmentDetails({
   stackFields,
   compactRow,
 }: Step03Props) {
-  const models = state.helicopterBrand
-    ? (QUOTE_HELICOPTER_MODELS_BY_BRAND[state.helicopterBrand] ?? [])
-    : [];
+  const models = state.helicopterBrands.flatMap(
+    (brand) => QUOTE_HELICOPTER_MODELS_BY_BRAND[brand] ?? [],
+  );
+
+  // When brands change, drop any selected models that no longer belong to a
+  // selected brand.
+  const handleBrandsChange = (helicopterBrands: string[]) => {
+    const valid = helicopterBrands.flatMap(
+      (brand) => QUOTE_HELICOPTER_MODELS_BY_BRAND[brand] ?? [],
+    );
+    onChange({
+      helicopterBrands,
+      helicopterModels: state.helicopterModels.filter((m) => valid.includes(m)),
+    });
+  };
 
   return (
     <fieldset className="border-0 p-0">
@@ -85,15 +97,14 @@ export function Step03ShipmentDetails({
                 : "flex flex-col gap-[12px] lg:flex-row lg:gap-[7px]"
             }
           >
-            <SelectField
-              compact
+            <MultiSelectField
               placeholder="Brand"
               options={QUOTE_HELICOPTER_BRANDS}
-              value={state.helicopterBrand}
-              onChange={(brand) => onChange({ helicopterBrand: brand, helicopterModels: [] })}
+              values={state.helicopterBrands}
+              onChange={handleBrandsChange}
               className={stackFields || compactRow ? "" : "lg:w-[180px]"}
               ariaLabel="Helicopter brand"
-              error={errors.helicopterBrand}
+              error={errors.helicopterBrands}
             />
             {compactRow ? (
               <div className="flex gap-[7px]">
@@ -102,7 +113,7 @@ export function Step03ShipmentDetails({
                   options={models}
                   values={state.helicopterModels}
                   onChange={(helicopterModels) => onChange({ helicopterModels })}
-                  disabled={!state.helicopterBrand}
+                  disabled={state.helicopterBrands.length === 0}
                   className="min-w-0 flex-1"
                   ariaLabel="Helicopter model"
                   error={errors.helicopterModels}
@@ -125,7 +136,7 @@ export function Step03ShipmentDetails({
                   options={models}
                   values={state.helicopterModels}
                   onChange={(helicopterModels) => onChange({ helicopterModels })}
-                  disabled={!state.helicopterBrand}
+                  disabled={state.helicopterBrands.length === 0}
                   className={stackFields ? "" : "lg:flex-1"}
                   ariaLabel="Helicopter model"
                   error={errors.helicopterModels}

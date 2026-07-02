@@ -113,7 +113,7 @@ export function MobileNav({ inverted = false }: MobileNavProps = {}) {
                         onClick={() =>
                           setExpanded((prev) => (prev === item.label ? null : item.label))
                         }
-                        className="text-ink hover:bg-surface-alt focus-visible:ring-brand-red flex w-full items-center justify-between rounded-full px-5 py-3 text-base font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                        className="text-ink hover:bg-surface-alt focus-visible:ring-brand-red font-display flex w-full items-center justify-between rounded-full px-5 py-3 text-xl font-bold transition-colors focus-visible:ring-2 focus-visible:outline-none"
                       >
                         <span>{item.label}</span>
                         <ChevronIcon
@@ -137,7 +137,7 @@ export function MobileNav({ inverted = false }: MobileNavProps = {}) {
                                 <Link
                                   href={child.href}
                                   onClick={close}
-                                  className="text-ink-soft hover:text-ink block rounded-md px-4 py-2 text-sm transition-colors"
+                                  className="text-ink-soft hover:text-ink font-display block rounded-md px-4 py-2 text-base transition-colors"
                                 >
                                   {child.label}
                                 </Link>
@@ -152,7 +152,7 @@ export function MobileNav({ inverted = false }: MobileNavProps = {}) {
                       <Link
                         href={item.href}
                         onClick={close}
-                        className="text-ink hover:bg-surface-alt focus-visible:ring-brand-red block rounded-full px-5 py-3 text-base font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                        className="text-ink hover:bg-surface-alt focus-visible:ring-brand-red font-display block rounded-full px-5 py-3 text-xl font-bold transition-colors focus-visible:ring-2 focus-visible:outline-none"
                       >
                         {item.label}
                       </Link>
