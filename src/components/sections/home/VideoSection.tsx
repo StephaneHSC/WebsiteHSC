@@ -11,13 +11,13 @@ import { Logo } from "@/components/layout/Logo";
 export function VideoSection() {
   return (
     <section className="bg-ink relative isolate w-full overflow-hidden">
-      <div className="relative aspect-[430/603] w-full md:aspect-video">
+      <div className="relative h-[170dvh] w-full">
         <Image
           src="/home/new-home-image-2.png"
-          alt="Heli Skycargo team in front of an AW139 helicopter at an aviation expo"
+          alt="Heli Skycargo branded helicopter being crane-lifted onto a cargo vessel at port"
           fill
           sizes="100vw"
-          className="object-cover object-[15%_center] md:object-center"
+          className="object-cover object-center"
         />
 
         {/* Logo overlay */}

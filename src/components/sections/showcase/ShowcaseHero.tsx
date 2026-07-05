@@ -3,7 +3,6 @@ import { Container } from "@/components/sections/_shared/Container";
 import { SectionEyebrow } from "@/components/sections/_shared/SectionEyebrow";
 import { Reveal } from "@/components/sections/_shared/Reveal";
 import { SHOWCASE_HERO } from "@/lib/constants";
-import { BackBreadcrumb } from "@/components/sections/_shared/BackBreadcrumb";
 
 /**
  * /showcase hero (Figma `344:4874` desktop / `505:6096` mobile).
@@ -17,7 +16,6 @@ import { BackBreadcrumb } from "@/components/sections/_shared/BackBreadcrumb";
 export function ShowcaseHero() {
   return (
     <section className="text-surface relative isolate w-full overflow-hidden lg:aspect-[1600/700]">
-      <BackBreadcrumb href="/" label="Back to Home" />
       <div aria-hidden="true" className="absolute inset-0 -z-10">
         <Image
           src={SHOWCASE_HERO.photo}

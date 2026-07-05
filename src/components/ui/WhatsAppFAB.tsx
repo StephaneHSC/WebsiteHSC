@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const WA_NUMBER = "201207961333";
+const WA_NUMBER = "85266980871";
 const WA_MESSAGE = encodeURIComponent(
   "Hi, I'd like to enquire about helicopter shipping services.",
 );

@@ -3,7 +3,6 @@ import { Container } from "@/components/sections/_shared/Container";
 import { SectionEyebrow } from "@/components/sections/_shared/SectionEyebrow";
 import { Reveal } from "@/components/sections/_shared/Reveal";
 import { TEAM_HERO } from "@/lib/constants";
-import { BackBreadcrumb } from "@/components/sections/_shared/BackBreadcrumb";
 
 /**
  * /team hero (Figma `344:4891` desktop / `505:6782` mobile).
@@ -14,7 +13,6 @@ import { BackBreadcrumb } from "@/components/sections/_shared/BackBreadcrumb";
 export function TeamHero() {
   return (
     <section className="text-surface relative isolate w-full overflow-hidden lg:aspect-[16/7]">
-      <BackBreadcrumb href="/" label="Back to Home" />
       <div aria-hidden="true" className="absolute inset-0 -z-10">
         {/* Mobile uses the portrait crop so the team fills the 430×500 frame
             (Figma `505:6782`); tablet+ uses the wide 16:7 candid. `sizes` is

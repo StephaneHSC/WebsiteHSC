@@ -7,7 +7,6 @@ import { SectionEyebrow } from "@/components/sections/_shared/SectionEyebrow";
 import { Reveal } from "@/components/sections/_shared/Reveal";
 import { SHARED_DETAIL_HERO_BENEFITS, type Service, type ServiceBenefit } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import { BackBreadcrumb } from "@/components/sections/_shared/BackBreadcrumb";
 import { useHorizontalTouchScroll } from "@/lib/useHorizontalTouchScroll";
 
 export type ServiceDetailHeroProps = {
@@ -29,7 +28,6 @@ export function ServiceDetailHero({ service }: ServiceDetailHeroProps) {
 
   return (
     <section className="text-surface relative isolate w-full overflow-hidden">
-      <BackBreadcrumb href="/services" label="Back to Services" />
       <div aria-hidden="true" className="absolute inset-0 -z-10">
         <Image
           src={service.detailHeroImage}

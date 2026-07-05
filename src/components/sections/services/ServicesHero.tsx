@@ -2,7 +2,6 @@ import Image from "next/image";
 import { Container } from "@/components/sections/_shared/Container";
 import { SectionEyebrow } from "@/components/sections/_shared/SectionEyebrow";
 import { Reveal } from "@/components/sections/_shared/Reveal";
-import { BackBreadcrumb } from "@/components/sections/_shared/BackBreadcrumb";
 
 /**
  * Services listing hero — full-bleed photo of HSC's Global Customer Support
@@ -12,7 +11,6 @@ import { BackBreadcrumb } from "@/components/sections/_shared/BackBreadcrumb";
 export function ServicesHero() {
   return (
     <section className="text-surface relative isolate w-full overflow-hidden">
-      <BackBreadcrumb href="/" label="Back to Home" />
       <div aria-hidden="true" className="absolute inset-0 -z-10">
         <Image
           src="/hero/services-hero-2.png"
