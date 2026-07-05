@@ -196,7 +196,9 @@ export function ShowcaseModal({ tile, onClose, galleryImages }: ShowcaseModalPro
               arrows + dots paginate across both types. On desktop the parent
               uses `lg:flex-row lg:items-stretch` so this column self-stretches
               to the content column's natural height (no fixed aspect needed). */}
-          <div className="bg-ink relative flex w-full flex-col overflow-hidden lg:w-1/2">
+          {/* shrink-0: without it the mobile flex-col (capped at 92vh) lets a
+              long description column crush the photo viewer to zero height. */}
+          <div className="bg-ink relative flex w-full shrink-0 flex-col overflow-hidden lg:w-1/2">
             {/* Main viewer */}
             <div className="relative aspect-[382/345] w-full shrink-0 overflow-hidden lg:aspect-auto lg:flex-1">
               {/* Gallery image override — shown instead of carousel when a thumbnail is active */}
