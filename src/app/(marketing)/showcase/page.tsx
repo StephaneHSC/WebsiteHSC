@@ -4,9 +4,7 @@ import { QuoteFormShell } from "@/components/sections/_shared/QuoteFormShell";
 import { OfficesGlobal } from "@/components/sections/_shared/OfficesGlobal";
 import { SHOWCASE_GALLERY, SHOWCASE_TILES, type ShowcaseTile } from "@/lib/constants";
 import { pageMetadata } from "@/lib/seo";
-import { client } from "@/lib/sanity/client";
-import { allShowcaseGalleriesQuery } from "@/lib/sanity/queries";
-import type { ShowcaseItemGallery } from "@/types/sanity";
+import { getShowcaseData } from "@/lib/showcase";
 
 export const revalidate = 60;
 
@@ -114,21 +112,23 @@ const SHOWCASE_PAGE_MOBILE_TILES: readonly ShowcaseTile[] = (() => {
  * → Quote form (USA office anchor) → Offices (USA featured).
  */
 export default async function ShowcasePage() {
-  const galleryDocs = await client.fetch<ShowcaseItemGallery[]>(allShowcaseGalleriesQuery);
-  const galleries = Object.fromEntries(galleryDocs.map((doc) => [doc.slug, doc.gallery_images]));
+  const { tiles, galleries, fromCms } = await getShowcaseData();
+  // CMS tiles drive their own order (the `order` field) and columns; the
+  // bespoke Figma reorder below only applies to the hardcoded fallback set.
+  const desktopTiles = fromCms ? tiles : SHOWCASE_PAGE_TILES;
+  const mobileTiles = fromCms ? undefined : SHOWCASE_PAGE_MOBILE_TILES;
+  const mobileMax = fromCms ? tiles.length : SHOWCASE_PAGE_MOBILE_TILES.length;
 
   return (
     <main className="flex flex-1 flex-col">
       <ShowcaseHero />
       <ProjectsMosaic
-        tiles={SHOWCASE_PAGE_TILES}
-        mobileTiles={SHOWCASE_PAGE_MOBILE_TILES}
+        tiles={desktopTiles}
+        mobileTiles={mobileTiles}
         showLoadMore
         initialDesktop={8}
         initialMobile={4}
-        // Mobile caps at the 11-tile design (Figma 505:6412); desktop still
-        // reveals all 14 via Load More.
-        mobileMaxVisible={SHOWCASE_PAGE_MOBILE_TILES.length}
+        mobileMaxVisible={mobileMax}
         ctaHref={null}
         galleries={galleries}
         heading={{

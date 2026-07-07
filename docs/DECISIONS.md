@@ -687,3 +687,13 @@ Initial recommendation was wrong — assumed the video was a hero background loo
 **Why**: Project brief explicitly defines this scope. Avoids storing PII in Sanity, avoids consuming document quota, simplifies GDPR posture.
 
 **Tradeoffs**: Submissions live in the email inbox / mail service dashboard. If the client later wants a submissions table in the admin, it's a scope change.
+
+---
+
+## 2026-07-07 — Showcase tiles fully CMS-managed (scope change)
+
+**Decision**: The shipment-showcase mosaic (tiles + modal content + slideshow photos) moved from hardcoded `SHOWCASE_TILES` to the Sanity `showcaseItem` schema. CMS-first with fallback: when any showcaseItem docs exist they drive the mosaic (ordered by `order`); when none exist the hardcoded array still renders, so nothing breaks pre-seed.
+
+**Why**: Developer/client request — editors need to add and edit showcase projects (image, story, gallery) without deploys. Supersedes the earlier gallery-images-only escape hatch (which still works in fallback mode).
+
+**Tradeoffs**: Editors now control layout-affecting fields (shape, desktop/mobile column) — bad values can unbalance the masonry, mitigated by dropdowns + validation. The /showcase page's bespoke Figma tile reorder only applies to the fallback set; CMS mode uses plain `order`. Modal descriptions are plain text paragraphs (no rich text) matching the 2026-07 title+description modal simplification.

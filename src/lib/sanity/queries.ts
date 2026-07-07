@@ -108,3 +108,34 @@ export const allShowcaseGalleriesQuery = /* groq */ `
     }
   }
 `;
+
+/**
+ * All showcase tiles, fully CMS-managed (2026-07). Ordered by `order`.
+ * When this returns an empty array the frontend falls back to the
+ * hardcoded SHOWCASE_TILES in constants.ts.
+ */
+export const allShowcaseItemsQuery = /* groq */ `
+  *[_type == "showcaseItem" && defined(image) && defined(modal_title)] | order(order asc) {
+    slug,
+    order,
+    image,
+    alt,
+    label,
+    has_play_icon,
+    shape,
+    desktop_column,
+    mobile_column,
+    related_services,
+    modal_title,
+    modal_subtitle,
+    aircraft,
+    modal_description,
+    transport_mode,
+    media_photos,
+    video_url,
+    "gallery_images": gallery_images[] {
+      image,
+      caption
+    }
+  }
+`;

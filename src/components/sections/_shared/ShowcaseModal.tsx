@@ -27,6 +27,92 @@ export type ShowcaseModalProps = {
  * Body scroll-lock is applied while open so wheel events on the backdrop
  * don't scroll the underlying page.
  */
+/**
+ * Renders `**bold**` runs inside a plain-text line as <strong>. Keeps the
+ * CMS field a simple text array (no rich-text editor) while letting editors
+ * bold key terms per the client copy doc.
+ */
+function renderBoldRuns(text: string): React.ReactNode {
+  const parts = text.split(/\*\*(.+?)\*\*/g);
+  if (parts.length === 1) return text;
+  return parts.map((part, i) =>
+    i % 2 === 1 ? (
+      <strong key={i} className="text-ink font-bold">
+        {part}
+      </strong>
+    ) : (
+      part
+    ),
+  );
+}
+
+const DESCRIPTION_TEXT_CLASS =
+  "font-body text-ink-soft text-[14px] leading-[24px] lg:text-[15px] lg:leading-[28px]";
+
+/**
+ * Mini-markdown renderer for a modal description entry. Supports:
+ * - `**bold**` runs anywhere
+ * - lines starting with `- ` → bullet list
+ * - lines starting with `1. ` / `2. ` … → numbered list
+ * Consecutive list lines group into one <ul>/<ol>; everything else renders
+ * as paragraph lines.
+ */
+function DescriptionBlock({ text }: { text: string }) {
+  const lines = text.split("\n").map((l) => l.trim());
+  type Block =
+    | { kind: "p"; lines: string[] }
+    | { kind: "ul"; items: string[] }
+    | { kind: "ol"; items: string[] };
+  const blocks: Block[] = [];
+
+  for (const line of lines) {
+    if (line.length === 0) continue;
+    const bullet = line.match(/^-\s+(.*)$/);
+    const numbered = line.match(/^\d+[.)]\s+(.*)$/);
+    const last = blocks[blocks.length - 1];
+    if (bullet) {
+      if (last?.kind === "ul") last.items.push(bullet[1]!);
+      else blocks.push({ kind: "ul", items: [bullet[1]!] });
+    } else if (numbered) {
+      if (last?.kind === "ol") last.items.push(numbered[1]!);
+      else blocks.push({ kind: "ol", items: [numbered[1]!] });
+    } else {
+      if (last?.kind === "p") last.lines.push(line);
+      else blocks.push({ kind: "p", lines: [line] });
+    }
+  }
+
+  return (
+    <>
+      {blocks.map((block, i) => {
+        if (block.kind === "ul") {
+          return (
+            <ul key={i} className={cn(DESCRIPTION_TEXT_CLASS, "list-disc space-y-1 pl-5")}>
+              {block.items.map((item, j) => (
+                <li key={j}>{renderBoldRuns(item)}</li>
+              ))}
+            </ul>
+          );
+        }
+        if (block.kind === "ol") {
+          return (
+            <ol key={i} className={cn(DESCRIPTION_TEXT_CLASS, "list-decimal space-y-1 pl-5")}>
+              {block.items.map((item, j) => (
+                <li key={j}>{renderBoldRuns(item)}</li>
+              ))}
+            </ol>
+          );
+        }
+        return (
+          <p key={i} className={DESCRIPTION_TEXT_CLASS}>
+            {renderBoldRuns(block.lines.join(" "))}
+          </p>
+        );
+      })}
+    </>
+  );
+}
+
 export function ShowcaseModal({ tile, onClose, galleryImages }: ShowcaseModalProps) {
   const router = useRouter();
   const [mediaIdx, setMediaIdx] = useState(0);
@@ -492,19 +578,21 @@ export function ShowcaseModal({ tile, onClose, galleryImages }: ShowcaseModalPro
                   {modal.title}
                 </p>
                 {modal.subtitle ? (
-                  <p className="font-display text-ink mt-1 text-[18px] leading-[26px] font-bold uppercase lg:text-[24px] lg:leading-[32px]">
+                  <p className="font-display text-ink mt-1 text-[16px] leading-[24px] font-bold uppercase lg:text-[22px] lg:leading-[30px]">
                     {modal.subtitle}
+                  </p>
+                ) : null}
+                {modal.aircraft ? (
+                  /* Legacy "Aircraft: …" line (Figma 345:9782) — larger than
+                     the title, label in ink + model in brand red. */
+                  <p className="font-display text-ink mt-1 text-[24px] leading-[32px] font-bold uppercase lg:text-[40px] lg:leading-[40px]">
+                    Aircraft: <span className="text-brand-red">{modal.aircraft}</span>
                   </p>
                 ) : null}
 
                 <div className="mt-6 space-y-4 lg:mt-8">
                   {modal.description.map((paragraph, i) => (
-                    <p
-                      key={i}
-                      className="font-body text-ink-soft text-[14px] leading-[24px] lg:text-[15px] lg:leading-[28px]"
-                    >
-                      {paragraph}
-                    </p>
+                    <DescriptionBlock key={i} text={paragraph} />
                   ))}
                 </div>
 

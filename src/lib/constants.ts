@@ -243,8 +243,10 @@ export type ShowcaseTile = {
   modal?: {
     /** Pre-formatted uppercase header line, e.g. "FROM ITALY TO GABON". */
     title: string;
-    /** Optional second header line, e.g. "AW139 By Ocean LO/LO". */
+    /** Optional small second header line, e.g. "AW139 By Ocean LO/LO". */
     subtitle?: string;
+    /** Optional aircraft model — renders the large red "Aircraft: …" line. */
+    aircraft?: string;
     /**
      * Free-form narrative paragraphs. Client direction (2026-07): showcase
      * modals are title + description only — no route / transport mode /
@@ -296,6 +298,7 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
     modal: {
       title: "From Switzerland to India",
       subtitle: "AW139 By Ocean LO/LO",
+      aircraft: "AW139",
       transportMode: "Ocean Freight (LoLo)",
       description: [
         "A failure to obtain the Swiss/Italian road permit in a timely manner put the shipment in jeopardy to catch the targeted vessel. The customer received no alternative from their forwarder but to catch the next vessel.",
@@ -318,6 +321,7 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
       // TODO(content): real modal copy for Loading shot 1.
       title: "Helicopter Loading",
       transportMode: "Ocean Freight",
+      aircraft: "Various",
       description: [PLACEHOLDER_DESCRIPTION],
     },
   },
@@ -364,6 +368,7 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
     relatedServices: ["ocean-roro", "ocean-lolo"],
     modal: {
       title: "From Belgium to Cameroon",
+      aircraft: "Airbus H145",
       transportMode: "Ocean Freight (RoRo)",
       description: [
         "Door-to-door movement of an in-service Airbus H145 required minimal disassembly and a guaranteed under-deck stow for monsoon-season transit.",
@@ -383,6 +388,7 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
     relatedServices: ["ocean-roro", "ocean-fcl"],
     modal: {
       title: "From Myanmar to Gabon",
+      aircraft: "Bell 412",
       transportMode: "Ocean Freight (FCL)",
       description: [
         "An off-network origin port and remote destination demanded creative routing and tight container fit to keep this Bell 412 shipment on budget.",
@@ -403,6 +409,7 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
       // TODO(content): real modal copy for Loading shot 2.
       title: "Dockside Loading",
       transportMode: "Ocean Freight",
+      aircraft: "Various",
       description: [PLACEHOLDER_DESCRIPTION],
     },
   },
@@ -418,6 +425,7 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
     relatedServices: ["ocean-roro", "ocean-lolo", "ocean-fcl"],
     modal: {
       title: "Loading at Khalifa Port",
+      aircraft: "Sikorsky S-92",
       transportMode: "Ocean Freight (LoLo)",
       description: [
         "A heavy-lift Sikorsky S-92 required crane handling, dockside cradle support, and coordinated lashing under tight port windows at Khalifa Port, UAE.",
@@ -440,6 +448,7 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
     relatedServices: ["air-commercial", "air-chartering", "ocean-fcl"],
     modal: {
       title: "From China to Guatemala",
+      aircraft: "Airbus H225",
       transportMode: "Air Charter (AN-124)",
       description: [
         "An urgent operational need demanded a Pacific-spanning charter for this Airbus H225 with minimal disassembly and zero scheduled commercial connections.",
@@ -471,6 +480,7 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
       // TODO(content): client to provide narrative + real video file.
       title: "Ground Operations",
       transportMode: "Multi-modal",
+      aircraft: "Various",
       description: [PLACEHOLDER_DESCRIPTION],
     },
   },
@@ -486,6 +496,7 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
       // TODO(content): client to provide narrative for Tile 9.
       title: "Ocean Transit Wrap",
       transportMode: "Ocean Freight",
+      aircraft: "Various",
       description: [PLACEHOLDER_DESCRIPTION],
     },
   },
@@ -502,6 +513,7 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
       // TODO(content): client to provide narrative + real video file.
       title: "Coordination Footage",
       transportMode: "Multi-modal",
+      aircraft: "Various",
       description: [PLACEHOLDER_DESCRIPTION],
     },
   },
@@ -522,6 +534,7 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
       // TODO(content): client to provide narrative for Tile 11.
       title: "Pre-flight Preparation",
       transportMode: "Ground/Air",
+      aircraft: "Various",
       description: [PLACEHOLDER_DESCRIPTION],
     },
   },
@@ -538,6 +551,7 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
       // TODO(content): client to provide narrative + real video file.
       title: "Road Transport",
       transportMode: "Road Freight",
+      aircraft: "Various",
       description: [PLACEHOLDER_DESCRIPTION],
     },
   },
@@ -553,6 +567,7 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
       // TODO(content): client to provide narrative for Tile 13.
       title: "Ground Handling",
       transportMode: "Ground",
+      aircraft: "Various",
       description: [PLACEHOLDER_DESCRIPTION],
     },
   },

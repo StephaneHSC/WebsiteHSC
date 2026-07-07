@@ -75,3 +75,25 @@ export type ShowcaseItemGallery = {
   slug: string;
   gallery_images: ShowcaseGalleryImage[];
 };
+
+/** Full CMS-managed showcase tile (2026-07) — see sanity/schemas/showcaseItem.ts. */
+export type ShowcaseItemDoc = {
+  slug: string;
+  order: number;
+  image: SanityImage;
+  alt: string;
+  label?: string[];
+  has_play_icon?: boolean;
+  shape: "tall" | "medium" | "short" | "extra-short";
+  desktop_column: number;
+  mobile_column: number;
+  related_services?: string[];
+  modal_title: string;
+  modal_subtitle?: string;
+  aircraft?: string;
+  modal_description: string[];
+  transport_mode?: string;
+  media_photos?: SanityImage[];
+  video_url?: string;
+  gallery_images?: ShowcaseGalleryImage[];
+};
