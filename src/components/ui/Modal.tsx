@@ -75,7 +75,10 @@ export function Modal({
       className={cn(
         "m-auto bg-transparent p-0 outline-none",
         sizeDialogClasses[size],
-        "backdrop:bg-black/60 backdrop:backdrop-blur-sm",
+        // h-lvh: size the backdrop to the LARGE viewport so it still covers
+        // the bottom strip revealed when the mobile browser toolbar
+        // collapses (iOS Safari sizes ::backdrop to the small viewport).
+        "backdrop:fixed backdrop:inset-0 backdrop:h-lvh backdrop:w-screen backdrop:bg-black/60 backdrop:backdrop-blur-sm",
       )}
     >
       <div

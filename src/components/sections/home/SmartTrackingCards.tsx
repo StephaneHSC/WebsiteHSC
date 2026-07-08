@@ -44,11 +44,9 @@ export function SmartTrackingCards() {
     function update() {
       if (!el) return;
       const max = el.scrollWidth - el.clientWidth;
-      // Inner content has horizontal padding, so snap-start on the first card
-      // rests at scrollLeft = paddingLeft (not 0). Account for that.
-      const inner = el.firstElementChild as HTMLElement | null;
-      const padLeft = inner ? parseFloat(getComputedStyle(inner).paddingLeft || "0") : 0;
-      setCanPrev(el.scrollLeft > padLeft + 1);
+      // snap-center + symmetric edge padding: the first card rests centered
+      // at scrollLeft ≈ 0 and the last at scrollLeft ≈ max.
+      setCanPrev(el.scrollLeft > 1);
       setCanNext(el.scrollLeft < max - 1);
     }
     update();
@@ -72,7 +70,22 @@ export function SmartTrackingCards() {
     }
     el.addEventListener("wheel", onWheel, { passive: false });
 
+    // Land centered on the MIDDLE card on mount (same pattern as the
+    // services teaser) so both sides show peeking neighbors — otherwise the
+    // first card centers with an empty half-viewport to its left.
+    const rafId = requestAnimationFrame(() => {
+      if (!el) return;
+      const items = el.querySelectorAll("li");
+      const middle = items[Math.floor(items.length / 2)];
+      if (!middle) return;
+      const target = middle.offsetLeft + middle.offsetWidth / 2 - el.clientWidth / 2;
+      // behavior:'instant' overrides CSS scroll-behavior:smooth so the row
+      // doesn't animate from card 01 on page load.
+      el.scrollTo({ left: Math.max(0, target), behavior: "instant" });
+    });
+
     return () => {
+      cancelAnimationFrame(rafId);
       el.removeEventListener("scroll", update);
       el.removeEventListener("wheel", onWheel);
       ro.disconnect();
@@ -90,12 +103,15 @@ export function SmartTrackingCards() {
         // element has `overflow`); placing it on the inner <ul> is a no-op.
         className="focus-visible:ring-brand-red snap-x snap-mandatory overflow-x-auto scroll-smooth pb-2 [-ms-overflow-style:none] [scrollbar-width:none] focus-visible:ring-2 focus-visible:outline-none [&::-webkit-scrollbar]:hidden"
       >
+        {/* Normal edge padding + snap-center: middle cards snap to the
+            viewport center with neighbors peeking both sides, while the
+            first/last cards clamp flush to the edges (no dead space). */}
         <ul className="flex gap-6 px-4 sm:px-6 lg:gap-8 lg:px-8">
           {SMART_TRACKING_CARDS.map((card) => (
             <li
               key={card.id}
               // `snap-always` forces one-card-per-swipe (no fling-skipping).
-              className="w-[300px] shrink-0 snap-start snap-always sm:w-[400px] lg:w-[520px] xl:w-[580px]"
+              className="w-[300px] shrink-0 snap-center snap-always sm:w-[400px] lg:w-[520px] xl:w-[580px]"
             >
               <Image
                 src={card.src}

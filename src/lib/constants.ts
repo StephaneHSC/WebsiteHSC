@@ -1812,36 +1812,13 @@ export const PLACEHOLDER_TEAM_MEMBERS: readonly TeamMemberPlaceholder[] = [
     // TODO(content): client to provide bio for Daniel Cosico.
     bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
   },
-  {
-    _id: "team.adriana-athirah",
-    full_name: "Adriana Athirah",
-    role: "Sales & Marketing Executive",
-    placeholderPhoto: "/team/adriana-athirah.png",
-    // TODO(content): client to provide bio for Adriana Athirah.
-    bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
-  },
-  {
-    _id: "team.rica-mae-cortez",
-    full_name: "Rica Mae Cortez",
-    role: "Logistic Specialist",
-    placeholderPhoto: "/team/rica-mae-cortez.webp",
-    // TODO(content): client to provide bio for Rica Mae Cortez.
-    bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
-  },
+
   {
     _id: "team.alfredo-dinglasan",
     full_name: "Alfredo Dinglasan",
     role: "Logistic Specialist",
     placeholderPhoto: "/team/alfredo-dinglasan.webp",
     // TODO(content): client to provide bio for Alfredo Dinglasan.
-    bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
-  },
-  {
-    _id: "team.nikhitha-manuel",
-    full_name: "Nikhitha Manuel",
-    role: "RFQ",
-    placeholderPhoto: "/team/nikhitha-manuel.webp",
-    // TODO(content): client to provide bio for Nikhitha Manuel.
     bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
   },
   {

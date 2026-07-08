@@ -23,6 +23,19 @@ function useCountUp(target: number, duration = 1400) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+
+    // Immediate check: if the element is already in the viewport on mount
+    // (e.g. page restored mid-scroll, or hydration finished after the
+    // section scrolled in), start right away — don't wait for the observer.
+    const inViewNow = () => {
+      const r = el.getBoundingClientRect();
+      return r.top < window.innerHeight && r.bottom > 0 && r.width > 0;
+    };
+    if (inViewNow()) {
+      setStarted(true);
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry?.isIntersecting) {
@@ -30,10 +43,27 @@ function useCountUp(target: number, duration = 1400) {
           observer.disconnect();
         }
       },
-      { threshold: 0.3 },
+      // threshold 0 (any pixel) — 0.3 could silently never fire when the
+      // number's box is clipped or transformed by an entrance animation.
+      { threshold: 0 },
     );
     observer.observe(el);
-    return () => observer.disconnect();
+
+    // Last-resort fallback: scroll listener double-checks position in case
+    // the observer misses (some in-app browsers are flaky with IO).
+    const onScroll = () => {
+      if (inViewNow()) {
+        setStarted(true);
+        window.removeEventListener("scroll", onScroll);
+        observer.disconnect();
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
 
   useEffect(() => {
