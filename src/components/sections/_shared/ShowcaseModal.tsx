@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Modal } from "@/components/ui/Modal";
 import { cn } from "@/lib/utils";
 import type { ShowcaseMedia, ShowcaseTile } from "@/lib/constants";
@@ -43,6 +43,90 @@ function renderBoldRuns(text: string): React.ReactNode {
     ) : (
       part
     ),
+  );
+}
+
+/**
+ * Horizontally scrollable thumbnail strip with chevron nav buttons that
+ * appear only when the strip overflows (e.g. many slides now that the CMS
+ * media array is uncapped). Used by both the media and gallery strips.
+ */
+function ThumbStrip({ ariaLabel, children }: { ariaLabel: string; children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [canLeft, setCanLeft] = useState(false);
+  const [canRight, setCanRight] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    function update() {
+      if (!el) return;
+      const max = el.scrollWidth - el.clientWidth;
+      setCanLeft(el.scrollLeft > 1);
+      setCanRight(el.scrollLeft < max - 1);
+    }
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => {
+      el.removeEventListener("scroll", update);
+      ro.disconnect();
+    };
+  }, []);
+
+  const scrollBy = (dir: 1 | -1) => {
+    ref.current?.scrollBy({ left: dir * 220, behavior: "smooth" });
+  };
+
+  const arrowClass =
+    "absolute top-1/2 z-10 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full bg-surface/90 text-ink shadow transition hover:bg-surface focus-visible:ring-brand-red focus-visible:ring-2 focus-visible:outline-none";
+
+  return (
+    <div className="bg-ink relative shrink-0">
+      {canLeft ? (
+        <button
+          type="button"
+          aria-label="Scroll thumbnails left"
+          onClick={() => scrollBy(-1)}
+          className={cn(arrowClass, "left-1.5")}
+        >
+          <ChevronGlyph dir="left" />
+        </button>
+      ) : null}
+      <div
+        ref={ref}
+        role="list"
+        aria-label={ariaLabel}
+        className="flex gap-1.5 overflow-x-auto p-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {children}
+      </div>
+      {canRight ? (
+        <button
+          type="button"
+          aria-label="Scroll thumbnails right"
+          onClick={() => scrollBy(1)}
+          className={cn(arrowClass, "right-1.5")}
+        >
+          <ChevronGlyph dir="right" />
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
+function ChevronGlyph({ dir }: { dir: "left" | "right" }) {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d={dir === "left" ? "M15 18l-6-6 6-6" : "M9 6l6 6-6 6"}
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }
 
@@ -277,6 +361,22 @@ export function ShowcaseModal({ tile, onClose, galleryImages }: ShowcaseModalPro
     <Modal open={tile !== null} onClose={onClose} size="xl" bare ariaLabel={ariaLabel}>
       {tile ? (
         <div className="relative flex max-h-[92vh] flex-col overflow-hidden lg:max-h-[90vh] lg:flex-row lg:items-stretch">
+          {/* Mobile-only title bar — client direction (2026-07): the title
+              must be the FIRST thing visible when a tile opens, above the
+              photo. Desktop keeps the title in the right content column. */}
+          {/* {modal ? (
+            <div className="bg-surface shrink-0 px-[30px] pt-[24px] pr-14 pb-[12px] lg:hidden">
+              <p className="font-display text-ink text-[20px] leading-[26px] font-bold uppercase">
+                {modal.title}
+              </p>
+              {modal.subtitle ? (
+                <p className="font-display text-ink mt-0.5 text-[14px] leading-[20px] font-bold uppercase">
+                  {modal.subtitle}
+                </p>
+              ) : null}
+            </div>
+          ) : null} */}
+
           {/* Media area — top on mobile, left half on desktop. The carousel
               iterates over `media` and renders photo / video items in place;
               arrows + dots paginate across both types. On desktop the parent
@@ -463,11 +563,7 @@ export function ShowcaseModal({ tile, onClose, galleryImages }: ShowcaseModalPro
 
             {/* Media thumbnail strip — shown when the tile has 2+ media items. */}
             {media.length > 1 ? (
-              <div
-                role="list"
-                aria-label="Media thumbnails"
-                className="bg-ink flex shrink-0 gap-1.5 overflow-x-auto p-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-              >
+              <ThumbStrip ariaLabel="Media thumbnails">
                 {media.map((item, idx) => {
                   const thumbSrc =
                     item.type === "video" && "poster" in item
@@ -510,16 +606,12 @@ export function ShowcaseModal({ tile, onClose, galleryImages }: ShowcaseModalPro
                     </button>
                   );
                 })}
-              </div>
+              </ThumbStrip>
             ) : null}
 
             {/* CMS gallery thumbnail strip — shown when at least 1 gallery image exists. */}
             {galleryImages && galleryImages.length > 0 ? (
-              <div
-                role="list"
-                aria-label="Gallery thumbnails"
-                className="bg-ink flex shrink-0 gap-1.5 overflow-x-auto p-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-              >
+              <ThumbStrip ariaLabel="Gallery thumbnails">
                 {galleryImages.map((img, idx) => {
                   const thumbUrl = urlFor(img.image)
                     .width(200)
@@ -555,7 +647,7 @@ export function ShowcaseModal({ tile, onClose, galleryImages }: ShowcaseModalPro
                     </button>
                   );
                 })}
-              </div>
+              </ThumbStrip>
             ) : null}
           </div>
 
@@ -568,20 +660,17 @@ export function ShowcaseModal({ tile, onClose, galleryImages }: ShowcaseModalPro
                 solution / result structure. */}
             {modal ? (
               <>
-                <p
-                  className={cn(
-                    "font-display text-ink uppercase",
-                    "text-[24px] leading-[32px] font-bold",
-                    "lg:text-[32px] lg:leading-[40px]",
-                  )}
-                >
-                  {modal.title}
-                </p>
-                {modal.subtitle ? (
-                  <p className="font-display text-ink mt-1 text-[16px] leading-[24px] font-bold uppercase lg:text-[22px] lg:leading-[30px]">
-                    {modal.subtitle}
+                <div className="bg-surface shrink-0 pr-14 pb-[12px]">
+                  <p className="font-display text-ink text-[20px] leading-[26px] font-bold break-words whitespace-normal uppercase lg:text-[32px] lg:leading-[40px] lg:font-bold">
+                    {modal.title}
                   </p>
-                ) : null}
+                  {modal.subtitle ? (
+                    <p className="font-display text-ink mt-0.5 text-[14px] leading-[20px] font-bold uppercase lg:block lg:text-[22px] lg:leading-[30px]">
+                      {modal.subtitle}
+                    </p>
+                  ) : null}
+                </div>
+
                 {modal.aircraft ? (
                   /* Legacy "Aircraft: …" line (Figma 345:9782) — larger than
                      the title, label in ink + model in brand red. */

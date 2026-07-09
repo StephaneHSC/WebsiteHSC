@@ -93,6 +93,11 @@ export type ShowcaseItemDoc = {
   aircraft?: string;
   modal_description: string[];
   transport_mode?: string;
+  /** Mixed slideshow: images + video slides, editor-ordered. */
+  modal_media?: Array<
+    (SanityImage & { _type: "image" }) | { _type: "videoSlide"; url: string; poster?: SanityImage }
+  >;
+  /** @deprecated Legacy fields — superseded by modal_media, still rendered. */
   media_photos?: SanityImage[];
   video_url?: string;
   gallery_images?: ShowcaseGalleryImage[];

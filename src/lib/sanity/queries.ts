@@ -131,6 +131,7 @@ export const allShowcaseItemsQuery = /* groq */ `
     aircraft,
     modal_description,
     transport_mode,
+    modal_media,
     media_photos,
     video_url,
     "gallery_images": gallery_images[] {

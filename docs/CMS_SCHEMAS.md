@@ -154,22 +154,22 @@ Team Members and Testimonials will be added by the client (or the dev team durin
 
 Full showcase tile (was: gallery images only). Fields:
 
-| Field               | Type                                   | Notes                                  |
-| ------------------- | -------------------------------------- | -------------------------------------- |
-| `slug`              | string, required                       | Unique tile id, e.g. `japan-desk`      |
-| `order`             | number, required                       | Mosaic position; home shows first 8    |
-| `image`             | image, required                        | Tile photo + modal slide 1             |
-| `alt`               | string, required                       | Accessibility text                     |
-| `label`             | string[] (max 4)                       | Tile overlay lines; empty = photo-only |
-| `has_play_icon`     | boolean                                | Red play circle on tile                |
-| `shape`             | tall \| medium \| short \| extra-short | Masonry aspect                         |
-| `desktop_column`    | number 0–3                             | Desktop masonry column                 |
-| `mobile_column`     | number 0–1                             | Mobile masonry column                  |
-| `related_services`  | string[] (service slugs)               | Filter for service detail pages        |
-| `modal_title`       | string, required                       | Popup header                           |
-| `modal_subtitle`    | string                                 | e.g. "AW139 By Ocean LO/LO"            |
-| `modal_description` | text[] , required                      | Story paragraphs                       |
-| `transport_mode`    | string (enum)                          | Quote-form prefill only, not rendered  |
-| `media_photos`      | image[] (max 8)                        | Extra popup carousel slides            |
-| `video_url`         | url                                    | MP4 slide, tile photo as poster        |
-| `gallery_images`    | {image, caption}[] (max 8)             | Thumbnail strip in popup               |
+| Field                        | Type                                   | Notes                                                                    |
+| ---------------------------- | -------------------------------------- | ------------------------------------------------------------------------ |
+| `slug`                       | string, required                       | Unique tile id, e.g. `japan-desk`                                        |
+| `order`                      | number, required                       | Mosaic position; home shows first 8                                      |
+| `image`                      | image, required                        | Tile photo + modal slide 1                                               |
+| `alt`                        | string, required                       | Accessibility text                                                       |
+| `label`                      | string[] (max 4)                       | Tile overlay lines; empty = photo-only                                   |
+| `has_play_icon`              | boolean                                | Red play circle on tile                                                  |
+| `shape`                      | tall \| medium \| short \| extra-short | Masonry aspect                                                           |
+| `desktop_column`             | number 0–3                             | Desktop masonry column                                                   |
+| `mobile_column`              | number 0–1                             | Mobile masonry column                                                    |
+| `related_services`           | string[] (service slugs)               | Filter for service detail pages                                          |
+| `modal_title`                | string, required                       | Popup header                                                             |
+| `modal_subtitle`             | string                                 | e.g. "AW139 By Ocean LO/LO"                                              |
+| `modal_description`          | text[] , required                      | Story paragraphs                                                         |
+| `transport_mode`             | string (enum)                          | Quote-form prefill only, not rendered                                    |
+| `modal_media`                | (image or videoSlide)[] (max 10)       | Mixed popup carousel slides, editor-ordered; videoSlide = {url, poster?} |
+| `media_photos` / `video_url` | deprecated                             | Superseded by `modal_media` (2026-07); legacy docs still render          |
+| `gallery_images`             | {image, caption}[] (max 8)             | Thumbnail strip in popup                                                 |

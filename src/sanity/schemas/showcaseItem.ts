@@ -152,20 +152,41 @@ export const showcaseItem = defineType({
         "Not shown on the site — preselects the transport mode when a visitor clicks Request Quote from this tile's popup.",
     }),
     defineField({
-      name: "media_photos",
-      title: "Modal Slideshow Photos",
+      name: "modal_media",
+      title: "Modal Slideshow Media",
       type: "array",
-      of: [{ type: "image", options: { hotspot: true } }],
       description:
-        "Additional slides for the popup's main carousel (the tile photo is always slide 1).",
-      validation: (Rule) => Rule.max(8),
-    }),
-    defineField({
-      name: "video_url",
-      title: "Modal Video URL (optional)",
-      type: "url",
-      description:
-        "Direct MP4 URL added as a slide with a play button. The tile photo is used as its poster.",
+        "Slides for the popup's main carousel, after the tile photo (always slide 1). Mix photos and videos in any order — drag to reorder.",
+      of: [
+        { type: "image", options: { hotspot: true } },
+        {
+          type: "object",
+          name: "videoSlide",
+          title: "Video",
+          fields: [
+            defineField({
+              name: "url",
+              title: "Video URL",
+              type: "url",
+              description: "Direct MP4 URL (e.g. a Sanity file asset URL or CDN link).",
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: "poster",
+              title: "Poster Image (optional)",
+              type: "image",
+              options: { hotspot: true },
+              description: "Still shown before play. Defaults to the tile photo when empty.",
+            }),
+          ],
+          preview: {
+            select: { media: "poster", title: "url" },
+            prepare({ media, title }) {
+              return { media, title: title ?? "Video slide" };
+            },
+          },
+        },
+      ],
     }),
     defineField({
       name: "gallery_images",

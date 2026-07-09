@@ -48,10 +48,27 @@ export async function getShowcaseData(): Promise<ShowcaseData> {
 function mapDocToTile(doc: ShowcaseItemDoc): ShowcaseTile {
   const src = urlFor(doc.image).width(900).format("webp").quality(80).url();
 
-  // Modal carousel: tile photo is always slide 1, then extra photos, then
-  // the optional video (poster = tile photo).
+  // Modal carousel: tile photo is always slide 1, then the editor-ordered
+  // mixed media array (photos + videos). Legacy `media_photos` / `video_url`
+  // fields still render (after the mixed array) for docs created before the
+  // modal_media migration.
   const media: ShowcaseMedia[] = [
     { type: "photo", src },
+    ...(doc.modal_media ?? []).map((item): ShowcaseMedia => {
+      if (item._type === "videoSlide") {
+        return {
+          type: "video",
+          src: item.url,
+          poster: item.poster
+            ? urlFor(item.poster).width(1200).format("webp").quality(80).url()
+            : src,
+        };
+      }
+      return {
+        type: "photo",
+        src: urlFor(item).width(1200).format("webp").quality(80).url(),
+      };
+    }),
     ...(doc.media_photos ?? []).map(
       (img): ShowcaseMedia => ({
         type: "photo",
