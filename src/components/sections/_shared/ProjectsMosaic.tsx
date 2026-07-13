@@ -301,33 +301,6 @@ export function ProjectsMosaic({
           ))}
         </div>
 
-        {/* Load More pill — separate per breakpoint so each viewport hides
-            its button as soon as that viewport's `displayedCount >= total`. */}
-        {showLoadMoreMobile ? (
-          <Reveal delay={0.2} className="mt-8 flex justify-center md:hidden">
-            <button
-              type="button"
-              onClick={() =>
-                setMobileVisible((v) => Math.min(mobileTotal, v + MOBILE_BATCH_INCREMENT))
-              }
-              className="border-input-border text-ink font-body focus-visible:ring-brand-red inline-flex items-center justify-center rounded-[30px] border bg-white px-5 py-2.5 text-[12px] font-bold tracking-[0.72px] capitalize transition hover:scale-[1.02] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
-            >
-              Loading More...
-            </button>
-          </Reveal>
-        ) : null}
-        {showLoadMoreDesktop ? (
-          <Reveal delay={0.2} className="mt-12 hidden justify-center md:flex">
-            <button
-              type="button"
-              onClick={() => setDesktopVisible(total)}
-              className="text-ink font-body focus-visible:ring-brand-red inline-flex items-center justify-center rounded-[30px] bg-white px-[30px] py-[10px] text-[14px] font-bold tracking-[0.84px] capitalize transition hover:scale-[1.02] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
-            >
-              Loading More...
-            </button>
-          </Reveal>
-        ) : null}
-
         {ctaHref ? (
           <Reveal delay={0.7} className="mt-12 flex justify-center">
             <Link

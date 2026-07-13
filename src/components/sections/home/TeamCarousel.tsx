@@ -27,6 +27,11 @@ type Props = {
  */
 export function TeamCarousel({ items }: Props) {
   const [inViewIdx, setInViewIdx] = useState(-1);
+  // Tap-to-activate for touch screens at md+ (iPad): Tailwind v4 hover
+  // variants only apply under `@media (hover: hover)`, so the red hover fill
+  // never fires on tablets — tapping a card toggles it instead. The mobile
+  // (<md) carousel keeps its centered-card mechanism via inViewIdx.
+  const [tappedIdx, setTappedIdx] = useState(-1);
   const rowRef = useRef<HTMLUListElement>(null);
   useHorizontalTouchScroll(rowRef);
 
@@ -111,8 +116,9 @@ export function TeamCarousel({ items }: Props) {
             data-row-idx={rowIdx}
             data-in-view={inViewIdx === rowIdx ? "true" : undefined}
             className={slotClass}
+            onClick={() => setTappedIdx((prev) => (prev === rowIdx ? -1 : rowIdx))}
           >
-            <TeamCard item={m} active={inViewIdx === rowIdx} />
+            <TeamCard item={m} active={inViewIdx === rowIdx || tappedIdx === rowIdx} />
           </li>
         );
       })}

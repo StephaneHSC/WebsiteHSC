@@ -56,7 +56,7 @@ export function Header() {
         <Logo inverted={!scrolled} />
         <div className="flex items-center gap-3">
           <Link
-            href="/quote"
+            href="#request-quote"
             className={cn(
               buttonVariants({ variant: scrolled ? "primary" : "secondary", size: "sm" }),
               "inline-flex",

@@ -122,12 +122,12 @@ export default async function ShowcasePage() {
   return (
     <main className="flex flex-1 flex-col">
       <ShowcaseHero />
+      {/* No Load More on /showcase (client request 2026-07): every tile
+          renders immediately on both breakpoints. Home/service pages keep
+          their capped 8-tile preview. */}
       <ProjectsMosaic
         tiles={desktopTiles}
         mobileTiles={mobileTiles}
-        showLoadMore
-        initialDesktop={8}
-        initialMobile={4}
         mobileMaxVisible={mobileMax}
         ctaHref={null}
         galleries={galleries}
