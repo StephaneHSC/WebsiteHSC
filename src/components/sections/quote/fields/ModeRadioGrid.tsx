@@ -16,6 +16,7 @@ export type ModeRadioGridProps = {
    * - shell: Figma `344:3275` order (Air Charter first), Breakbulk label shortened
    */
   variant?: "standalone" | "shell";
+  invalid?: boolean;
 };
 
 /**
@@ -43,6 +44,7 @@ export function ModeRadioGrid({
   onChange,
   layout = "single-row",
   variant = "standalone",
+  invalid = false,
 }: ModeRadioGridProps) {
   const groupId = useId();
   const modes = variant === "shell" ? QUOTE_SHELL_TRANSPORT_MODES : QUOTE_TRANSPORT_MODES;
@@ -76,6 +78,8 @@ export function ModeRadioGrid({
     <div
       role="group"
       aria-label="Mode of Transport"
+      aria-describedby={invalid ? "step-01-mode-error" : undefined}
+      data-field="modes"
       style={
         layout === "single-row"
           ? ({ "--mode-grid-cols": SINGLE_ROW_GRID_TEMPLATE } as React.CSSProperties)

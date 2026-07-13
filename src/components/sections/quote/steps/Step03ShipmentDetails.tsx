@@ -77,6 +77,7 @@ export function Step03ShipmentDetails({
           />
           <SelectField
             label="Transaction Type"
+            required
             options={QUOTE_TRANSACTION_TYPES}
             value={state.transactionType}
             onChange={(value) => onChange({ transactionType: value as TransactionType })}
@@ -88,7 +89,7 @@ export function Step03ShipmentDetails({
         {/* Right column: Helicopter Model & Quantity */}
         <div>
           <span className="font-body text-text-muted-2 mb-[6px] block text-[10px] tracking-[0.04em] uppercase lg:mb-[8px] lg:text-[12px]">
-            Helicopter Model &amp; Quantity
+            Helicopter Model &amp; Quantity<span className="text-brand-red"> *</span>
           </span>
           <div
             className={
