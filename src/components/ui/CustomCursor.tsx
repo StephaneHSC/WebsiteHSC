@@ -41,27 +41,6 @@ export function CustomCursor() {
 
     let revealed = false;
 
-    // Native <dialog>.showModal() (used by `Modal.tsx`, e.g. ShowcaseModal)
-    // promotes the dialog into the browser's "top layer" — a stacking
-    // context that always paints above the entire regular document,
-    // regardless of any element's z-index. A plain fixed div can never
-    // out-rank that, so instead of fighting it, pause (hide) the cursor
-    // for as long as any dialog is open and let the native cursor take
-    // over — this covers every current and future modal built on the
-    // shared `Modal` component automatically.
-    const syncModalState = () => {
-      const modalOpen = document.querySelector("dialog[open]") !== null;
-      outer.classList.toggle("hsc-cursor--paused", modalOpen);
-      inner.classList.toggle("hsc-cursor--paused", modalOpen);
-    };
-    const modalObserver = new MutationObserver(syncModalState);
-    modalObserver.observe(document.body, {
-      attributes: true,
-      attributeFilter: ["open"],
-      subtree: true,
-    });
-    syncModalState();
-
     const onMove = (event: MouseEvent) => {
       const transform = `translate(${event.clientX}px, ${event.clientY}px)`;
       outer.style.transform = transform;
@@ -105,7 +84,6 @@ export function CustomCursor() {
     document.documentElement.addEventListener("mouseleave", onLeaveWindow);
 
     return () => {
-      modalObserver.disconnect();
       window.removeEventListener("mousemove", onMove);
       document.removeEventListener("mouseover", onOver);
       document.removeEventListener("mouseout", onOut);
