@@ -15,6 +15,16 @@ Format:
 
 ---
 
+## 2026-07-13 — Standalone `/quote` Steps 02–05 stack to a single column on desktop (embedded shell unchanged)
+
+**Decision**: `stackFields` in `QuoteFormCore.tsx` flips from a hardcoded `false` (both variants) to `!isShell`. Standalone `/quote` now stacks every field group after Step 01 (Origin/Destination, Shipping Period/Transaction Type, Brand/Model/Qty, Company Name/Website, Full Name/Email) to one column at every breakpoint, including desktop. The embedded `QuoteFormShell` variant is untouched — it keeps the 2-column desktop layout per Figma `344:3275`, since the client only asked about the standalone page.
+
+**Why**: Client request, 2026-07-13 ("everything after one should be stacked" on the Request a Quote page, desktop). `stackFields` already existed as exactly this toggle in every Step 02/03/05 component from the original M8 build — it had just never been set to `true` for either variant.
+
+**Tradeoffs**: None — this is a pure layout toggle already wired through every affected step component; no new props or markup needed.
+
+---
+
 ## 2026-07-13 — Quote form Step 01/03 validation tightened: mode of transport, helicopter model, and transaction type are now required
 
 **Decision**: Three client-requested changes to `validateAll`/`validateServerSide` (`src/lib/forms/quoteForm.ts`):

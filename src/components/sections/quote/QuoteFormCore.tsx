@@ -70,10 +70,11 @@ function stepCompletion(state: QuoteFormState): Record<1 | 2 | 3 | 4 | 5, boolea
 
 export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) {
   const isShell = variant === "embedded";
-  // Per Figma `344:3275`, shell variant uses the natural 2-column desktop
-  // layout for each step (origin+destination side-by-side, etc.) — NOT a
-  // forced single-column stack. Mobile remains stacked via responsive Tailwind.
-  const stackFields = false;
+  // Standalone /quote (client request, 2026-07-13): every step after Step 01
+  // stacks to a single column on desktop too, not just on mobile. The
+  // embedded shell keeps its natural 2-column layout per Figma `344:3275`
+  // (origin+destination side-by-side, etc.) — unaffected by this change.
+  const stackFields = !isShell;
   const step04Label = "Additional Information";
 
   const [state, setState] = useState<QuoteFormState>(() => initialQuoteFormState(prefill));

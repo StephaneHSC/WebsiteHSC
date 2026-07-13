@@ -174,3 +174,53 @@ html {
     transform: scaleY(1) translateY(0);
   }
 }
+
+/* Custom cursor-follower (src/components/ui/CustomCursor.tsx) — small solid
+   dot + larger trailing ring, positioned via `transform` on mousemove. Only
+   `--outer` has a transition, which is what makes it lag behind the dot;
+   `--inner` snaps instantly, matching heliskycargo.com's reference effect. */
+.hsc-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  /* Must stay above Header.tsx's `z-[10000]` (its highest fixed element). */
+  z-index: 10001;
+  border-radius: 9999px;
+  pointer-events: none;
+  visibility: hidden;
+}
+/* Paused while any native <dialog> is open (see CustomCursor.tsx) — no
+   z-index can win against a dialog's browser-native top-layer promotion,
+   so we hide the follower instead and let the native cursor take over. */
+.hsc-cursor--paused {
+  visibility: hidden !important;
+}
+.hsc-cursor--outer {
+  width: 30px;
+  height: 30px;
+  margin-top: -15px;
+  margin-left: -15px;
+  border: 1.5px solid var(--color-brand-red);
+  opacity: 0.5;
+  transition: all 0.08s ease-out;
+}
+.hsc-cursor--outer.hsc-cursor--hover {
+  width: 46px;
+  height: 46px;
+  margin-top: -23px;
+  margin-left: -23px;
+}
+.hsc-cursor--inner {
+  width: 6px;
+  height: 6px;
+  margin-top: -3px;
+  margin-left: -3px;
+  background-color: var(--color-brand-red);
+}
+.hsc-cursor--inner.hsc-cursor--hover {
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  margin-left: -10px;
+  opacity: 0.5;
+}
