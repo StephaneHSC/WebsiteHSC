@@ -81,8 +81,9 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
   const [errors, setErrors] = useState<QuoteFormErrors>({});
   const [submitting, setSubmitting] = useState(false);
   const [submission, setSubmission] = useState<SubmissionResult>({ kind: "idle" });
-  // Mobile accordion: Steps 03/04/05 collapsed by default; auto-expand on previous-step complete.
-  const [openSteps, setOpenSteps] = useState<Set<1 | 2 | 3 | 4 | 5>>(() => new Set([1, 2]));
+  // Accordion: ALL steps collapsed by default (client request 2026-07);
+  // steps still auto-expand as the previous step completes.
+  const [openSteps, setOpenSteps] = useState<Set<1 | 2 | 3 | 4 | 5>>(() => new Set());
   const prevCompletion = useRef(stepCompletion(state));
   const formRef = useRef<HTMLFormElement | null>(null);
 
@@ -487,14 +488,14 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
 
       {/* Step 01 — Mode of Transport.
           Embedded variant: collapsible (matches Steps 03/04/05 treatment).
-          Standalone: always-expanded plain section. */}
+          Standalone: not expanded by default*/}
       {accordionEverywhere ? (
         <CollapsibleSection
           number="01"
           label="Mode of Transport"
           status={statusFor(1)}
           collapsed={isCollapsed(1)}
-          desktopAccordion
+          desktopAccordion={accordionEverywhere}
           onToggle={() => toggleStep(1)}
           controlsId="step-01-body"
         >
@@ -522,7 +523,7 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
       )}
 
       {/* Step 02 — Route Information.
-          Embedded variant: collapsible. Standalone: always-expanded. */}
+          Embedded variant: collapsible. Standalone: not expanded by default. */}
       {accordionEverywhere ? (
         <CollapsibleSection
           number="02"
