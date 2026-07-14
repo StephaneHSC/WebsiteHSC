@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useHorizontalTouchScroll } from "@/lib/useHorizontalTouchScroll";
 import { Container } from "@/components/sections/_shared/Container";
 import { Section } from "@/components/sections/_shared/Section";
 import { SectionHeading } from "@/components/sections/_shared/SectionHeading";
@@ -19,7 +18,6 @@ export function ServicesTeaser() {
   const [mobileInViewIndex, setMobileInViewIndex] = useState(2);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<Array<HTMLLIElement | null>>([]);
-  useHorizontalTouchScroll(scrollerRef);
 
   // Desktop default-active = 3rd card. On hover, the hovered card takes over.
   const desktopActive = rowHovered ? hoveredIndex : 2;
@@ -73,24 +71,6 @@ export function ServicesTeaser() {
       cancelAnimationFrame(rafId);
       scroller.removeEventListener("scroll", onScroll);
     };
-  }, []);
-
-  // Desktop: intercept vertical wheel and redirect as horizontal scroll.
-  useEffect(() => {
-    const scroller = scrollerRef.current;
-    if (!scroller) return;
-    function onWheel(e: WheelEvent) {
-      if (!scroller) return;
-      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
-      const max = scroller.scrollWidth - scroller.clientWidth;
-      const atStart = scroller.scrollLeft <= 0;
-      const atEnd = scroller.scrollLeft >= max - 1;
-      if ((atStart && e.deltaY < 0) || (atEnd && e.deltaY > 0)) return;
-      e.preventDefault();
-      scroller.scrollBy({ left: e.deltaY, behavior: "auto" });
-    }
-    scroller.addEventListener("wheel", onWheel, { passive: false });
-    return () => scroller.removeEventListener("wheel", onWheel);
   }, []);
 
   return (

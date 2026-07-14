@@ -14,11 +14,9 @@ function isPlaceholder(m: TeamMember | TeamMemberPlaceholder): m is TeamMemberPl
 }
 
 export async function TeamTeaser() {
-  const display = await fetchWithCmsFallback<TeamMember, TeamMemberPlaceholder>(
-    teamMembersQuery,
-    PLACEHOLDER_TEAM_MEMBERS,
-    4,
-  );
+  // Widened type keeps the Sanity branch below compiling while the section
+  // is pinned to placeholders.
+  const display: readonly (TeamMember | TeamMemberPlaceholder)[] = PLACEHOLDER_TEAM_MEMBERS;
 
   // Resolve photo URLs server-side so the client component receives plain
   // serializable props (no Sanity image builders crossing the boundary).

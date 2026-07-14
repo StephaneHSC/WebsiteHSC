@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { useHorizontalTouchScroll } from "@/lib/useHorizontalTouchScroll";
 
 export type TeamCarouselItem = {
   id: string;
@@ -33,7 +32,6 @@ export function TeamCarousel({ items }: Props) {
   // (<md) carousel keeps its centered-card mechanism via inViewIdx.
   const [tappedIdx, setTappedIdx] = useState(-1);
   const rowRef = useRef<HTMLUListElement>(null);
-  useHorizontalTouchScroll(rowRef);
 
   useEffect(() => {
     if (!window.matchMedia("(max-width: 767px)").matches) return;
@@ -81,7 +79,9 @@ export function TeamCarousel({ items }: Props) {
   }, []);
 
   const slotClass = cn(
-    "w-72 shrink-0 snap-center snap-always sm:w-80 md:w-auto md:shrink",
+    // md+: fixed card width in a horizontal scroller (the roster outgrew the
+    // old 5-col grid, which wrapped into a ragged second row).
+    "w-72 shrink-0 snap-center snap-always sm:w-80 md:w-[230px] md:snap-start lg:w-[250px] xl:w-[270px]",
     "scale-[0.9] transition-transform duration-300 ease-out data-[in-view=true]:scale-100 md:!scale-100",
   );
 
@@ -95,8 +95,9 @@ export function TeamCarousel({ items }: Props) {
         "flex snap-x snap-mandatory gap-4 overflow-x-auto pt-12 pb-4",
         // Mobile: symmetric edge padding so first/last can snap to center.
         "px-[calc(50vw_-_9rem)] sm:px-[calc(50vw_-_10rem)]",
-        // Desktop: flip to a flush 5-col grid.
-        "md:grid md:grid-cols-5 md:gap-4 md:overflow-visible md:px-0 md:pb-0 lg:gap-6",
+        // md+: horizontal scroller with normal edge padding (was a 5-col
+        // grid; the roster outgrew it and wrapped).
+        "md:gap-4 md:px-6 md:pb-2 lg:gap-6 lg:px-8",
         "[-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
         "focus-visible:ring-brand-red focus-visible:ring-2 focus-visible:outline-none",
       )}

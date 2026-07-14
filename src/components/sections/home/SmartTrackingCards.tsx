@@ -5,7 +5,6 @@ import Image from "next/image";
 import { Reveal } from "@/components/sections/_shared/Reveal";
 import { cn } from "@/lib/utils";
 import { SMART_TRACKING_CARDS } from "@/lib/constants";
-import { useHorizontalTouchScroll } from "@/lib/useHorizontalTouchScroll";
 
 /**
  * Horizontal scroll-snap card row with prev/next nav buttons.
@@ -23,7 +22,6 @@ export function SmartTrackingCards() {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(false);
-  useHorizontalTouchScroll(scrollerRef);
 
   const scrollByCards = (dir: 1 | -1) => {
     const el = scrollerRef.current;
@@ -54,40 +52,8 @@ export function SmartTrackingCards() {
     const ro = new ResizeObserver(update);
     ro.observe(el);
 
-    // Intercept vertical wheel events and redirect them as horizontal scroll
-    // so the user doesn't accidentally scroll past the carousel.
-    function onWheel(e: WheelEvent) {
-      if (!el) return;
-      const max = el.scrollWidth - el.clientWidth;
-      const atStart = el.scrollLeft <= 0;
-      const atEnd = el.scrollLeft >= max - 1;
-      // Only intercept if there's actually horizontal content to scroll and
-      // the scroll is primarily vertical (not a two-finger horizontal swipe).
-      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
-      if ((atStart && e.deltaY < 0) || (atEnd && e.deltaY > 0)) return;
-      e.preventDefault();
-      el.scrollBy({ left: e.deltaY, behavior: "auto" });
-    }
-    el.addEventListener("wheel", onWheel, { passive: false });
-
-    // Land centered on the MIDDLE card on mount (same pattern as the
-    // services teaser) so both sides show peeking neighbors — otherwise the
-    // first card centers with an empty half-viewport to its left.
-    const rafId = requestAnimationFrame(() => {
-      if (!el) return;
-      const items = el.querySelectorAll("li");
-      const middle = items[Math.floor(items.length / 2)];
-      if (!middle) return;
-      const target = middle.offsetLeft + middle.offsetWidth / 2 - el.clientWidth / 2;
-      // behavior:'instant' overrides CSS scroll-behavior:smooth so the row
-      // doesn't animate from card 01 on page load.
-      el.scrollTo({ left: Math.max(0, target), behavior: "instant" });
-    });
-
     return () => {
-      cancelAnimationFrame(rafId);
       el.removeEventListener("scroll", update);
-      el.removeEventListener("wheel", onWheel);
       ro.disconnect();
     };
   }, []);
@@ -103,15 +69,12 @@ export function SmartTrackingCards() {
         // element has `overflow`); placing it on the inner <ul> is a no-op.
         className="focus-visible:ring-brand-red snap-x snap-mandatory overflow-x-auto scroll-smooth pb-2 [-ms-overflow-style:none] [scrollbar-width:none] focus-visible:ring-2 focus-visible:outline-none [&::-webkit-scrollbar]:hidden"
       >
-        {/* Normal edge padding + snap-center: middle cards snap to the
-            viewport center with neighbors peeking both sides, while the
-            first/last cards clamp flush to the edges (no dead space). */}
         <ul className="flex gap-6 px-4 sm:px-6 lg:gap-8 lg:px-8">
           {SMART_TRACKING_CARDS.map((card) => (
             <li
               key={card.id}
               // `snap-always` forces one-card-per-swipe (no fling-skipping).
-              className="w-[300px] shrink-0 snap-center snap-always sm:w-[400px] lg:w-[520px] xl:w-[580px]"
+              className="w-[300px] shrink-0 snap-start snap-always sm:w-[400px] lg:w-[520px] xl:w-[580px]"
             >
               <Image
                 src={card.src}

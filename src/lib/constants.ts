@@ -625,12 +625,12 @@ export const SMART_TRACKING_CARDS: readonly SmartTrackingCard[] = [
   },
   {
     id: 2,
-    src: "/home/smart-tracking/card-2.webp",
+    src: "/home/smart-tracking/card-2.svg",
     alt: "Progress status and shipment report — delivery information screen with shipment timeline",
   },
   {
     id: 3,
-    src: "/home/smart-tracking/card-3.webp",
+    src: "/home/smart-tracking/card-3.svg",
     alt: "Helicopter geolocation — shipment visual route with live delivery information",
   },
   {
@@ -640,7 +640,7 @@ export const SMART_TRACKING_CARDS: readonly SmartTrackingCard[] = [
   },
   {
     id: 5,
-    src: "/home/smart-tracking/card-5.webp",
+    src: "/home/smart-tracking/card-5.svg",
     alt: "Shipment documents and media — attachments gallery with document and media tabs",
   },
 ] as const;

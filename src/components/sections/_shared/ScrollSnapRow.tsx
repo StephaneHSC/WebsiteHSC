@@ -2,7 +2,6 @@
 
 import { useRef } from "react";
 import { cn } from "@/lib/utils";
-import { useHorizontalTouchScroll } from "@/lib/useHorizontalTouchScroll";
 
 type ScrollSnapRowProps = {
   ariaLabel: string;
@@ -29,7 +28,6 @@ export function ScrollSnapRow({
   onMouseLeave,
 }: ScrollSnapRowProps) {
   const ref = useRef<HTMLUListElement>(null);
-  useHorizontalTouchScroll(ref);
 
   return (
     <ul

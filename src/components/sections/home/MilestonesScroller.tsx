@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { useHorizontalTouchScroll } from "@/lib/useHorizontalTouchScroll";
 import { Reveal } from "@/components/sections/_shared/Reveal";
 import { urlFor } from "@/lib/sanity/image";
 import type { Milestone } from "@/types/sanity";
@@ -34,7 +33,6 @@ export function MilestonesScroller({ milestones }: Props) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const cardsRowRef = useRef<HTMLDivElement>(null);
-  useHorizontalTouchScroll(scrollRef);
 
   const [cardsMidPx, setCardsMidPx] = useState<number>(0);
   const [canPrev, setCanPrev] = useState(false);
