@@ -32,7 +32,7 @@ const URL_RE = /^(https?:\/\/)?[a-z0-9-]+(\.[a-z0-9-]+)+(\/.*)?$/i;
 
 export function initialQuoteFormState(prefill?: Partial<QuoteFormState>): QuoteFormState {
   return {
-    modes: prefill?.modes && prefill.modes.length > 0 ? prefill.modes : ["Air Commercial"],
+    modes: prefill?.modes && prefill.modes.length > 0 ? prefill.modes : [],
     routes:
       prefill?.routes && prefill.routes.length > 0
         ? prefill.routes.map((r) => ({ origin: r.origin ?? "", destination: r.destination ?? "" }))
@@ -76,13 +76,15 @@ export function validateAll(state: QuoteFormState): QuoteFormErrors {
   else if (period.length > 80)
     errors.shippingPeriod = "Shipping period is too long (max 80 chars).";
 
-  // Helicopter brands + models + quantity are OPTIONAL — customers often
-  // request quotes before they've finalized the aircraft choice. If brands ARE
-  // picked, we still validate that each model belongs to one of them.
+  // Helicopter brand + quantity stay OPTIONAL (quantity defaults to "01").
+  // Helicopter model IS required — since the model picker is disabled until a
+  // brand is chosen, this also gates brand selection in practice.
   if (state.helicopterBrands.some((b) => !QUOTE_HELICOPTER_MODELS_BY_BRAND[b])) {
     errors.helicopterBrands = "Please pick brands from the list.";
   }
-  if (state.helicopterBrands.length > 0 && state.helicopterModels.length > 0) {
+  if (state.helicopterModels.length === 0) {
+    errors.helicopterModels = "Please select at least one helicopter model.";
+  } else if (state.helicopterBrands.length > 0) {
     const validModels = state.helicopterBrands.flatMap(
       (b) => QUOTE_HELICOPTER_MODELS_BY_BRAND[b] ?? [],
     );
@@ -97,8 +99,8 @@ export function validateAll(state: QuoteFormState): QuoteFormErrors {
     errors.helicopterQuantity = "Please pick a quantity.";
   }
 
-  if (state.transactionType && !QUOTE_TRANSACTION_TYPES.includes(state.transactionType)) {
-    errors.transactionType = "Please pick a transaction type from the list.";
+  if (!state.transactionType || !QUOTE_TRANSACTION_TYPES.includes(state.transactionType)) {
+    errors.transactionType = "Please select a transaction type.";
   }
 
   const info = state.additionalInformation.trim();
@@ -275,8 +277,7 @@ export function validateServerSide(fd: FormData): ServerValidationError | null {
   if (period.length === 0 || period.length > 80)
     return { message: "Please enter a shipping period.", field: "shippingPeriod" };
 
-  // Helicopter brands + models + quantity are optional. Validate consistency
-  // only when values are present.
+  // Helicopter brand + quantity stay optional; helicopter model is required.
   let brands: string[] = [];
   try {
     const raw = get("helicopter_brands");
@@ -298,7 +299,13 @@ export function validateServerSide(fd: FormData): ServerValidationError | null {
   } catch {
     return { message: "Invalid helicopter models payload.", field: "helicopterModels" };
   }
-  if (brands.length > 0 && helicopterModels.length > 0) {
+  if (helicopterModels.length === 0) {
+    return {
+      message: "Please select at least one helicopter model.",
+      field: "helicopterModels",
+    };
+  }
+  if (brands.length > 0) {
     const validModels = brands.flatMap((b) => QUOTE_HELICOPTER_MODELS_BY_BRAND[b] ?? []);
     if (helicopterModels.some((m) => !validModels.includes(m))) {
       return { message: "Please select models from the list.", field: "helicopterModels" };
@@ -310,8 +317,8 @@ export function validateServerSide(fd: FormData): ServerValidationError | null {
   }
 
   const transactionType = get("transaction_type");
-  if (transactionType && !QUOTE_TRANSACTION_TYPES.includes(transactionType as TransactionType))
-    return { message: "Invalid transaction type.", field: "transactionType" };
+  if (!transactionType || !QUOTE_TRANSACTION_TYPES.includes(transactionType as TransactionType))
+    return { message: "Please select a transaction type.", field: "transactionType" };
 
   const info = get("additional_information").trim();
   if (info.length > 2000)

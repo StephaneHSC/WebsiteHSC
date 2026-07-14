@@ -10,6 +10,7 @@ export type Step01Props = {
   /** Embedded variant uses a two-row grid; standalone uses single row. */
   desktopLayout?: "single-row" | "two-rows";
   variant?: "standalone" | "shell";
+  error?: string;
 };
 
 export function Step01ModeOfTransport({
@@ -17,12 +18,18 @@ export function Step01ModeOfTransport({
   onChange,
   desktopLayout,
   variant = "standalone",
+  error,
 }: Step01Props) {
   return (
     <fieldset className="border-0 p-0">
       <legend className="sr-only">Mode of transport</legend>
       <div className="lg:hidden">
-        <ModeMobilePill values={values} onChange={onChange} variant={variant} />
+        <ModeMobilePill
+          values={values}
+          onChange={onChange}
+          variant={variant}
+          invalid={Boolean(error)}
+        />
       </div>
       <div className="hidden lg:block">
         <ModeRadioGrid
@@ -30,8 +37,18 @@ export function Step01ModeOfTransport({
           onChange={onChange}
           layout={desktopLayout}
           variant={variant}
+          invalid={Boolean(error)}
         />
       </div>
+      {error ? (
+        <span
+          id="step-01-mode-error"
+          role="alert"
+          className="text-brand-red font-body mt-[6px] block text-[12px]"
+        >
+          {error}
+        </span>
+      ) : null}
     </fieldset>
   );
 }

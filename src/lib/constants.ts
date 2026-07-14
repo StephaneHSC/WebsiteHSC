@@ -626,22 +626,22 @@ export const SMART_TRACKING_CARDS: readonly SmartTrackingCard[] = [
   {
     id: 2,
     src: "/home/smart-tracking/card-2.webp",
-    alt: "Track every stage of your shipment — delivery information screen",
+    alt: "Progress status and shipment report — delivery information screen with shipment timeline",
   },
   {
     id: 3,
     src: "/home/smart-tracking/card-3.webp",
-    alt: "Instant status notifications — push alerts feed",
+    alt: "Helicopter geolocation — shipment visual route with live delivery information",
   },
   {
     id: 4,
     src: "/home/smart-tracking/card-4.webp",
-    alt: "Shipment documents and media — attachments gallery",
+    alt: "Instant status notifications — push alert feed showing shipment updates",
   },
   {
     id: 5,
     src: "/home/smart-tracking/card-5.webp",
-    alt: "Progress status and updates — full event timeline",
+    alt: "Shipment documents and media — attachments gallery with document and media tabs",
   },
 ] as const;
 

@@ -54,7 +54,7 @@ export async function QuoteFormShell({
   headline = DEFAULT_HEADLINE,
   eyebrow = "Request a Quote",
   tinted = false,
-  defaultMode = "Air Charter",
+  defaultMode,
 }: QuoteFormShellProps) {
   const config = await client.fetch<QuoteFormConfig | null>(
     quoteFormConfigQuery,

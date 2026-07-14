@@ -70,10 +70,11 @@ function stepCompletion(state: QuoteFormState): Record<1 | 2 | 3 | 4 | 5, boolea
 
 export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) {
   const isShell = variant === "embedded";
-  // Per Figma `344:3275`, shell variant uses the natural 2-column desktop
-  // layout for each step (origin+destination side-by-side, etc.) — NOT a
-  // forced single-column stack. Mobile remains stacked via responsive Tailwind.
-  const stackFields = false;
+  // Standalone /quote (client request, 2026-07-13): every step after Step 01
+  // stacks to a single column on desktop too, not just on mobile. The
+  // embedded shell keeps its natural 2-column layout per Figma `344:3275`
+  // (origin+destination side-by-side, etc.) — unaffected by this change.
+  const stackFields = !isShell;
   const step04Label = "Additional Information";
 
   const [state, setState] = useState<QuoteFormState>(() => initialQuoteFormState(prefill));
@@ -271,12 +272,12 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
    *   - touched + valid    → green tick
    *   - touched + invalid  → red refresh
    *
-   * Step 01 is always considered touched because its `mode` field has a valid
-   * default (Air Commercial) — the green tick is meaningful from page load.
+   * Step 01 has no default selection, so it follows the same pattern as the
+   * other steps — touched once the customer picks a mode.
    */
   const touchedSteps = useMemo(
     () => ({
-      1: true,
+      1: state.modes.length > 0,
       2: state.routes.some((r) => r.origin.length > 0 || r.destination.length > 0),
       3:
         state.shippingPeriod.length > 0 ||
@@ -291,6 +292,7 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
         state.email.length > 0,
     }),
     [
+      state.modes,
       state.routes,
       state.shippingPeriod,
       state.helicopterBrands,
@@ -402,12 +404,16 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
             next.add(5);
           return next;
         });
-        // Focus first error
+        // Focus first error. Step 01 renders both a mobile and a desktop
+        // variant in the DOM at once (CSS-only responsive switching), so
+        // prefer whichever match is actually visible at the current viewport.
         const firstKey = Object.keys(validation)[0];
         if (firstKey && formRef.current) {
-          const target = formRef.current.querySelector<HTMLElement>(
-            `[aria-invalid="true"], [name="${firstKey}"]`,
+          const candidates = formRef.current.querySelectorAll<HTMLElement>(
+            `[aria-invalid="true"], [data-field="${firstKey}"], [name="${firstKey}"]`,
           );
+          const target =
+            Array.from(candidates).find((el) => el.offsetParent !== null) ?? candidates[0];
           target?.focus();
           target?.scrollIntoView({ behavior: "smooth", block: "center" });
         }
@@ -497,6 +503,7 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
             onChange={(modes: TransportMode[]) => updateState({ modes })}
             desktopLayout={isShell ? "two-rows" : "single-row"}
             variant={isShell ? "shell" : "standalone"}
+            error={errors.modes}
           />
         </CollapsibleSection>
       ) : (
@@ -509,6 +516,7 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
             onChange={(modes: TransportMode[]) => updateState({ modes })}
             desktopLayout={isShell ? "two-rows" : "single-row"}
             variant={isShell ? "shell" : "standalone"}
+            error={errors.modes}
           />
         </section>
       )}

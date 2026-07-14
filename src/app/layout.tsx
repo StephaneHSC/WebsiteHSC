@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Inter_Tight, PT_Sans, Poppins } from "next/font/google";
 import { SITE, SOCIAL_LINKS } from "@/lib/constants";
 import { WhatsAppFAB } from "@/components/ui/WhatsAppFAB";
+import { CustomCursor } from "@/components/ui/CustomCursor";
 import "./globals.css";
 
 const interTight = Inter_Tight({
@@ -124,6 +125,7 @@ export default function RootLayout({
       </head>
       <body className="bg-surface text-ink font-body flex min-h-full flex-col">
         {children}
+        <CustomCursor />
         <WhatsAppFAB />
       </body>
     </html>

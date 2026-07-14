@@ -15,6 +15,30 @@ Format:
 
 ---
 
+## 2026-07-13 — Standalone `/quote` Steps 02–05 stack to a single column on desktop (embedded shell unchanged)
+
+**Decision**: `stackFields` in `QuoteFormCore.tsx` flips from a hardcoded `false` (both variants) to `!isShell`. Standalone `/quote` now stacks every field group after Step 01 (Origin/Destination, Shipping Period/Transaction Type, Brand/Model/Qty, Company Name/Website, Full Name/Email) to one column at every breakpoint, including desktop. The embedded `QuoteFormShell` variant is untouched — it keeps the 2-column desktop layout per Figma `344:3275`, since the client only asked about the standalone page.
+
+**Why**: Client request, 2026-07-13 ("everything after one should be stacked" on the Request a Quote page, desktop). `stackFields` already existed as exactly this toggle in every Step 02/03/05 component from the original M8 build — it had just never been set to `true` for either variant.
+
+**Tradeoffs**: None — this is a pure layout toggle already wired through every affected step component; no new props or markup needed.
+
+---
+
+## 2026-07-13 — Quote form Step 01/03 validation tightened: mode of transport, helicopter model, and transaction type are now required
+
+**Decision**: Three client-requested changes to `validateAll`/`validateServerSide` (`src/lib/forms/quoteForm.ts`):
+
+1. Step 01 (Mode of Transport) no longer defaults to `["Air Commercial"]` — starts empty (`[]`) and is required (was already blocked-on-empty server/client side, but the default made that path unreachable in normal use). This also required removing `QuoteFormShell.tsx`'s `defaultMode = "Air Charter"` fallback parameter — every embedded shell placement that doesn't pass an explicit `defaultMode` (home, why-choose-us, team, showcase, services listing) was silently pre-selecting "Air Charter" via that default, independent of the `initialQuoteFormState` fix. Only `services/[slug]/page.tsx`'s intentional `defaultMode={QUOTE_MODE_BY_SERVICE_SLUG[slug]}` context-prefill remains.
+2. Helicopter Model is now required (was optional). Helicopter Brand and Quantity remain optional — Quantity still pre-fills `"01"`. Since the model picker (`MultiSelectField`) is disabled until a brand is chosen, requiring a model also gates brand selection in practice without a separate "brand required" rule.
+3. Transaction Type is now required (was optional). Given a visible `required` asterisk in `Step03ShipmentDetails.tsx`, matching its sibling `Shipping Period` field.
+
+**Why**: Client decision, communicated 2026-07-13. Reverses the original M8 rationale ("customers often quote before finalizing aircraft choice") for model + transaction type specifically.
+
+**Tradeoffs**: Step 01 intentionally does **not** get a visible `*` asterisk — `ModeRadioGrid`/`ModeMobilePill` have no individual label to attach one to, and the client explicitly confirmed no asterisk needed there; required-ness is surfaced via the same inline red error text + `aria-describedby` pattern used elsewhere, firing on submit attempt. Helicopter Model **does** get an asterisk, added to the shared "Helicopter Model & Quantity" heading — client's call, reasoning that Quantity can never be null by UI/UX construction (its `<SelectField>` always holds a value, pre-filled "01", no blank option), so the asterisk isn't misleading there the way it would be for Step 01's unlabeled group.
+
+---
+
 ## 2026-05-14 — M8 Quote — hero photo swap + CMS hero overrides flow to shells
 
 **Two corrections from review-round-4:**

@@ -11,6 +11,7 @@ export type ModeMobilePillProps = {
   values: TransportMode[];
   onChange: (modes: TransportMode[]) => void;
   variant?: "standalone" | "shell";
+  invalid?: boolean;
 };
 
 const SHELL_LABEL_OVERRIDES: Partial<Record<TransportMode, string>> = {
@@ -30,7 +31,12 @@ function getDisplayLabel(values: TransportMode[], variant: "standalone" | "shell
  * Mobile Step 01 — multi-select pill that reveals the 6 options when tapped.
  * Multiple modes can be toggled; the pill summarises the selection.
  */
-export function ModeMobilePill({ values, onChange, variant = "standalone" }: ModeMobilePillProps) {
+export function ModeMobilePill({
+  values,
+  onChange,
+  variant = "standalone",
+  invalid = false,
+}: ModeMobilePillProps) {
   const buttonId = useId();
   const listId = `${buttonId}-list`;
   const [open, setOpen] = useState(false);
@@ -72,6 +78,8 @@ export function ModeMobilePill({ values, onChange, variant = "standalone" }: Mod
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-controls={listId}
+        aria-describedby={invalid ? "step-01-mode-error" : undefined}
+        data-field="modes"
         onClick={() => setOpen((v) => !v)}
         className="font-display text-surface relative flex h-[50px] w-full items-center justify-between bg-[linear-gradient(172deg,#e40c28_22%,#ae302b_78%)] pr-[16px] pl-[40px] text-[13px] font-semibold tracking-[0.02em] uppercase"
       >

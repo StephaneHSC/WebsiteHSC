@@ -60,15 +60,19 @@ export function MilestonesScroller({ milestones }: Props) {
     return () => window.removeEventListener("resize", calc);
   }, [activeIndex]);
 
-  function scrollByCards(count: number) {
+  function scrollToIndex(index: number) {
     const el = scrollRef.current;
     if (!el) return;
+    const clamped = Math.max(0, Math.min(milestones.length - 1, index));
     const isLg = window.innerWidth >= 1024;
     const w = isLg ? CARD_W_PX.lg : CARD_W_PX.base;
     const gap = isLg ? GAP_PX.lg : GAP_PX.base;
-    el.scrollBy({ left: count * (w + gap), behavior: "smooth" });
-    // Move helicopter with the arrow press
-    setActiveIndex((prev) => Math.max(0, Math.min(milestones.length - 1, prev + count)));
+    el.scrollTo({ left: clamped * (w + gap), behavior: "smooth" });
+    setActiveIndex(clamped);
+  }
+
+  function scrollByCards(count: number) {
+    scrollToIndex(activeIndex + count);
   }
 
   useEffect(() => {
@@ -199,7 +203,7 @@ export function MilestonesScroller({ milestones }: Props) {
                 key={m._id}
                 className={cn("relative flex shrink-0 cursor-pointer flex-col", cardW)}
                 style={{ scrollSnapAlign: "start" }}
-                onClick={() => setActiveIndex(i)}
+                onClick={() => scrollToIndex(i)}
               >
                 <Image
                   src={
