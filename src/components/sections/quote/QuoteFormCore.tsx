@@ -81,9 +81,9 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
   const [errors, setErrors] = useState<QuoteFormErrors>({});
   const [submitting, setSubmitting] = useState(false);
   const [submission, setSubmission] = useState<SubmissionResult>({ kind: "idle" });
-  // Accordion: ALL steps collapsed by default (client request 2026-07);
-  // steps still auto-expand as the previous step completes.
-  const [openSteps, setOpenSteps] = useState<Set<1 | 2 | 3 | 4 | 5>>(() => new Set());
+  // Accordion: only Step 01 expanded by default (client request 2026-07);
+  // later steps auto-expand as the previous step completes.
+  const [openSteps, setOpenSteps] = useState<Set<1 | 2 | 3 | 4 | 5>>(() => new Set([1]));
   const prevCompletion = useRef(stepCompletion(state));
   const formRef = useRef<HTMLFormElement | null>(null);
 

@@ -31,15 +31,6 @@ export function ServiceOverview({ service }: ServiceOverviewProps) {
               sizes="(min-width: 1024px) 50vw, 100vw"
               className="object-cover object-center"
             />
-            {o.hasVideoBadge ? (
-              <Image
-                src="/services/detail/play-badge.svg"
-                alt=""
-                width={113}
-                height={113}
-                className="absolute top-1/2 left-1/2 hidden size-[80px] -translate-x-1/2 -translate-y-1/2 lg:block lg:size-[113px]"
-              />
-            ) : null}
           </div>
 
           {/* Content column. */}
