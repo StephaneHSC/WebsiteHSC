@@ -387,20 +387,40 @@ export function ShowcaseModal({ tile, onClose, galleryImages }: ShowcaseModalPro
           <div className="bg-ink relative flex w-full shrink-0 flex-col overflow-hidden lg:w-1/2">
             {/* Main viewer */}
             <div className="relative aspect-[382/345] w-full shrink-0 overflow-hidden lg:aspect-auto lg:flex-1">
-              {/* Gallery image override — shown instead of carousel when a thumbnail is active */}
+              {/* Gallery override — shown instead of carousel when a thumbnail is active */}
               {activeGalleryImage ? (
                 <div className="absolute inset-0 z-10">
-                  <Image
-                    src={urlFor(activeGalleryImage.image)
-                      .width(900)
-                      .format("webp")
-                      .quality(80)
-                      .url()}
-                    alt={activeGalleryImage.caption ?? "Gallery image"}
-                    fill
-                    sizes="(min-width: 1024px) 50vw, 100vw"
-                    className="object-cover"
-                  />
+                  {activeGalleryImage.fileUrl || activeGalleryImage.url ? (
+                    <video
+                      key={activeGalleryImage.fileUrl ?? activeGalleryImage.url}
+                      src={activeGalleryImage.fileUrl ?? activeGalleryImage.url}
+                      poster={
+                        activeGalleryImage.poster
+                          ? urlFor(activeGalleryImage.poster)
+                              .width(900)
+                              .format("webp")
+                              .quality(80)
+                              .url()
+                          : undefined
+                      }
+                      controls
+                      autoPlay
+                      playsInline
+                      className="h-full w-full bg-black object-contain"
+                    />
+                  ) : activeGalleryImage.image ? (
+                    <Image
+                      src={urlFor(activeGalleryImage.image)
+                        .width(900)
+                        .format("webp")
+                        .quality(80)
+                        .url()}
+                      alt={activeGalleryImage.caption ?? "Gallery image"}
+                      fill
+                      sizes="(min-width: 1024px) 50vw, 100vw"
+                      className="object-cover"
+                    />
+                  ) : null}
                   {/* Back to carousel button */}
                   <button
                     type="button"
@@ -609,41 +629,62 @@ export function ShowcaseModal({ tile, onClose, galleryImages }: ShowcaseModalPro
               </ThumbStrip>
             ) : null}
 
-            {/* CMS gallery thumbnail strip — shown when at least 1 gallery image exists. */}
+            {/* CMS gallery thumbnail strip — images AND videos (2026-07). */}
             {galleryImages && galleryImages.length > 0 ? (
               <ThumbStrip ariaLabel="Gallery thumbnails">
-                {galleryImages.map((img, idx) => {
-                  const thumbUrl = urlFor(img.image)
-                    .width(200)
-                    .height(140)
-                    .fit("crop")
-                    .format("webp")
-                    .quality(75)
-                    .url();
+                {galleryImages.map((item, idx) => {
+                  const isVideo = Boolean(item.fileUrl || item.url);
+                  const thumbSource = isVideo ? item.poster : item.image;
+                  const thumbUrl = thumbSource
+                    ? urlFor(thumbSource)
+                        .width(200)
+                        .height(140)
+                        .fit("crop")
+                        .format("webp")
+                        .quality(75)
+                        .url()
+                    : null;
                   const isActive = galleryIdx === idx;
                   return (
                     <button
                       key={idx}
                       role="listitem"
                       type="button"
-                      aria-label={img.caption ?? `Gallery image ${idx + 1}`}
+                      aria-label={
+                        item.caption ?? `Gallery ${isVideo ? "video" : "image"} ${idx + 1}`
+                      }
                       aria-pressed={isActive}
                       onClick={() => setGalleryIdx(isActive ? -1 : idx)}
                       className={cn(
-                        "relative h-[70px] w-[100px] shrink-0 overflow-hidden rounded transition",
+                        "relative h-[70px] w-[100px] shrink-0 overflow-hidden rounded bg-black/40 transition",
                         "focus-visible:ring-brand-red focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none",
                         isActive
                           ? "ring-brand-red ring-2 ring-offset-1"
                           : "opacity-80 hover:opacity-100",
                       )}
                     >
-                      <Image
-                        src={thumbUrl}
-                        alt={img.caption ?? ""}
-                        fill
-                        sizes="100px"
-                        className="object-cover"
-                      />
+                      {thumbUrl ? (
+                        <Image
+                          src={thumbUrl}
+                          alt={item.caption ?? ""}
+                          fill
+                          sizes="100px"
+                          className="object-cover"
+                        />
+                      ) : null}
+                      {isVideo ? (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                          <svg
+                            viewBox="0 0 16 16"
+                            width="18"
+                            height="18"
+                            fill="white"
+                            aria-hidden="true"
+                          >
+                            <path d="M5 3.5l8 4.5-8 4.5V3.5z" />
+                          </svg>
+                        </div>
+                      ) : null}
                     </button>
                   );
                 })}

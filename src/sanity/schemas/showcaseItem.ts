@@ -42,6 +42,21 @@ export const showcaseItem = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "tile_video",
+      title: "Tile Video (optional)",
+      type: "file",
+      options: { accept: "video/mp4,video/webm" },
+      description:
+        "When set, opening this tile shows the VIDEO as the first slide (the tile photo becomes its poster). The mosaic tile itself still shows the photo — enable 'Show Play Icon' to hint at the video.",
+    }),
+    defineField({
+      name: "tile_video_url",
+      title: "…or Tile Video URL",
+      type: "url",
+      description:
+        "Alternative to uploading: a direct MP4 link (NOT a YouTube/Drive page link). Ignored when a file is uploaded above.",
+    }),
+    defineField({
       name: "label",
       title: "Tile Label Lines",
       type: "array",
@@ -165,11 +180,18 @@ export const showcaseItem = defineType({
           title: "Video",
           fields: [
             defineField({
+              name: "video",
+              title: "Video File",
+              type: "file",
+              options: { accept: "video/mp4,video/webm" },
+              description: "Drag & drop the MP4 here (recommended).",
+            }),
+            defineField({
               name: "url",
-              title: "Video URL",
+              title: "…or Video URL",
               type: "url",
-              description: "Direct MP4 URL (e.g. a Sanity file asset URL or CDN link).",
-              validation: (Rule) => Rule.required(),
+              description:
+                "Alternative to uploading: a direct MP4 link (NOT a YouTube/Drive page link). Ignored when a file is uploaded above.",
             }),
             defineField({
               name: "poster",
@@ -190,13 +212,15 @@ export const showcaseItem = defineType({
     }),
     defineField({
       name: "gallery_images",
-      title: "Gallery Images",
+      title: "Gallery (Images & Videos)",
       type: "array",
       description:
-        "4–5 additional images shown as thumbnail tiles below the main photo in the showcase modal.",
+        "Additional media shown as thumbnail tiles below the main photo in the showcase modal. Mix images and videos in any order.",
       of: [
         {
           type: "object",
+          name: "galleryImage",
+          title: "Image",
           fields: [
             defineField({
               name: "image",
@@ -215,6 +239,45 @@ export const showcaseItem = defineType({
             select: { media: "image", title: "caption" },
             prepare({ media, title }) {
               return { media, title: title ?? "Gallery image" };
+            },
+          },
+        },
+        {
+          type: "object",
+          name: "galleryVideo",
+          title: "Video",
+          fields: [
+            defineField({
+              name: "video",
+              title: "Video File",
+              type: "file",
+              options: { accept: "video/mp4,video/webm" },
+              description: "Drag & drop the MP4 here (recommended).",
+            }),
+            defineField({
+              name: "url",
+              title: "…or Video URL",
+              type: "url",
+              description:
+                "Alternative to uploading: a direct MP4 link (NOT a YouTube/Drive page link). Ignored when a file is uploaded above.",
+            }),
+            defineField({
+              name: "poster",
+              title: "Poster Image (optional)",
+              type: "image",
+              options: { hotspot: true },
+              description: "Thumbnail still. A dark tile with a play icon shows when empty.",
+            }),
+            defineField({
+              name: "caption",
+              title: "Caption (optional)",
+              type: "string",
+            }),
+          ],
+          preview: {
+            select: { media: "poster", title: "caption", subtitle: "url" },
+            prepare({ media, title, subtitle }) {
+              return { media, title: title ?? "Gallery video", subtitle };
             },
           },
         },

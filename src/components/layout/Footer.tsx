@@ -44,7 +44,7 @@ export function Footer() {
 
           {/* Col 4: OUR BESPOKE APP. — buttons stacked vertically */}
           <div className="col-span-3 flex flex-col items-end">
-            <h3 className="font-display text-sm font-bold tracking-wider uppercase">
+            <h3 className="font-display mr-2 text-sm font-bold tracking-wider uppercase">
               Our Bespoke App.
             </h3>
             <div className="mt-4 flex flex-col gap-3">

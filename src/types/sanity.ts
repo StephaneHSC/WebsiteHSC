@@ -66,9 +66,22 @@ export type SiteStats = {
   stats: SiteStat[];
 };
 
+/**
+ * Gallery strip item — image or video. Discriminate by the presence of
+ * `url` (video) vs `image` (image); `_type` is "galleryImage"/"galleryVideo"
+ * for new documents but may be a legacy anonymous object type for docs
+ * created before videos were supported.
+ */
 export type ShowcaseGalleryImage = {
-  image: SanityImage;
+  _type?: string;
+  image?: SanityImage;
   caption?: string;
+  /** Video-only: direct MP4 URL (fallback). */
+  url?: string;
+  /** Video-only: resolved URL of the uploaded Sanity file asset. */
+  fileUrl?: string;
+  /** Video-only: optional poster still. */
+  poster?: SanityImage;
 };
 
 export type ShowcaseItemGallery = {
@@ -82,6 +95,10 @@ export type ShowcaseItemDoc = {
   order: number;
   image: SanityImage;
   alt: string;
+  /** Resolved URL of the uploaded tile video (modal slide 1 when set). */
+  tile_video_file?: string;
+  /** Fallback direct MP4 URL for the tile video. */
+  tile_video_url?: string;
   label?: string[];
   has_play_icon?: boolean;
   shape: "tall" | "medium" | "short" | "extra-short";
@@ -95,7 +112,15 @@ export type ShowcaseItemDoc = {
   transport_mode?: string;
   /** Mixed slideshow: images + video slides, editor-ordered. */
   modal_media?: Array<
-    (SanityImage & { _type: "image" }) | { _type: "videoSlide"; url: string; poster?: SanityImage }
+    | (SanityImage & { _type: "image" })
+    | {
+        _type: "videoSlide";
+        /** Fallback direct MP4 URL. */
+        url?: string;
+        /** Resolved URL of the uploaded Sanity file asset (preferred). */
+        fileUrl?: string;
+        poster?: SanityImage;
+      }
   >;
   /** @deprecated Legacy fields — superseded by modal_media, still rendered. */
   media_photos?: SanityImage[];

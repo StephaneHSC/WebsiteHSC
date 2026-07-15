@@ -89,8 +89,12 @@ export const showcaseGalleryQuery = /* groq */ `
   *[_type == "showcaseItem" && slug == $slug][0]{
     slug,
     "gallery_images": gallery_images[] {
+      _type,
       image,
-      caption
+      caption,
+      url,
+      "fileUrl": video.asset->url,
+      poster
     }
   }
 `;
@@ -103,8 +107,12 @@ export const allShowcaseGalleriesQuery = /* groq */ `
   *[_type == "showcaseItem" && defined(gallery_images) && count(gallery_images) > 0]{
     slug,
     "gallery_images": gallery_images[] {
+      _type,
       image,
-      caption
+      caption,
+      url,
+      "fileUrl": video.asset->url,
+      poster
     }
   }
 `;
@@ -120,6 +128,8 @@ export const allShowcaseItemsQuery = /* groq */ `
     order,
     image,
     alt,
+    "tile_video_file": tile_video.asset->url,
+    tile_video_url,
     label,
     has_play_icon,
     shape,
@@ -131,12 +141,19 @@ export const allShowcaseItemsQuery = /* groq */ `
     aircraft,
     modal_description,
     transport_mode,
-    modal_media,
+    "modal_media": modal_media[] {
+      ...,
+      "fileUrl": video.asset->url
+    },
     media_photos,
     video_url,
     "gallery_images": gallery_images[] {
+      _type,
       image,
-      caption
+      caption,
+      url,
+      "fileUrl": video.asset->url,
+      poster
     }
   }
 `;

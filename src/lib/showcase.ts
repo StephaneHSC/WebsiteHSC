@@ -46,28 +46,39 @@ export async function getShowcaseData(): Promise<ShowcaseData> {
 }
 
 function mapDocToTile(doc: ShowcaseItemDoc): ShowcaseTile {
-  const src = urlFor(doc.image).width(900).format("webp").quality(80).url();
+  const tileSrc = urlFor(doc.image).width(900).format("webp").quality(80).url();
 
   // Modal carousel: tile photo is always slide 1, then the editor-ordered
   // mixed media array (photos + videos). Legacy `media_photos` / `video_url`
   // fields still render (after the mixed array) for docs created before the
   // modal_media migration.
+  const tileVideo = doc.tile_video_file ?? doc.tile_video_url;
   const media: ShowcaseMedia[] = [
-    { type: "photo", src },
-    ...(doc.modal_media ?? []).map((item): ShowcaseMedia => {
+    // Tile video (when set) opens the modal on a playable video — the tile
+    // photo doubles as its poster. Otherwise slide 1 is the tile photo.
+    tileVideo
+      ? { type: "video", src: tileVideo, poster: tileSrc }
+      : { type: "photo", src: tileSrc },
+    ...(doc.modal_media ?? []).flatMap((item): ShowcaseMedia[] => {
       if (item._type === "videoSlide") {
-        return {
-          type: "video",
-          src: item.url,
-          poster: item.poster
-            ? urlFor(item.poster).width(1200).format("webp").quality(80).url()
-            : src,
-        };
+        const src = item.fileUrl ?? item.url;
+        if (!src) return [];
+        return [
+          {
+            type: "video",
+            src,
+            poster: item.poster
+              ? urlFor(item.poster).width(1200).format("webp").quality(80).url()
+              : tileSrc,
+          },
+        ];
       }
-      return {
-        type: "photo",
-        src: urlFor(item).width(1200).format("webp").quality(80).url(),
-      };
+      return [
+        {
+          type: "photo",
+          src: urlFor(item).width(1200).format("webp").quality(80).url(),
+        },
+      ];
     }),
     ...(doc.media_photos ?? []).map(
       (img): ShowcaseMedia => ({
@@ -75,13 +86,25 @@ function mapDocToTile(doc: ShowcaseItemDoc): ShowcaseTile {
         src: urlFor(img).width(1200).format("webp").quality(80).url(),
       }),
     ),
-    ...(doc.video_url ? [{ type: "video", src: doc.video_url, poster: src } as ShowcaseMedia] : []),
+    ...(doc.video_url
+      ? [{ type: "video", src: doc.video_url, poster: tileSrc } as ShowcaseMedia]
+      : []),
   ];
+
+  // De-duplicate by source URL — editors sometimes register the same video
+  // both as the Tile Video and as a slideshow slide (or leave it in the
+  // legacy video_url field), which would otherwise render identical slides.
+  const seen = new Set<string>();
+  const dedupedMedia = media.filter((m) => {
+    if (seen.has(m.src)) return false;
+    seen.add(m.src);
+    return true;
+  });
 
   return {
     id: doc.slug,
-    src,
-    media: media.length > 1 ? media : undefined,
+    src: tileSrc,
+    media: dedupedMedia.length > 1 || tileVideo ? dedupedMedia : undefined,
     alt: doc.alt,
     label: doc.label && doc.label.length > 0 ? doc.label : undefined,
     hasPlayIcon: doc.has_play_icon || undefined,
