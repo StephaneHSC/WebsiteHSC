@@ -39,15 +39,6 @@ export function MilestonesScroller({ milestones }: Props) {
   const [canNext, setCanNext] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [heliX, setHeliX] = useState(0); // translateX value for helicopter
-  // True while ANY scroll is in motion (arrow-initiated or manual). While
-  // scrolling, the helicopter is driven per-frame from scrollLeft with its
-  // CSS transition DISABLED, so it moves in perfect lockstep with the cards
-  // (the heli lives inside the scrolled content — running a transition on
-  // top of scrolling composes two mismatched easings and wobbles).
-  const [scrolling, setScrolling] = useState(false);
-  // True while an arrow-initiated smooth scroll is animating.
-  const programmaticScroll = useRef(false);
-  const programmaticTimer = useRef<number | undefined>(undefined);
   const scrollIdleTimer = useRef<number | undefined>(undefined);
 
   const cardW = "w-72 lg:w-[360px]";
@@ -61,15 +52,18 @@ export function MilestonesScroller({ milestones }: Props) {
     return index * (w + g) + w / 2 - heliW / 2;
   }
 
-  // Keep the heli on the active dot when not scrolling (card clicks, resize,
-  // end-of-list corrections) — the 500ms transition handles the glide.
+  // SEQUENCED animation (no simultaneous heli + card motion — running both
+  // at once composes two mismatched easings and glitches, since the heli
+  // lives inside the scrolled content):
+  //   1. cards scroll (heli rides along with the timeline, untouched)
+  //   2. scroll settles → activeIndex updates → this effect glides the heli
+  //      to the new dot in one clean 500ms transition.
   useEffect(() => {
-    if (scrolling) return;
     const calc = () => setHeliX(heliXForIndex(activeIndex));
     calc();
     window.addEventListener("resize", calc);
     return () => window.removeEventListener("resize", calc);
-  }, [activeIndex, scrolling]);
+  }, [activeIndex]);
 
   function scrollToIndex(index: number) {
     const el = scrollRef.current;
@@ -78,22 +72,32 @@ export function MilestonesScroller({ milestones }: Props) {
     const isLg = window.innerWidth >= 1024;
     const w = isLg ? CARD_W_PX.lg : CARD_W_PX.base;
     const gap = isLg ? GAP_PX.lg : GAP_PX.base;
-    // Mute the scroll listener's index tracking for the duration of this
-    // programmatic smooth scroll — otherwise it recomputes the OLD index on
-    // the first frames and retargets the helicopter backwards mid-flight
-    // (the visible glitch), then forwards again past the halfway point.
-    programmaticScroll.current = true;
-    window.clearTimeout(programmaticTimer.current);
-    // Fallback un-mute for browsers without `scrollend` (older Safari).
-    programmaticTimer.current = window.setTimeout(() => {
-      programmaticScroll.current = false;
-    }, 1000);
-    el.scrollTo({ left: clamped * (w + gap), behavior: "smooth" });
-    setActiveIndex(clamped);
+    // Only scroll — activeIndex (and with it the heli flight + red year)
+    // updates when the scroll settles, so the two animations run in
+    // sequence instead of fighting.
+    const max = el.scrollWidth - el.clientWidth;
+    const target = Math.min(clamped * (w + gap), max);
+    if (Math.abs(target - el.scrollLeft) < 2) {
+      // No scroll will happen (card already aligned, or the end of the list
+      // where the last cards can't scroll into alignment) — without a scroll
+      // there's no scrollend, so update the index directly and let the heli
+      // glide straight to the dot.
+      setActiveIndex(clamped);
+      return;
+    }
+    el.scrollTo({ left: target, behavior: "smooth" });
   }
 
   function scrollByCards(count: number) {
-    scrollToIndex(activeIndex + count);
+    // Base the target on the CURRENT scroll position, not activeIndex —
+    // activeIndex now updates only when scrolling settles, so rapid arrow
+    // clicks would otherwise keep re-targeting the same card.
+    const el = scrollRef.current;
+    if (!el) return;
+    const isLg = window.innerWidth >= 1024;
+    const w = isLg ? CARD_W_PX.lg : CARD_W_PX.base;
+    const gap = isLg ? GAP_PX.lg : GAP_PX.base;
+    scrollToIndex(Math.round(el.scrollLeft / (w + gap)) + count);
   }
 
   useEffect(() => {
@@ -123,38 +127,23 @@ export function MilestonesScroller({ milestones }: Props) {
       const max = el.scrollWidth - el.clientWidth;
       setCanPrev(el.scrollLeft > 1);
       setCanNext(el.scrollLeft < max - 1);
-
+      // Sequenced animation: while scrolling, ONLY the cards move (the heli
+      // rides along inside the content, no animation of its own). The
+      // active index — and with it the heli flight + red year — updates
+      // when the scroll settles (scrollend, with a debounce fallback).
+      window.clearTimeout(scrollIdleTimer.current);
+      scrollIdleTimer.current = window.setTimeout(onScrollEnd, 150);
+    }
+    function onScrollEnd() {
+      if (!el) return;
+      window.clearTimeout(scrollIdleTimer.current);
       const isLg = window.innerWidth >= 1024;
       const w = isLg ? CARD_W_PX.lg : CARD_W_PX.base;
       const g = isLg ? GAP_PX.lg : GAP_PX.base;
-      const heliW = isLg ? HELI_W_PX.lg : HELI_W_PX.base;
-
-      // Frame-locked heli: while the container scrolls (arrow OR swipe),
-      // position the heli directly from scrollLeft — the active dot sits at
-      // scrollLeft + w/2, so on screen the heli appears stationary while the
-      // cards slide beneath it. Clamped to the first/last dot so it never
-      // flies off the timeline at the overscroll edges.
-      const first = w / 2 - heliW / 2;
-      const last = (milestones.length - 1) * (w + g) + w / 2 - heliW / 2;
-      setScrolling(true);
-      setHeliX(Math.max(first, Math.min(el.scrollLeft + w / 2 - heliW / 2, last)));
-
-      // Debounced idle detection (scrollend fallback for older Safari).
-      window.clearTimeout(scrollIdleTimer.current);
-      scrollIdleTimer.current = window.setTimeout(onScrollEnd, 150);
-
-      // Active index (red year/dot) tracks drag/swipe — muted during
-      // arrow-initiated scrolls, where scrollToIndex already set the target.
-      if (programmaticScroll.current) return;
       const idx = Math.round(el.scrollLeft / (w + g));
       setActiveIndex(Math.max(0, Math.min(milestones.length - 1, idx)));
     }
-    function onScrollEnd() {
-      programmaticScroll.current = false;
-      // Re-enables the transition; the effect above then glides the heli
-      // onto the active dot if it isn't already there (end-of-list case).
-      setScrolling(false);
-    }
+    update();
     el.addEventListener("scroll", update, { passive: true });
     el.addEventListener("scrollend", onScrollEnd, { passive: true });
     const ro = new ResizeObserver(update);
@@ -183,16 +172,15 @@ export function MilestonesScroller({ milestones }: Props) {
               className="bg-ink/15 -ml-6 block h-[2px] w-[calc(100%+1.5rem)] lg:-ml-12 lg:w-[calc(100%+3rem)]"
             />
 
-            {/* Helicopter — frame-locked to scrollLeft while scrolling (no
-                transition, so it never fights the scroll animation); glides
-                with the 500ms transition when repositioned without a scroll
-                (card clicks, end-of-list corrections). */}
+            {/* Helicopter — rides with the timeline while the cards scroll,
+                then glides to the active dot once the scroll settles
+                (sequenced with the card animation, never simultaneous). */}
             <div
               aria-hidden="true"
               className="pointer-events-none absolute top-1/2 left-0 -translate-y-1/2"
               style={{
                 transform: `translateY(-50%) translateX(${heliX}px)`,
-                transition: scrolling ? "none" : "transform 500ms cubic-bezier(0.16, 1, 0.3, 1)",
+                transition: "transform 500ms cubic-bezier(0.16, 1, 0.3, 1)",
               }}
             >
               <Image
