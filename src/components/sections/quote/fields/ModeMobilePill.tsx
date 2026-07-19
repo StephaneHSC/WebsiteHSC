@@ -62,8 +62,8 @@ export function ModeMobilePill({
 
   const toggle = (mode: TransportMode) => {
     if (values.includes(mode)) {
-      // Keep at least one selected
-      if (values.length === 1) return;
+      // Deselecting the last mode is allowed — the field is validated as
+      // required at submit, so an empty selection just shows the error then.
       onChange(values.filter((m) => m !== mode));
     } else {
       onChange([...values, mode]);

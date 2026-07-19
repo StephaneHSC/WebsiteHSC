@@ -833,7 +833,8 @@ export const VALUE_ADDED_SERVICES: readonly ValueAddedService[] = [
     thumb: "/services/value-added/equipment-rental.webp",
     description:
       "We have our own dedicated S76C++ airfreight cradle and AW139 saddle for oceanfreight and road freight that can be rented out for the transportation of Sikorski 76C++ and Leonardo Helicopter AW139.",
-    shortDescription: "Lifting tool, transport saddle and other shipping kits available for rental",
+    shortDescription:
+      "Lifting tool, transport saddle and other shipping kits available for rental.",
     iconM4: "/services/detail/value-added/equipment-rental.png",
   },
   {
@@ -868,7 +869,7 @@ export const VALUE_ADDED_SERVICES: readonly ValueAddedService[] = [
       midBold: "your behalf to ensure",
       tail: " that your shipping remains on schedule.",
     },
-    shortDescription: "import and export custom clearance of Ferry flight in major countries",
+    shortDescription: "Import and export custom clearance of Ferry flights in major countries.",
     iconM4: "/services/detail/value-added/ferry-flight-clearance.png",
   },
   {
@@ -887,7 +888,7 @@ export const VALUE_ADDED_SERVICES: readonly ValueAddedService[] = [
     thumb: "/services/value-added/crates-manufacturing.webp",
     description:
       "We are currently able to manufacture high quality crates in Malaysia, Italy, USA, Gabon, Cameroon for packing blades and spares.",
-    shortDescription: "We source bespoke crates to safely transport blades and accessories",
+    shortDescription: "We source bespoke crates to safely transport blades and accessories.",
     iconM4: "/services/detail/value-added/crates-manufacturing.png",
   },
   {
@@ -1452,7 +1453,7 @@ export const WHY_CHOOSE_GLOBAL_REACH = {
     line2Highlight: "happen",
     line2Post: ".",
   },
-  lede: "No matter from where to where, our experience and expertise in helicopter shipping will deliver a logistical solution catered to your needs and budget. 24/7, we are here for you. Our proven ability to orchestrate helicopter shipping & chartering makes us your partner of choice",
+  lede: "No matter from where to where, our experience and expertise in helicopter shipping will deliver a logistical solution catered to your needs and budget. 24/7, we are here for you. Our proven ability to orchestrate helicopter shipping & chartering makes us your partner of choice.",
   ctaLabel: "Request Quote",
   ctaHref: "#request-quote",
 } as const;
@@ -1832,7 +1833,7 @@ export const PLACEHOLDER_TEAM_MEMBERS: readonly TeamMemberPlaceholder[] = [
   {
     _id: "team.anjelimo-mulati",
     full_name: "Anjelimo Mulati",
-    role: "Accounting",
+    role: "Africa Sales & Procurement Manager",
     placeholderPhoto: "/team/anjelimo-mulati.webp",
     // TODO(content): client to provide bio for Anjelimo Mulati.
     bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
@@ -1841,8 +1842,16 @@ export const PLACEHOLDER_TEAM_MEMBERS: readonly TeamMemberPlaceholder[] = [
     _id: "team.mia-juliet-marot",
     full_name: "Mia Juliet Marot",
     role: "Junior Sales & Marketing",
-    placeholderPhoto: "/team/mia-juliet-marot.webp",
+    placeholderPhoto: "/team/mia-juliet-marot.png",
     // TODO(content): client to provide bio for Mia Juliet Marot.
+    bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
+  },
+  {
+    _id: "team.ariana-resclosado",
+    full_name: "Ariana Resclosado",
+    role: "Logistic Coordinator",
+    placeholderPhoto: "/team/ariana-resclosado.png",
+    // TODO(content): client to provide bio for Ariana Resclosado.
     bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
   },
 ];

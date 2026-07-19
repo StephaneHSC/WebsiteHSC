@@ -44,7 +44,7 @@ export function OurSolutions() {
               <p className="text-ink text-lg font-medium md:text-xl">
                 We work on solutions and fast response.
               </p>
-              <p className="text-ink-soft mt-2 text-base md:text-xl">
+              <p className="text-ink-soft mt-2 text-[15px] md:text-[17px]">
                 We bring deep, functional expertise but are known for our flexible and available
                 approach to work.
               </p>

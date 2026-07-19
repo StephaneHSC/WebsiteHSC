@@ -412,21 +412,21 @@ const TeamCard = forwardRef<HTMLButtonElement, TeamCardProps>(function TeamCard(
         ) : null}
       </div>
 
-      {/* Name + role below the photo */}
+      {/* Name + role below the photo. The role block reserves two lines
+          (min-h = 2 × 13px line-height) so cards stay equal height whether
+          the role wraps ("Africa Desk & Procurement Manager") or not. */}
       <div className="mt-auto pt-3 text-center">
         <span className="font-display block text-[11px] leading-[14px] font-bold uppercase">
           {member.full_name}
         </span>
-        {role ? (
-          <span
-            className={cn(
-              "font-body mt-1 block text-[10px] leading-[13px]",
-              active ? "text-surface/85" : "text-ink-soft md:group-hover:text-surface/85",
-            )}
-          >
-            {role}
-          </span>
-        ) : null}
+        <span
+          className={cn(
+            "font-body mt-1 block min-h-[26px] text-[10px] leading-[13px]",
+            active ? "text-surface/85" : "text-ink-soft md:group-hover:text-surface/85",
+          )}
+        >
+          {role}
+        </span>
       </div>
     </button>
   );
