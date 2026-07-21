@@ -380,6 +380,11 @@ const TeamCard = forwardRef<HTMLButtonElement, TeamCardProps>(function TeamCard(
 ) {
   const photoSrc = resolveCardPhoto(member);
   const role = "role" in member ? member.role : "";
+  // Mia and Ariana's source photos are more zoomed-out headshots (visible
+  // gray padding around the subject) than the rest of the team's tighter
+  // crops, so their card photos read smaller/don't fill the frame the same
+  // way. Nudge those two in until the client supplies re-cropped photos.
+  const zoom = cardPhotoZoom(member.full_name);
 
   return (
     <button
@@ -407,6 +412,9 @@ const TeamCard = forwardRef<HTMLButtonElement, TeamCardProps>(function TeamCard(
               fill
               sizes="146px"
               className="object-cover object-top transition-transform duration-500 md:group-hover:scale-[1.03]"
+              style={
+                zoom !== 1 ? { transform: `scale(${zoom})`, transformOrigin: "top" } : undefined
+              }
             />
           </div>
         ) : null}
@@ -433,6 +441,28 @@ const TeamCard = forwardRef<HTMLButtonElement, TeamCardProps>(function TeamCard(
 });
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
+
+/**
+ * Per-photo zoom for the card grid. Most team photos are already cropped
+ * tight enough to fill/overflow the card frame; a couple are more zoomed-out
+ * headshots and read noticeably smaller in the same box. Scale those in
+ * until the client supplies re-cropped source photos.
+ *
+ * Keyed by lowercased full name rather than _id: Sanity-sourced members get
+ * a random document _id (the hardcoded placeholder fallback is the only
+ * source using ids like "team.mia-juliet-marot"), and name spelling has
+ * drifted between the placeholder data and the real CMS entry ("Resclosado"
+ * vs "Reclosado") — both spellings are listed so either source resolves.
+ */
+const CARD_PHOTO_ZOOM: Record<string, number> = {
+  "mia juliet marot": 1.5,
+  "ariana resclosado": 1.25,
+  "ariana reclosado": 1.25,
+};
+
+function cardPhotoZoom(fullName: string): number {
+  return CARD_PHOTO_ZOOM[fullName.trim().toLowerCase()] ?? 1;
+}
 
 function isPlaceholder(m: AnyMember): m is TeamMemberPlaceholder {
   return "placeholderPhoto" in m;

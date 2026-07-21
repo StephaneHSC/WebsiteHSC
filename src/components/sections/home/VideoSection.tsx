@@ -24,7 +24,7 @@ export function VideoSection() {
           className="object-cover md:hidden"
         />
         <Image
-          src="/home/new-home-image-4-enhanced.png"
+          src="/home/new-home-image-5-enhanced.png"
           alt="Heli Skycargo branded helicopter being crane-lifted onto a cargo vessel at port"
           fill
           sizes="100vw"

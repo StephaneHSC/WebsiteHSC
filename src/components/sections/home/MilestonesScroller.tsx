@@ -24,6 +24,9 @@ function isPlaceholder(m: MilestoneRow): m is PlaceholderMilestone {
 const CARD_W_PX = { base: 288, lg: 360 };
 const GAP_PX = { base: 16, lg: 24 };
 const HELI_W_PX = { base: 96, lg: 112 }; // w-24 = 96px, lg:w-28 = 112px
+// Fine-tune shift left of the pure center-on-dot position (e.g. lg index 0
+// was 360/2 - 112/2 = 124px; this pulls it to 108px to match visually).
+const HELI_OFFSET_PX = { base: 16, lg: 16 };
 
 type Props = {
   milestones: readonly MilestoneRow[];
@@ -49,7 +52,8 @@ export function MilestonesScroller({ milestones }: Props) {
     const w = isLg ? CARD_W_PX.lg : CARD_W_PX.base;
     const g = isLg ? GAP_PX.lg : GAP_PX.base;
     const heliW = isLg ? HELI_W_PX.lg : HELI_W_PX.base;
-    return index * (w + g) + w / 2 - heliW / 2;
+    const offset = isLg ? HELI_OFFSET_PX.lg : HELI_OFFSET_PX.base;
+    return index * (w + g) + w / 2 - heliW / 2 - offset;
   }
 
   // SEQUENCED animation (no simultaneous heli + card motion — running both

@@ -87,12 +87,7 @@ export function ServicesTeaser() {
               </>
             }
             subtitle="Transport Solutions Worldwide."
-            lede={
-              <>
-                Enables end-to-end visibility on your helicopter <br className="md:hidden" />
-                shipments for you and your team
-              </>
-            }
+            lede={<></>}
             align="left"
             uppercase
           />

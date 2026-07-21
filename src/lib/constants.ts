@@ -620,7 +620,7 @@ export type SmartTrackingCard = {
 export const SMART_TRACKING_CARDS: readonly SmartTrackingCard[] = [
   {
     id: 1,
-    src: "/home/smart-tracking/card-1.webp",
+    src: "/home/smart-tracking/card-1.svg",
     alt: "Your helicopter shipment, in real time — desktop and phone tracking dashboards",
   },
   {
@@ -635,7 +635,7 @@ export const SMART_TRACKING_CARDS: readonly SmartTrackingCard[] = [
   },
   {
     id: 4,
-    src: "/home/smart-tracking/card-4.webp",
+    src: "/home/smart-tracking/card-4.svg",
     alt: "Instant status notifications — push alert feed showing shipment updates",
   },
   {
