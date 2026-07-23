@@ -2,50 +2,26 @@ name: Deploy to Production (AWS)
 
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Deployment environment'
-        required: true
-        default: 'production'
-        type: choice
-        options:
-          - production
-          - staging
 
 permissions:
   contents: read
-  actions: read
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
 
 env:
-  AWS_REGION: ${{ secrets.AWS_REGION }}
-  S3_BUCKET: ${{ secrets.S3_BUCKET_NAME }}
-  CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
   NODE_VERSION: '20'
 
 jobs:
   deploy:
-    name: Deploy to ${{ github.event.inputs.environment }}
+    name: Deploy to Production
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.environment }}
+    environment: production
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Display deployment info
-        run: |
-          echo "🎯 Deployment Details"
-          echo "===================="
-          echo "Environment: ${{ github.event.inputs.environment }}"
-          echo "Triggered by: ${{ github.actor }}"
-          echo "Commit: ${{ github.sha }}"
-          echo "Branch: ${{ github.ref_name }}"
-          echo "Time: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
-          echo ""
-          echo "S3 Bucket: $S3_BUCKET"
-          echo "CloudFront ID: $CLOUDFRONT_DISTRIBUTION_ID"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -56,104 +32,37 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run type check
+      - name: Type check
         run: npm run typecheck
         continue-on-error: true
-
-      - name: Build Next.js
-        run: npm run build
-        env:
-          NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID }}
-          NEXT_PUBLIC_SANITY_DATASET: ${{ secrets.NEXT_PUBLIC_SANITY_DATASET }}
-          NEXT_PUBLIC_SANITY_API_VERSION: ${{ secrets.NEXT_PUBLIC_SANITY_API_VERSION }}
-          SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
-          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL_PROD }}
-          NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ secrets.NEXT_PUBLIC_TURNSTILE_SITE_KEY }}
-          TURNSTILE_SECRET: ${{ secrets.TURNSTILE_SECRET }}
-          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
-          OPS_INBOX_FALLBACK: ${{ secrets.OPS_INBOX_FALLBACK }}
-
-      - name: Display build output
-        run: |
-          echo "Build output structure:"
-          ls -lah out/ || echo "No out directory (static export may not be configured)"
-          du -sh out/ || echo "Cannot calculate size"
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Clear old S3 bucket
-        run: |
-          echo "Clearing S3 bucket: $S3_BUCKET"
-          aws s3 rm s3://$S3_BUCKET --recursive
-          echo "✅ Bucket cleared"
-
-      - name: Upload to S3
-        run: |
-          echo "Uploading build files to S3..."
-          aws s3 sync ./out s3://$S3_BUCKET \
-            --delete \
-            --cache-control "public, max-age=31536000" \
-            --exclude ".next/*" \
-            --exclude "node_modules/*" \
-            --exclude ".git/*"
-          echo "✅ Files uploaded"
-
-      - name: Set index.html cache policy
-        run: |
-          echo "Setting short cache for HTML files..."
-          for file in $(find ./out -name "*.html" -type f); do
-            s3_key="${file#./out/}"
-            aws s3 cp "./out/$s3_key" "s3://$S3_BUCKET/$s3_key" \
-              --cache-control "public, max-age=3600" \
-              --content-type "text/html; charset=utf-8" \
-              --metadata-directive REPLACE
-          done
-          echo "✅ HTML cache policies set"
-
-      - name: Invalidate CloudFront cache
-        run: |
-          echo "Creating CloudFront invalidation..."
-          INVALIDATION_ID=$(aws cloudfront create-invalidation \
-            --distribution-id $CLOUDFRONT_DISTRIBUTION_ID \
-            --paths "/*" \
-            --query 'Invalidation.Id' \
-            --output text)
-          echo "Invalidation ID: $INVALIDATION_ID"
-          echo "Waiting for invalidation to complete (this may take a few minutes)..."
-          aws cloudfront wait invalidation-completed \
-            --distribution-id $CLOUDFRONT_DISTRIBUTION_ID \
-            --id $INVALIDATION_ID
-          echo "✅ CloudFront cache invalidated"
-
-      - name: Deployment success
-        run: |
-          echo "Deployment Complete!"
-          echo ""
-          echo "Summary:"
-          echo "  Environment: ${{ github.event.inputs.environment }}"
-          echo "  Site URL: https://heliskycargo.com"
-          echo "  Studio URL: https://heliskycargo.com/studio"
-          echo "  S3 Bucket: $S3_BUCKET"
-          echo ""
-          echo "The site should be live in 1-2 minutes."
-          echo "   If you see cached content, hard-refresh: Ctrl+Shift+R"
+      - name: Deploy with SST (OpenNext)
+        run: npx sst deploy --stage production
+        env:
+          # NEXT_PUBLIC_* are read at build time and inlined into the client bundle.
+          NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID }}
+          NEXT_PUBLIC_SANITY_DATASET: ${{ secrets.NEXT_PUBLIC_SANITY_DATASET }}
+          NEXT_PUBLIC_SANITY_API_VERSION: ${{ secrets.NEXT_PUBLIC_SANITY_API_VERSION }}
+          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL_PROD }}
+          NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ secrets.NEXT_PUBLIC_TURNSTILE_SITE_KEY }}
+          # Server-only secrets consumed by the /api/quote route on the server Lambda.
+          SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
+          TURNSTILE_SECRET: ${{ secrets.TURNSTILE_SECRET }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
+          OPS_INBOX_FALLBACK: ${{ secrets.OPS_INBOX_FALLBACK }}
 
       - name: Deployment failed
         if: failure()
         run: |
-          echo "Deployment failed!"
-          echo ""
-          echo "Common issues:"
-          echo "  1. Missing or incorrect AWS credentials"
-          echo "  2. Invalid environment variables"
-          echo "  3. S3 bucket permissions issue"
-          echo "  4. Build failed - check logs above"
-          echo ""
-          echo "Check the logs above for detailed error messages."
-        continue-on-error: true
+          echo "Deployment failed. Common causes:"
+          echo "  - AWS credentials missing or lacking permissions for SST/OpenNext"
+          echo "  - A required secret is unset (check the Deploy step env block)"
+          echo "  - OpenNext build failure against Next.js 16 (check the build log above)"
