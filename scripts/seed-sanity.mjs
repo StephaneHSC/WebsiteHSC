@@ -111,7 +111,7 @@ const TEAM_MEMBERS = [
     order: 1,
     is_featured: true,
     status: "published",
-    photoPath: "/team/stephane-marot.webp",
+    photoPath: "/media/team/stephane-marot.webp",
   },
   {
     _id: "team-daniel-cosico",
@@ -122,7 +122,7 @@ const TEAM_MEMBERS = [
     order: 2,
     is_featured: false,
     status: "published",
-    photoPath: "/team/daniel-cosico.webp",
+    photoPath: "/media/team/daniel-cosico.webp",
   },
   {
     _id: "team-adriana-athirah",
@@ -133,7 +133,7 @@ const TEAM_MEMBERS = [
     order: 3,
     is_featured: false,
     status: "published",
-    photoPath: "/team/adriana-athirah.png",
+    photoPath: "/media/team/adriana-athirah.png",
   },
   {
     _id: "team-rica-mae-cortez",
@@ -144,7 +144,7 @@ const TEAM_MEMBERS = [
     order: 4,
     is_featured: false,
     status: "published",
-    photoPath: "/team/rica-mae-cortez.webp",
+    photoPath: "/media/team/rica-mae-cortez.webp",
   },
   {
     _id: "team-alfredo-dinglasan",
@@ -155,7 +155,7 @@ const TEAM_MEMBERS = [
     order: 5,
     is_featured: false,
     status: "published",
-    photoPath: "/team/alfredo-dinglasan.webp",
+    photoPath: "/media/team/alfredo-dinglasan.webp",
   },
   {
     _id: "team-nikhitha-manuel",
@@ -166,7 +166,7 @@ const TEAM_MEMBERS = [
     order: 6,
     is_featured: false,
     status: "published",
-    photoPath: "/team/nikhitha-manuel.webp",
+    photoPath: "/media/team/nikhitha-manuel.webp",
   },
   {
     _id: "team-remi-hachisuka",
@@ -177,7 +177,7 @@ const TEAM_MEMBERS = [
     order: 7,
     is_featured: false,
     status: "published",
-    photoPath: "/team/remi-hachisuka.webp",
+    photoPath: "/media/team/remi-hachisuka.webp",
   },
   {
     _id: "team-anjelimo-mulati",
@@ -188,7 +188,7 @@ const TEAM_MEMBERS = [
     order: 8,
     is_featured: false,
     status: "published",
-    photoPath: "/team/anjelimo-mulati.webp",
+    photoPath: "/media/team/anjelimo-mulati.webp",
   },
   {
     _id: "team-mia-juliet-marot",
@@ -199,7 +199,7 @@ const TEAM_MEMBERS = [
     order: 9,
     is_featured: false,
     status: "published",
-    photoPath: "/team/mia-juliet-marot.webp",
+    photoPath: "/media/team/mia-juliet-marot.webp",
   },
 ];
 
@@ -439,7 +439,7 @@ async function seedQuoteFormConfig() {
   // hardcoded `QUOTE_HERO.photo.src` fallback). Scoped to the standalone
   // /quote page only — the embedded shells on home/services/etc. use their
   // own page-specific photos and ignore this CMS field.
-  const heroAsset = await uploadImage("/quote/quote-hero.webp");
+  const heroAsset = await uploadImage("/media/quote/quote-hero.webp");
   const doc = {
     _id: "quoteFormConfig",
     _type: "quoteFormConfig",

@@ -33,7 +33,7 @@ export default async function Home() {
         <QuoteFormShell
           tinted
           photo={{
-            src: "/quote/home-quote.webp",
+            src: "/media/quote/home-quote.webp",
             alt: "Southern Air freight truck and helicopter on the tarmac",
           }}
         />

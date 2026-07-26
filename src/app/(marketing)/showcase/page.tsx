@@ -37,7 +37,7 @@ const SHOWCASE_PAGE_TILES: readonly ShowcaseTile[] = (() => {
   // the original. The modal's media carousel is preserved unchanged.
   const switzIdx = arr.findIndex((t) => t.id === "switzerland-india");
   const switz = arr[switzIdx]!;
-  arr[switzIdx] = { ...switz, src: "/showcase/switzerland-to-india-showcase.webp" };
+  arr[switzIdx] = { ...switz, src: "/media/showcase/switzerland-to-india-showcase.webp" };
   return arr;
 })();
 
@@ -144,7 +144,7 @@ export default async function ShowcasePage() {
       <div id="request-quote" className="scroll-mt-24">
         <QuoteFormShell
           photo={{
-            src: "/quote/services-quote.webp",
+            src: "/media/quote/services-quote.webp",
             alt: "Antonov 124 freighter loading helicopter cargo at sunset",
           }}
         />

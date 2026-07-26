@@ -57,7 +57,7 @@ export default async function ServiceDetailPage({ params }: { params: RouteParam
       <div id="request-quote" className="scroll-mt-24">
         <QuoteFormShell
           photo={{
-            src: "/quote/services-quote.webp",
+            src: "/media/quote/services-quote.webp",
             alt: "Antonov 124 freighter loading helicopter cargo at sunset",
           }}
           defaultMode={QUOTE_MODE_BY_SERVICE_SLUG[slug]}

@@ -127,7 +127,7 @@ function ValueCard({ card }: { card: WhenToChooseCard }) {
   return (
     <div className="bg-surface flex h-full items-center gap-3 border border-[#f5f5f5] px-4 py-4 text-left lg:gap-4 lg:px-5 lg:py-5">
       <Image
-        src="/services/detail/verify-red.svg"
+        src="/media/services/detail/verify-red.svg"
         alt=""
         width={22}
         height={22}

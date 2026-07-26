@@ -30,7 +30,7 @@ export function TrackabilityCallout() {
     <section className="bg-brand-red text-surface relative isolate w-full overflow-hidden">
       <div aria-hidden="true" className="absolute inset-0 opacity-20 mix-blend-overlay">
         <Image
-          src="/why-choose-us/red-bg-shape.webp"
+          src="/media/why-choose-us/red-bg-shape.webp"
           alt=""
           fill
           sizes="100vw"
@@ -152,7 +152,7 @@ function PhoneMockup() {
 function PhoneDevice() {
   return (
     <Image
-      src="/why-choose-us/trk/device.svg"
+      src="/media/why-choose-us/trk/device.svg"
       alt="Heli Skycargo tracking app showing shipment delivery information"
       width={277}
       height={548}
@@ -166,7 +166,7 @@ function LeftCard() {
     <div className="h-full w-full rounded-[10%/19%] border border-white/10 bg-white/24 p-[3.5%] backdrop-blur-md">
       <div className="relative h-full w-full overflow-hidden rounded-[7%/14%]">
         <Image
-          src="/why-choose-us/trk/shipment-card.webp"
+          src="/media/why-choose-us/trk/shipment-card.webp"
           alt="Shipment #89000 AW189 Ocean RORO from Vergiate to Toyoyam, airborne"
           fill
           sizes="(min-width: 1024px) 240px, 160px"
@@ -185,7 +185,7 @@ function RightCard() {
       <div className="bg-surface relative flex h-full w-full items-center gap-[3%] rounded-[5%/19%] px-[4.6%]">
         <span className="bg-brand-red inline-flex aspect-square h-[55%] shrink-0 items-center justify-center rounded-full">
           <Image
-            src="/why-choose-us/trk/delivery-icon.svg"
+            src="/media/why-choose-us/trk/delivery-icon.svg"
             alt=""
             width={18}
             height={18}

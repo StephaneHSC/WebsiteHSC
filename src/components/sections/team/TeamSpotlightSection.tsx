@@ -263,9 +263,9 @@ function SocialIconRow({ linkedinHref, emailHref }: SocialIconRowProps) {
       <SocialIconSquare
         href={linkedinHref}
         label="LinkedIn profile"
-        iconSrc="/team/icon-linkedin.svg"
+        iconSrc="/media/team/icon-linkedin.svg"
       />
-      <SocialIconSquare href={emailHref} label="Send email" iconSrc="/team/icon-email.svg" />
+      <SocialIconSquare href={emailHref} label="Send email" iconSrc="/media/team/icon-email.svg" />
     </div>
   );
 }

@@ -131,7 +131,7 @@ function LogoCard() {
   return (
     <div className="bg-surface border-ink/10 flex h-full items-center justify-center border p-6">
       <Image
-        src="/team/hsc-roundel.png"
+        src="/media/team/hsc-roundel.png"
         alt="Heli Skycargo"
         width={400}
         height={400}
