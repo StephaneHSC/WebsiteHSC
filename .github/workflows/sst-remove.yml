@@ -1,0 +1,69 @@
+name: SST Remove (teardown)
+
+# DANGER: manually-triggered teardown of the production stack. Only use this for
+# a deliberate recreate. It deletes the SST-managed S3 bucket, CloudFront
+# distribution, and Lambdas for the stage. Sets SST_ALLOW_REMOVE=true so
+# sst.config.ts drops the retain/protect guards for this run only.
+#
+# After it completes, run the normal Deploy workflow to rebuild the stack clean.
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: "Type REMOVE to confirm teardown of production"
+        required: true
+        default: ""
+
+# Share the deploy lock so remove/deploy can't overlap.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: "20"
+  SST_ALLOW_REMOVE: "true"
+
+jobs:
+  remove:
+    name: Remove production stack
+    runs-on: ubuntu-latest
+    environment: production
+    if: ${{ github.event.inputs.confirm == 'REMOVE' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: SST remove
+        run: npx sst remove --stage production
+        env:
+          NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID }}
+          NEXT_PUBLIC_SANITY_DATASET: ${{ secrets.NEXT_PUBLIC_SANITY_DATASET }}
+          NEXT_PUBLIC_SANITY_API_VERSION: ${{ secrets.NEXT_PUBLIC_SANITY_API_VERSION }}
+          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL_PROD }}
+          NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ secrets.NEXT_PUBLIC_TURNSTILE_SITE_KEY }}
+          SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
+          TURNSTILE_SECRET: ${{ secrets.TURNSTILE_SECRET }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
+          OPS_INBOX_FALLBACK: ${{ secrets.OPS_INBOX_FALLBACK }}
