@@ -34,7 +34,7 @@ export default async function TeamPage() {
       <div id="request-quote" className="scroll-mt-24">
         <QuoteFormShell
           photo={{
-            src: "/quote/services-quote.webp",
+            src: "/media/quote/services-quote.webp",
             alt: "Antonov 124 freighter loading helicopter cargo at sunset",
           }}
         />

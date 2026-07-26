@@ -365,7 +365,7 @@ function Tile({ tile, viewport, onOpen }: TileProps) {
       {tile.hasPlayIcon ? (
         <span aria-hidden="true" className="absolute inset-0 flex items-center justify-center">
           <Image
-            src="/showcase/icon-play.svg"
+            src="/media/showcase/icon-play.svg"
             alt=""
             width={113}
             height={113}

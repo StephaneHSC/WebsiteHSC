@@ -283,11 +283,11 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
   // real per-project media list when the client supplies.
   {
     id: "switzerland-india",
-    src: "/showcase/switzerland-to-india.webp",
+    src: "/media/showcase/switzerland-to-india.webp",
     media: [
-      { type: "photo", src: "/showcase/switzerland-to-india.webp" },
-      { type: "photo", src: "/showcase/myanmar-to-gabon.webp" },
-      { type: "photo", src: "/showcase/khalifa-port.webp" },
+      { type: "photo", src: "/media/showcase/switzerland-to-india.webp" },
+      { type: "photo", src: "/media/showcase/myanmar-to-gabon.webp" },
+      { type: "photo", src: "/media/showcase/khalifa-port.webp" },
     ],
     alt: "Helicopter shipment from Switzerland to India",
     label: ["From", "Switzer-", "land to", "India"],
@@ -311,7 +311,7 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
   // 2 — col0 / short — pure-photo loading shot.
   {
     id: "loading-1",
-    src: "/showcase/project-2.webp",
+    src: "/media/showcase/project-2.webp",
     alt: "Helicopter loading operations",
     shape: "short",
     desktopColumn: 0,
@@ -334,14 +334,14 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
   // the 2026-04-28 hosting decision in docs/DECISIONS.md).
   {
     id: "japan-desk",
-    src: "/showcase/japan-desk.webp",
+    src: "/media/showcase/japan-desk.webp",
     media: [
       {
         type: "video",
-        src: "/showcase/sample-video.mp4",
-        poster: "/showcase/japan-desk.webp",
+        src: "/media/showcase/sample-video.mp4",
+        poster: "/media/showcase/japan-desk.webp",
       },
-      { type: "photo", src: "/showcase/khalifa-port.webp" },
+      { type: "photo", src: "/media/showcase/khalifa-port.webp" },
     ],
     alt: "HSC Japan office team",
     label: ["Our", "Japan", "Desk"],
@@ -359,7 +359,7 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
   // 4 — col1 / tall — belgium-cameroon (label).
   {
     id: "belgium-cameroon",
-    src: "/showcase/belgium-to-cameroon.webp",
+    src: "/media/showcase/belgium-to-cameroon.webp",
     alt: "Helicopter shipment from Belgium to Cameroon",
     label: ["From", "Belgium", "to", "Cameroon"],
     shape: "tall",
@@ -379,7 +379,7 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
   // 5 — col2 / tall — myanmar-gabon (label).
   {
     id: "myanmar-gabon",
-    src: "/showcase/myanmar-to-gabon.webp",
+    src: "/media/showcase/myanmar-to-gabon.webp",
     alt: "Helicopter shipment from Myanmar to Gabon",
     label: ["From", "Myanmar", "to Gabon"],
     shape: "tall",
@@ -399,7 +399,7 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
   // 6 — col2 / short — pure-photo dockside cargo.
   {
     id: "loading-2",
-    src: "/showcase/project-6.webp",
+    src: "/media/showcase/project-6.webp",
     alt: "Helicopter cargo on the dock",
     shape: "short",
     desktopColumn: 2,
@@ -416,7 +416,7 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
   // 7 — col3 / short — khalifa-port (label).
   {
     id: "khalifa-port",
-    src: "/showcase/khalifa-port.webp",
+    src: "/media/showcase/khalifa-port.webp",
     alt: "Loading at Khalifa Port",
     label: ["Loading", "at Khalifa", "Port"],
     shape: "short",
@@ -439,7 +439,7 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
   // than the other columns — see DECISIONS.md 2026-05-10.
   {
     id: "china-guatemala",
-    src: "/showcase/china-to-guatemala.webp",
+    src: "/media/showcase/china-to-guatemala.webp",
     alt: "Helicopter shipment from China to Guatemala",
     label: ["From", "China to", "Guatemala"],
     shape: "tall",
@@ -463,12 +463,12 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
   // poster + play overlay → play → stop).
   {
     id: "tile-video-1",
-    src: "/showcase/tile-8-video.webp",
+    src: "/media/showcase/tile-8-video.webp",
     media: [
       {
         type: "video",
-        src: "/showcase/sample-video.mp4",
-        poster: "/showcase/tile-8-video.webp",
+        src: "/media/showcase/sample-video.mp4",
+        poster: "/media/showcase/tile-8-video.webp",
       },
     ],
     alt: "HSC ground crew preparing helicopter for transport",
@@ -487,7 +487,7 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
   // 10 — col0 / tall — pure-photo.
   {
     id: "tile-9",
-    src: "/showcase/tile-9.webp",
+    src: "/media/showcase/tile-9.webp",
     alt: "Helicopter wrapped for ocean transit",
     shape: "tall",
     desktopColumn: 0,
@@ -503,7 +503,7 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
   // 11 — col1 / extra-short — pure-photo with play icon (video-ready).
   {
     id: "tile-video-2",
-    src: "/showcase/tile-10.webp",
+    src: "/media/showcase/tile-10.webp",
     alt: "Heli Skycargo coordination footage",
     hasPlayIcon: true,
     shape: "extra-short",
@@ -520,7 +520,7 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
   // 12 — col2 / tall — pure-photo.
   {
     id: "tile-11",
-    src: "/showcase/tile-11.webp",
+    src: "/media/showcase/tile-11.webp",
     // Shift the visible window leftward so the wrapped helicopter on the
     // photo's left isn't cropped off and the man-with-back subject stays
     // framed per Figma. Tune by adjusting the X% (lower = photo content
@@ -541,7 +541,7 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
   // 13 — col3 / short — pure-photo with play icon (video-ready).
   {
     id: "tile-video-3",
-    src: "/showcase/tile-12.webp",
+    src: "/media/showcase/tile-12.webp",
     alt: "Heli Skycargo road transport footage",
     hasPlayIcon: true,
     shape: "short",
@@ -558,7 +558,7 @@ export const SHOWCASE_TILES: readonly ShowcaseTile[] = [
   // 14 — col1 / extra-short — pure-photo.
   {
     id: "tile-13",
-    src: "/showcase/tile-13.webp",
+    src: "/media/showcase/tile-13.webp",
     alt: "Helicopter ground handling crew at work",
     shape: "extra-short",
     desktopColumn: 1,
@@ -588,7 +588,7 @@ export const SHOWCASE_HERO = {
   // showcase-appropriate copy at PM review.
   subtitleMobile:
     "Access real-time location of your helicopter while in transit, get push notification.",
-  photo: "/showcase/hero-showcase.webp",
+  photo: "/media/showcase/hero-showcase.webp",
   photoAlt: "Heli Skycargo helicopter ready for transit at the loading dock",
 } as const;
 
@@ -757,22 +757,22 @@ export const SHARED_DETAIL_HERO_BENEFITS: readonly ServiceBenefit[] = [
   {
     slug: "secure-handling",
     label: "Secure Handling",
-    icon: "/services/detail/icons/secure-handling.svg",
+    icon: "/media/services/detail/icons/secure-handling.svg",
   },
   {
     slug: "global-routes",
     label: "Global Routes",
-    icon: "/services/detail/icons/global-routes.svg",
+    icon: "/media/services/detail/icons/global-routes.svg",
   },
   {
     slug: "fast-vessel-loading",
     label: "Fast Vessel Loading",
-    icon: "/services/detail/icons/fast-vessel-loading.svg",
+    icon: "/media/services/detail/icons/fast-vessel-loading.svg",
   },
   {
     slug: "expert-coordination",
     label: "Expert Coordination",
-    icon: "/services/detail/icons/expert-coordination.svg",
+    icon: "/media/services/detail/icons/expert-coordination.svg",
   },
 ];
 
@@ -835,36 +835,36 @@ export const VALUE_ADDED_SERVICES: readonly ValueAddedService[] = [
   {
     slug: "equipment-rental",
     label: "Equipment Rental",
-    thumb: "/services/value-added/equipment-rental.webp",
+    thumb: "/media/services/value-added/equipment-rental.webp",
     description:
       "We have our own dedicated S76C++ airfreight cradle and AW139 saddle for oceanfreight and road freight that can be rented out for the transportation of Sikorski 76C++ and Leonardo Helicopter AW139.",
     shortDescription:
       "Lifting tool, transport saddle and other shipping kits available for rental.",
-    iconM4: "/services/detail/value-added/equipment-rental.png",
+    iconM4: "/media/services/detail/value-added/equipment-rental.png",
   },
   {
     slug: "aog",
     label: "AOG",
-    thumb: "/services/value-added/aog.webp",
+    thumb: "/media/services/value-added/aog.webp",
     description:
       "Helicopter On Ground ! Get your AOG parts on the next flight out. We shipped from any part of the world to anywhere, every day, weekend included.",
     shortDescription: "Grounded aircraft? We arrange parts and engineers to restore service fast.",
-    iconM4: "/services/detail/value-added/aog.png",
+    iconM4: "/media/services/detail/value-added/aog.png",
   },
   {
     slug: "obc",
     label: "OBC",
-    thumb: "/services/value-added/obc.webp",
+    thumb: "/media/services/value-added/obc.webp",
     description:
       "Our hand carry team is ready to hop on a plane to get your parts delivered with speed at destination. It takes 60 minutes Chrono to come up with a solution upon receipt of your request.",
     shortDescription:
       "Our hand-carry team ensures supervised transport and secure delivery of critical aeroparts.",
-    iconM4: "/services/detail/value-added/obc.png",
+    iconM4: "/media/services/detail/value-added/obc.png",
   },
   {
     slug: "ferry-flight-clearance",
     label: "Ferry Flight Clearance",
-    thumb: "/services/value-added/ferry-flight-clearance.webp",
+    thumb: "/media/services/value-added/ferry-flight-clearance.webp",
     description:
       "Remote location may not have appropriate air and ocean connection resulting in ferry flighting the helicopter to another country where the transport will take place. We can take care of the ferry flight clearance with ease.",
     detail: {
@@ -875,46 +875,46 @@ export const VALUE_ADDED_SERVICES: readonly ValueAddedService[] = [
       tail: " that your shipping remains on schedule.",
     },
     shortDescription: "Import and export custom clearance of Ferry flights in major countries.",
-    iconM4: "/services/detail/value-added/ferry-flight-clearance.png",
+    iconM4: "/media/services/detail/value-added/ferry-flight-clearance.png",
   },
   {
     slug: "customs-brokerage",
     label: "Customs Brokerage",
-    thumb: "/services/value-added/customs-brokerage.webp",
+    thumb: "/media/services/value-added/customs-brokerage.webp",
     shortDescription:
       "We connect you with expert customs brokers for smooth import clearance at destination.",
     description:
       "We select the best player with strong custom knowledge in order to provide you with country import regulation.",
-    iconM4: "/services/detail/value-added/customs-brokerage.png",
+    iconM4: "/media/services/detail/value-added/customs-brokerage.png",
   },
   {
     slug: "crates-manufacturing",
     label: "Crates Manufacturing",
-    thumb: "/services/value-added/crates-manufacturing.webp",
+    thumb: "/media/services/value-added/crates-manufacturing.webp",
     description:
       "We are currently able to manufacture high quality crates in Malaysia, Italy, USA, Gabon, Cameroon for packing blades and spares.",
     shortDescription: "We source bespoke crates to safely transport blades and accessories.",
-    iconM4: "/services/detail/value-added/crates-manufacturing.png",
+    iconM4: "/media/services/detail/value-added/crates-manufacturing.png",
   },
   {
     slug: "shrink-wrapping",
     label: "Shrink Wrapping",
-    thumb: "/services/value-added/shrink-wrapping.webp",
+    thumb: "/media/services/value-added/shrink-wrapping.webp",
     description:
       "We provide shrink wrapping for preservation and for transportation. Each wrap comes fully suited with access hatches, warning labels, shockwatch and tiltwatch.",
     shortDescription:
       "Shrink-wrapping services to protect and preserve your helicopter during transport.",
-    iconM4: "/services/detail/value-added/shrink-wrapping.png",
+    iconM4: "/media/services/detail/value-added/shrink-wrapping.png",
   },
   {
     slug: "cargo-insurance",
     label: "Cargo Insurance",
-    thumb: "/services/value-added/cargo-insurance.webp",
+    thumb: "/media/services/value-added/cargo-insurance.webp",
     description:
       "We provide a comprehensive all-risk marine insurance at a very competitive price.",
     shortDescription:
       "We prioritise protecting high-value cargo from loss, damage, or risk during transit.",
-    iconM4: "/services/detail/value-added/cargo-insurance.png",
+    iconM4: "/media/services/detail/value-added/cargo-insurance.png",
   },
 ] as const;
 
@@ -928,31 +928,31 @@ export const SERVICES: readonly Service[] = [
     slug: "ocean-roro",
     name: "Ocean RO/RO",
     description: "Transport your aircraft using Ro/Ro vessel, loaded on a MAFI or simply towing.",
-    image: "/services/ocean-roro.webp",
+    image: "/media/services/ocean-roro.webp",
     detailEyebrow: "OVERVIEW OCEAN RO/RO",
     detailHeroTitle: ["Roll-On/Roll-Off", "Ocean Transport"],
-    detailHeroImage: "/services/detail/ocean-roro-hero.webp",
+    detailHeroImage: "/media/services/detail/ocean-roro-hero.webp",
     detailHeroImagePosition: "center 65%",
     detailHeroBenefits: [
       {
         slug: "secure-handling",
         label: "Secure Handling",
-        icon: "/services/detail/icons/secure-handling.svg",
+        icon: "/media/services/detail/icons/secure-handling.svg",
       },
       {
         slug: "global-routes",
         label: "Global Routes",
-        icon: "/services/detail/icons/global-routes.svg",
+        icon: "/media/services/detail/icons/global-routes.svg",
       },
       {
         slug: "fast-vessel-load-unload",
         label: "Fast Vessel Load/Unload",
-        icon: "/services/detail/icons/fast-vessel-loading.svg",
+        icon: "/media/services/detail/icons/fast-vessel-loading.svg",
       },
       {
         slug: "under-deck",
         label: "Under Deck",
-        icon: "/services/detail/icons/expert-coordination.svg",
+        icon: "/media/services/detail/icons/expert-coordination.svg",
       },
     ],
     detailOverview: {
@@ -974,14 +974,14 @@ export const SERVICES: readonly Service[] = [
           ),
         ]),
       ],
-      image: "/services/detail/ocean-roro-overview.webp",
+      image: "/media/services/detail/ocean-roro-overview.webp",
       hasVideoBadge: true,
     },
     detailWhenToChoose: {
       title: SHARED_WHEN_TO_CHOOSE.title,
       intro:
         "RoRo (Roll-on/Roll-off) transport is the ideal solution where the helicopter can be safely secured onto a MAFI trailer or towed directly onboard the vessel, allowing cargo to remain on a single transport platform throughout the shipping process. This method is often preferred for its safety thanks to minimal cargo handling and travelling below ship deck. By reducing the number of loading and unloading activities, RoRo transport minimizes handling risks and shortens transit times, making it particularly suitable for helicopters moving between major international ports served by established RoRo carrier networks. It is an excellent option for operators seeking a reliable, secure, and economical transportation solution while maintaining the highest standards of aircraft protection.",
-      image: "/services/detail/ocean-roro-when.webp",
+      image: "/media/services/detail/ocean-roro-when.webp",
       cards: [
         {
           title: "Reliable and Safe",
@@ -1004,31 +1004,31 @@ export const SERVICES: readonly Service[] = [
     slug: "ocean-lolo",
     name: "Ocean LO/LO",
     description: "Safe Lift-on/Lift-off into cargo hold of container vessel or MPV Breakbulk ship.",
-    image: "/services/ocean-lolo.webp",
+    image: "/media/services/ocean-lolo.webp",
     detailEyebrow: "OVERVIEW OCEAN LO/LO",
     detailHeroTitle: ["Ocean Lift-On / Lift-Off", "Transport Method"],
-    detailHeroImage: "/services/detail/ocean-lolo-hero.webp",
+    detailHeroImage: "/media/services/detail/ocean-lolo-hero.webp",
     detailHeroImagePosition: "center 40%",
     detailHeroBenefits: [
       {
         slug: "secure-handling",
         label: "Secure Handling",
-        icon: "/services/detail/icons/secure-handling.svg",
+        icon: "/media/services/detail/icons/secure-handling.svg",
       },
       {
         slug: "global-routes",
         label: "Global Routes",
-        icon: "/services/detail/icons/global-routes.svg",
+        icon: "/media/services/detail/icons/global-routes.svg",
       },
       {
         slug: "flexible-vessel-options",
         label: "Flexible Vessel Options",
-        icon: "/services/detail/icons/fast-vessel-loading.svg",
+        icon: "/media/services/detail/icons/fast-vessel-loading.svg",
       },
       {
         slug: "ship-tail-on",
         label: "Ship Tail On",
-        icon: "/services/detail/icons/expert-coordination.svg",
+        icon: "/media/services/detail/icons/expert-coordination.svg",
       },
     ],
     detailOverview: {
@@ -1061,14 +1061,14 @@ export const SERVICES: readonly Service[] = [
           ),
         ]),
       ],
-      image: "/services/detail/ocean-lolo-overview.webp",
+      image: "/media/services/detail/ocean-lolo-overview.webp",
       hasVideoBadge: true,
     },
     detailWhenToChoose: {
       title: SHARED_WHEN_TO_CHOOSE.title,
       intro:
         "LoLo transport is the preferred option when a helicopter cannot be safely towed onboard a RoRo vessel, when project requirements demand direct lifting operations and fast delivery, or when the origin and destination ports are not served by RoRo carriers.",
-      image: "/services/detail/ocean-lolo-when.webp",
+      image: "/media/services/detail/ocean-lolo-when.webp",
       cards: [
         {
           title: "Get There",
@@ -1089,31 +1089,31 @@ export const SERVICES: readonly Service[] = [
     name: "Ocean FCL",
     description:
       "Save on freight cost by shipping in 40' container High Cube, Open Top or Flat Rack.",
-    image: "/services/ocean-fcl.webp",
+    image: "/media/services/ocean-fcl.webp",
     detailEyebrow: "OVERVIEW OCEAN FCL",
     detailHeroTitle: ["Ocean FCL - Container Transport"],
-    detailHeroImage: "/services/detail/ocean-fcl-hero.webp",
+    detailHeroImage: "/media/services/detail/ocean-fcl-hero.webp",
     detailHeroImagePosition: "center 40%",
     detailHeroBenefits: [
       {
         slug: "cost-effective",
         label: "Cost Effective",
-        icon: "/services/detail/icons/expert-coordination.svg",
+        icon: "/media/services/detail/icons/expert-coordination.svg",
       },
       {
         slug: "global-routes",
         label: "Global Routes",
-        icon: "/services/detail/icons/global-routes.svg",
+        icon: "/media/services/detail/icons/global-routes.svg",
       },
       {
         slug: "container-flexibility",
         label: "Container Flexibility",
-        icon: "/services/detail/icons/secure-handling.svg",
+        icon: "/media/services/detail/icons/secure-handling.svg",
       },
       {
         slug: "frequency",
         label: "Frequency",
-        icon: "/services/detail/icons/fast-vessel-loading.svg",
+        icon: "/media/services/detail/icons/fast-vessel-loading.svg",
       },
     ],
     detailOverview: {
@@ -1154,7 +1154,7 @@ export const SERVICES: readonly Service[] = [
           ),
         ]),
       ],
-      image: "/services/detail/ocean-fcl-overview.webp",
+      image: "/media/services/detail/ocean-fcl-overview.webp",
       hasVideoBadge: true,
     },
     detailWhenToChoose: {
@@ -1177,7 +1177,7 @@ export const SERVICES: readonly Service[] = [
           ),
         ]),
       ],
-      image: "/services/detail/ocean-fcl-when.webp",
+      image: "/media/services/detail/ocean-fcl-when.webp",
       cards: [
         {
           title: "Cost-Efficient",
@@ -1197,30 +1197,30 @@ export const SERVICES: readonly Service[] = [
     name: "Road Freight",
     description:
       "We deal with assets-own trucking companies providing GPS-equipped Air-ride specialised trailers.",
-    image: "/services/road-freight.webp",
+    image: "/media/services/road-freight.webp",
     detailEyebrow: "OVERVIEW ROAD FREIGHT",
     detailHeroTitle: ["Helicopter Road Freight Solutions"],
-    detailHeroImage: "/services/detail/road-freight-hero.webp",
+    detailHeroImage: "/media/services/detail/road-freight-hero.webp",
     detailHeroBenefits: [
       {
         slug: "air-ride",
         label: "Air Ride",
-        icon: "/services/detail/icons/fast-vessel-loading.svg",
+        icon: "/media/services/detail/icons/fast-vessel-loading.svg",
       },
       {
         slug: "assets-own",
         label: "Assets-Own",
-        icon: "/services/detail/icons/secure-handling.svg",
+        icon: "/media/services/detail/icons/secure-handling.svg",
       },
       {
         slug: "route-planning-compliance",
         label: "Route Planning & Compliance Control",
-        icon: "/services/detail/icons/expert-coordination.svg",
+        icon: "/media/services/detail/icons/expert-coordination.svg",
       },
       {
         slug: "gps-monitoring",
         label: "GPS Monitoring",
-        icon: "/services/detail/icons/global-routes.svg",
+        icon: "/media/services/detail/icons/global-routes.svg",
       },
     ],
     detailOverview: {
@@ -1240,14 +1240,14 @@ export const SERVICES: readonly Service[] = [
           ),
         ]),
       ],
-      image: "/services/detail/road-freight-overview.webp",
+      image: "/media/services/detail/road-freight-overview.webp",
       hasVideoBadge: true,
     },
     detailWhenToChoose: {
       title: SHARED_WHEN_TO_CHOOSE.title,
       intro:
         "Road freight is the preferred solution when helicopters require secure inland transportation over short to medium distances between ports, airports, maintenance facilities, or project sites. It is ideal for first-mile and last-mile movements. This option is particularly suitable when the helicopter can be safely loaded onto air-ride low-bed trailers or specialized transport platforms, and when careful route planning is needed to navigate infrastructure constraints such as bridge limits, road width, and height restrictions. Road freight is also the most efficient choice for controlled, scheduled movements where flexibility, accessibility, and safe handling during overland transit are key operational priorities.",
-      image: "/services/detail/road-freight-when.webp",
+      image: "/media/services/detail/road-freight-when.webp",
       cards: [
         {
           title: "Specialized",
@@ -1272,31 +1272,31 @@ export const SERVICES: readonly Service[] = [
     slug: "air-commercial",
     name: "Air Commercial",
     description: "Ship your aircraft on B747/B787 Freighter.",
-    image: "/services/air-commercial.webp",
+    image: "/media/services/air-commercial.webp",
     detailEyebrow: "OVERVIEW AIR COMMERCIAL",
     detailHeroTitle: ["Commercial Air Freight Transport Solutions"],
-    detailHeroImage: "/services/detail/air-commercial-hero.webp",
+    detailHeroImage: "/media/services/detail/air-commercial-hero.webp",
     detailHeroImagePosition: "center 35%",
     detailHeroBenefits: [
       {
         slug: "secure-handling",
         label: "Secure Handling",
-        icon: "/services/detail/icons/secure-handling.svg",
+        icon: "/media/services/detail/icons/secure-handling.svg",
       },
       {
         slug: "global-routes",
         label: "Global Routes",
-        icon: "/services/detail/icons/global-routes.svg",
+        icon: "/media/services/detail/icons/global-routes.svg",
       },
       {
         slug: "scheduled-flights",
         label: "Scheduled Flights",
-        icon: "/services/detail/icons/fast-vessel-loading.svg",
+        icon: "/media/services/detail/icons/fast-vessel-loading.svg",
       },
       {
         slug: "expert-coordination",
         label: "Expert Coordination",
-        icon: "/services/detail/icons/expert-coordination.svg",
+        icon: "/media/services/detail/icons/expert-coordination.svg",
       },
     ],
     detailOverview: {
@@ -1325,14 +1325,14 @@ export const SERVICES: readonly Service[] = [
           ),
         ]),
       ],
-      image: "/services/detail/air-commercial-overview.webp",
+      image: "/media/services/detail/air-commercial-overview.webp",
       hasVideoBadge: true,
     },
     detailWhenToChoose: {
       title: SHARED_WHEN_TO_CHOOSE.title,
       intro:
         "Air Commercial transport is best suited for urgent helicopter shipments that require faster delivery than sea freight but do not require the immediacy or exclusivity of an air charter. It is ideal when projects are time-sensitive but still allow alignment with scheduled freighter departures, offering a practical balance between speed and cost efficiency. A standard hangar-to-hangar could range between 7 to 20 days depending on the destination, customs, flight schedule and other elements. This option is suitable for helicopters that can be prepared within airline cargo requirements, including disassembly or crating, while still meeting tight operational deadlines.",
-      image: "/services/detail/air-commercial-when.webp",
+      image: "/media/services/detail/air-commercial-when.webp",
       cards: [
         {
           title: "Safe Preparation",
@@ -1357,31 +1357,31 @@ export const SERVICES: readonly Service[] = [
     name: "Air Chartering",
     description:
       "When time is of the essence or to reach places unreachable by 74F, go for the mighty Antonov124-100 or the IL76.",
-    image: "/services/air-chartering.webp",
+    image: "/media/services/air-chartering.webp",
     detailEyebrow: "OVERVIEW AIR CHARTERING",
     detailHeroTitle: ["Air Charter Transport for Urgent Shipments"],
-    detailHeroImage: "/services/detail/air-chartering-hero.webp",
+    detailHeroImage: "/media/services/detail/air-chartering-hero.webp",
     detailHeroImagePosition: "center 55%",
     detailHeroBenefits: [
       {
         slug: "critical-move",
         label: "Critical Move",
-        icon: "/services/detail/icons/expert-coordination.svg",
+        icon: "/media/services/detail/icons/expert-coordination.svg",
       },
       {
         slug: "anywhere",
         label: "Anywhere",
-        icon: "/services/detail/icons/global-routes.svg",
+        icon: "/media/services/detail/icons/global-routes.svg",
       },
       {
         slug: "rapid-transit",
         label: "Rapid Transit",
-        icon: "/services/detail/icons/fast-vessel-loading.svg",
+        icon: "/media/services/detail/icons/fast-vessel-loading.svg",
       },
       {
         slug: "minimal-disassembly",
         label: "Minimal Disassembly",
-        icon: "/services/detail/icons/secure-handling.svg",
+        icon: "/media/services/detail/icons/secure-handling.svg",
       },
     ],
     detailOverview: {
@@ -1409,7 +1409,7 @@ export const SERVICES: readonly Service[] = [
           ),
         ]),
       ],
-      image: "/services/detail/air-chartering-overview.webp",
+      image: "/media/services/detail/air-chartering-overview.webp",
       hasVideoBadge: true,
     },
     detailWhenToChoose: {
@@ -1423,7 +1423,7 @@ export const SERVICES: readonly Service[] = [
           ),
         ]),
       ],
-      image: "/services/detail/air-chartering-when.webp",
+      image: "/media/services/detail/air-chartering-when.webp",
       cards: [
         {
           title: "Ideal for Critical Move",
@@ -1446,7 +1446,7 @@ export const WHY_CHOOSE_HERO = {
   eyebrow: "Bespoke Helicopter Shipping",
   // Mobile renders both lines stacked; desktop joins them on a single line.
   h1Lines: ["Why Choose", "Heli Skycargo"] as const,
-  photo: "/why-choose-us/hero-team.webp",
+  photo: "/media/why-choose-us/hero-team.webp",
   photoAlt: "Heli Skycargo team in front of a Leonardo helicopter",
 } as const;
 
@@ -1496,7 +1496,7 @@ export const PLACEHOLDER_SITE_STATS: readonly PlaceholderSiteStat[] = [
 ];
 
 export const WHY_CHOOSE_INTRO_PHOTO = {
-  src: "/why-choose-us/team-band.webp",
+  src: "/media/why-choose-us/team-band.webp",
   alt: "Heli Skycargo team in front of a Leonardo AW189 helicopter",
 } as const;
 
@@ -1541,7 +1541,7 @@ export const WHY_CHOOSE_FEATURE_BLOCKS: readonly FeatureBlockContent[] = [
       "Personal support from planning to delivery",
     ],
     photo: {
-      src: "/why-choose-us/seamless-photo.webp",
+      src: "/media/why-choose-us/seamless-photo.webp",
       alt: "Three HSC specialists in hardhats and safety vests posing on a vessel deck beside a container ship",
     },
     imageSide: "left",
@@ -1560,11 +1560,11 @@ export const WHY_CHOOSE_FEATURE_BLOCKS: readonly FeatureBlockContent[] = [
       "Our team coordinates each stage of transport — ensuring safe handling, regulatory compliance, and on-time delivery.",
     ],
     photo: {
-      src: "/why-choose-us/tailored-photo.webp",
+      src: "/media/why-choose-us/tailored-photo.webp",
       alt: "Wrapped helicopter being lifted by ship-side crane",
       // Mobile-only override (Figma 505:7539): wider shot of the wrapped
       // helicopter on a trailer being rolled onto the "Grande Torino" RoRo.
-      mobileSrc: "/why-choose-us/tailored-photo-mobile.webp",
+      mobileSrc: "/media/why-choose-us/tailored-photo-mobile.webp",
     },
     imageSide: "right",
     ctaLabel: "Request Quote",
@@ -1712,7 +1712,7 @@ export const QUOTE_HERO = {
      * loading scene framed. One image keeps the CMS `hero_image` override
      * round-trip clean — editors upload one asset, it works at every breakpoint.
      */
-    src: "/quote/quote-hero.webp",
+    src: "/media/quote/quote-hero.webp",
     alt: "Antonov AN-124 cargo aircraft with nose lifted, helicopter being loaded via ramp",
   },
 } as const;
@@ -1737,8 +1737,8 @@ export const TEAM_HERO = {
   // Two crops of the same source candid (Figma `505:6782` mobile / `344:4891`
   // desktop): wide 16:7 for tablet+, near-square 0.91 for mobile so the team
   // fills the portrait frame instead of getting horizontally cropped.
-  photo: "/team/hero-team.webp",
-  photoMobile: "/team/hero-team-mobile.webp",
+  photo: "/media/team/hero-team.webp",
+  photoMobile: "/media/team/hero-team-mobile.webp",
   photoAlt: "Heli Skycargo team behind the scenes",
 } as const;
 
@@ -1763,12 +1763,12 @@ export const TEAM_INTRO = {
  * photo as a placeholder until the client supplies the rest.
  */
 export const TEAM_SPOTLIGHT_OVERLAY = {
-  src: "/team/spotlight/overlay.svg",
+  src: "/media/team/spotlight/overlay.svg",
   alt: "",
 } as const;
 
 export const TEAM_SPOTLIGHT_PLACEHOLDER_PHOTO = {
-  src: "/team/spotlight/stephane.webp",
+  src: "/media/team/spotlight/stephane.webp",
   alt: "Heli Skycargo team member",
 } as const;
 
@@ -1803,7 +1803,7 @@ export const PLACEHOLDER_TEAM_MEMBERS: readonly TeamMemberPlaceholder[] = [
     _id: "team.stephane-marot",
     full_name: "Stephane Marot",
     role: "Founder & CEO",
-    placeholderPhoto: "/team/stephane-marot.webp",
+    placeholderPhoto: "/media/team/stephane-marot.webp",
     spotlightPhoto: TEAM_SPOTLIGHT_PLACEHOLDER_PHOTO,
     bioParagraphs: [
       "With 25+ years in global freight forwarding across Europe, USA, Asia and Middle East. Stephane brings deep industry expertise and a strong customer-focused approach.",
@@ -1815,7 +1815,7 @@ export const PLACEHOLDER_TEAM_MEMBERS: readonly TeamMemberPlaceholder[] = [
     _id: "team.daniel-cosico",
     full_name: "Daniel Cosico",
     role: "Control Tower Team Leader",
-    placeholderPhoto: "/team/daniel-cosico.webp",
+    placeholderPhoto: "/media/team/daniel-cosico.webp",
     // TODO(content): client to provide bio for Daniel Cosico.
     bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
   },
@@ -1823,7 +1823,7 @@ export const PLACEHOLDER_TEAM_MEMBERS: readonly TeamMemberPlaceholder[] = [
     _id: "team.remi-hachisuka",
     full_name: "Remi Hachisuka",
     role: "Japan Desk & Commercial Manager",
-    placeholderPhoto: "/team/remi-hachisuka.webp",
+    placeholderPhoto: "/media/team/remi-hachisuka.webp",
     // TODO(content): client to provide bio for Remi Hachisuka.
     bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
   },
@@ -1831,7 +1831,7 @@ export const PLACEHOLDER_TEAM_MEMBERS: readonly TeamMemberPlaceholder[] = [
     _id: "team.anjelimo-mulati",
     full_name: "Anjelimo Mulati",
     role: "Africa Sales & Procurement Manager",
-    placeholderPhoto: "/team/anjelimo-mulati.webp",
+    placeholderPhoto: "/media/team/anjelimo-mulati.webp",
     // TODO(content): client to provide bio for Anjelimo Mulati.
     bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
   },
@@ -1839,7 +1839,7 @@ export const PLACEHOLDER_TEAM_MEMBERS: readonly TeamMemberPlaceholder[] = [
     _id: "team.mia-juliet-marot",
     full_name: "Mia Juliet Marot",
     role: "Junior Sales & Marketing Executive ",
-    placeholderPhoto: "/team/mia-juliet-marot.webp",
+    placeholderPhoto: "/media/team/mia-juliet-marot.webp",
     // TODO(content): client to provide bio for Mia Juliet Marot.
     bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
   },
@@ -1847,7 +1847,7 @@ export const PLACEHOLDER_TEAM_MEMBERS: readonly TeamMemberPlaceholder[] = [
     _id: "team.ariana-resclosado",
     full_name: "Ariana Reclosado",
     role: "Logistic Coordinator",
-    placeholderPhoto: "/team/ariana-resclosado.png",
+    placeholderPhoto: "/media/team/ariana-resclosado.png",
     // TODO(content): client to provide bio for Ariana Resclosado.
     bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
   },
@@ -1881,14 +1881,14 @@ export const SERVICES_TEASER: readonly Service[] = [
           ),
         ]),
       ],
-      image: "/services/detail/ocean-roro-overview.webp",
+      image: "/media/services/detail/ocean-roro-overview.webp",
       hasVideoBadge: true,
     },
     detailWhenToChoose: {
       title: SHARED_WHEN_TO_CHOOSE.title,
       intro:
         "RoRo (Roll-on/Roll-off) transport is the ideal solution where the helicopter can be safely secured onto a MAFI trailer or towed directly onboard the vessel, allowing cargo to remain on a single transport platform throughout the shipping process. This method is often preferred for its safety thanks to minimal cargo handling and travelling below ship deck. By reducing the number of loading and unloading activities, RoRo transport minimizes handling risks and shortens transit times, making it particularly suitable for helicopters moving between major international ports served by established RoRo carrier networks. It is an excellent option for operators seeking a reliable, secure, and economical transportation solution while maintaining the highest standards of aircraft protection.",
-      image: "/services/detail/ocean-roro-when.webp",
+      image: "/media/services/detail/ocean-roro-when.webp",
       cards: [
         {
           title: "Reliable and Safe",
@@ -1934,13 +1934,13 @@ export const SERVICES_TEASER: readonly Service[] = [
           ),
         ]),
       ],
-      image: "/services/detail/ocean-lolo-overview.webp",
+      image: "/media/services/detail/ocean-lolo-overview.webp",
       hasVideoBadge: true,
     },
     detailWhenToChoose: {
       title: SHARED_WHEN_TO_CHOOSE.title,
       intro: SHARED_WHEN_TO_CHOOSE.intro,
-      image: "/services/detail/ocean-lolo-when.webp",
+      image: "/media/services/detail/ocean-lolo-when.webp",
       cards: SHARED_WHEN_TO_CHOOSE.cards,
     },
   },
@@ -1965,13 +1965,13 @@ export const SERVICES_TEASER: readonly Service[] = [
           ),
         ]),
       ],
-      image: "/services/detail/ocean-fcl-overview.webp",
+      image: "/media/services/detail/ocean-fcl-overview.webp",
       hasVideoBadge: true,
     },
     detailWhenToChoose: {
       title: SHARED_WHEN_TO_CHOOSE.title,
       intro: SHARED_WHEN_TO_CHOOSE.intro,
-      image: "/services/detail/ocean-fcl-when.webp",
+      image: "/media/services/detail/ocean-fcl-when.webp",
       cards: SHARED_WHEN_TO_CHOOSE.cards,
     },
   },
@@ -2000,13 +2000,13 @@ export const SERVICES_TEASER: readonly Service[] = [
           ),
         ]),
       ],
-      image: "/services/detail/road-freight-overview.webp",
+      image: "/media/services/detail/road-freight-overview.webp",
       hasVideoBadge: true,
     },
     detailWhenToChoose: {
       title: SHARED_WHEN_TO_CHOOSE.title,
       intro: SHARED_WHEN_TO_CHOOSE.intro,
-      image: "/services/detail/road-freight-when.webp",
+      image: "/media/services/detail/road-freight-when.webp",
       cards: SHARED_WHEN_TO_CHOOSE.cards,
     },
   },
@@ -2033,13 +2033,13 @@ export const SERVICES_TEASER: readonly Service[] = [
           ),
         ]),
       ],
-      image: "/services/detail/air-commercial-overview.webp",
+      image: "/media/services/detail/air-commercial-overview.webp",
       hasVideoBadge: true,
     },
     detailWhenToChoose: {
       title: SHARED_WHEN_TO_CHOOSE.title,
       intro: SHARED_WHEN_TO_CHOOSE.intro,
-      image: "/services/detail/air-commercial-when.webp",
+      image: "/media/services/detail/air-commercial-when.webp",
       cards: SHARED_WHEN_TO_CHOOSE.cards,
     },
   },
@@ -2068,13 +2068,13 @@ export const SERVICES_TEASER: readonly Service[] = [
           ),
         ]),
       ],
-      image: "/services/detail/air-chartering-overview.webp",
+      image: "/media/services/detail/air-chartering-overview.webp",
       hasVideoBadge: true,
     },
     detailWhenToChoose: {
       title: SHARED_WHEN_TO_CHOOSE.title,
       intro: SHARED_WHEN_TO_CHOOSE.intro,
-      image: "/services/detail/air-chartering-when.webp",
+      image: "/media/services/detail/air-chartering-when.webp",
       cards: SHARED_WHEN_TO_CHOOSE.cards,
     },
   },

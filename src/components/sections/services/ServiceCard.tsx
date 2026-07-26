@@ -43,7 +43,7 @@ export function ServiceCard({ service, number, isActive, onToggle }: ServiceCard
         )}
       >
         <Image
-          src="/services/card-decoration.svg"
+          src="/media/services/card-decoration.svg"
           alt=""
           fill
           sizes="(min-width: 1024px) 270px, 140px"

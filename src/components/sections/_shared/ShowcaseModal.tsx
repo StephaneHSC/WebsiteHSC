@@ -485,7 +485,7 @@ export function ShowcaseModal({ tile, onClose, galleryImages }: ShowcaseModalPro
                         >
                           <span aria-hidden="true" className="bg-ink/15 absolute inset-0" />
                           <Image
-                            src="/showcase/icon-play.svg"
+                            src="/media/showcase/icon-play.svg"
                             alt=""
                             width={113}
                             height={113}
@@ -524,7 +524,7 @@ export function ShowcaseModal({ tile, onClose, galleryImages }: ShowcaseModalPro
               {showArrows ? (
                 <>
                   {/* Arrows per Figma node `674:475` (right) / `674:480` (left,
-                      same icon flipped). The SVG `/showcase/icon-arrow.svg` is
+                      same icon flipped). The SVG `/media/showcase/icon-arrow.svg` is
                       the exact Figma asset (red filled circle + 1.5px white
                       chevron) — the button is transparent so the SVG visually
                       *is* the button. Hover/focus get a scale + ring; no color
@@ -536,7 +536,7 @@ export function ShowcaseModal({ tile, onClose, galleryImages }: ShowcaseModalPro
                     className="focus-visible:ring-brand-red absolute top-1/2 left-4 z-20 h-12 w-12 -translate-y-1/2 transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none lg:left-6 lg:h-16 lg:w-16"
                   >
                     <Image
-                      src="/showcase/icon-arrow.svg"
+                      src="/media/showcase/icon-arrow.svg"
                       alt=""
                       width={80}
                       height={80}
@@ -550,7 +550,7 @@ export function ShowcaseModal({ tile, onClose, galleryImages }: ShowcaseModalPro
                     className="focus-visible:ring-brand-red absolute top-1/2 right-4 z-20 h-12 w-12 -translate-y-1/2 transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none lg:right-6 lg:h-16 lg:w-16"
                   >
                     <Image
-                      src="/showcase/icon-arrow.svg"
+                      src="/media/showcase/icon-arrow.svg"
                       alt=""
                       width={80}
                       height={80}
