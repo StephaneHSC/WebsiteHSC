@@ -34,6 +34,8 @@ export default $config({
 
   async run() {
     new sst.aws.Nextjs("HscWeb", {
+      openNextVersion: "4.1.0",
+
       // Custom domain — uncomment once heliskycargo.com is managed in Route 53
       // (or configure `dns` for an external provider). Until then the app is
       // served on the generated CloudFront URL that `sst deploy` prints.
