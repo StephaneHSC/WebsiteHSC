@@ -19,12 +19,17 @@
  */
 export default $config({
   app(input) {
+    // Escape hatch for a deliberate teardown+recreate: the sst-remove workflow
+    // sets SST_ALLOW_REMOVE=true so `sst remove` can actually delete production.
+    // Normal deploys leave it unset, so production stays retained + protected.
+    const allowRemove = process.env.SST_ALLOW_REMOVE === "true";
+    const isProd = input?.stage === "production";
     return {
       name: "hsc-website",
-      // Never auto-delete resources on a production removal.
-      removal: input?.stage === "production" ? "retain" : "remove",
+      // Never auto-delete resources on a production removal (unless tearing down).
+      removal: isProd && !allowRemove ? "retain" : "remove",
       // Guard production against an accidental `sst remove`.
-      protect: input?.stage === "production",
+      protect: isProd && !allowRemove,
       home: "aws",
       providers: {
         aws: { region: "eu-central-1" },
