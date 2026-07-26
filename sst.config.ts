@@ -34,12 +34,6 @@ export default $config({
 
   async run() {
     new sst.aws.Nextjs("HscWeb", {
-      // Pin OpenNext to 4.x. SST 3.19.x otherwise defaults to OpenNext 3.9.x,
-      // which builds Next 16 but mis-routes ISR/SSG pages (/team, /showcase, ...)
-      // to S3 -> S3 "AccessDenied" instead of rendering via the server Lambda.
-      // Next 16 routing support lives in OpenNext 4.x.
-      openNextVersion: "4.0.2",
-
       // Custom domain — uncomment once heliskycargo.com is managed in Route 53
       // (or configure `dns` for an external provider). Until then the app is
       // served on the generated CloudFront URL that `sst deploy` prints.
