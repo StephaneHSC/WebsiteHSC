@@ -135,13 +135,13 @@ export const OFFICES: readonly Office[] = [
     cityscape: { src: "/offices/cityscape-hk.webp", alt: "" },
   },
   {
-    id: "uae",
+    id: "philippines",
     label: "Heli Skycargo Global Customer Support Center",
-    country: "UAE",
-    address: "Emaar Business Park, Dubai",
-    phone: "+971 558 247 780",
+    country: "PHILIPPINES",
+    address: "Suite 701, One Park Drive, BGC, Manila",
+    phone: "+63270024112",
     email: "team@heliskycargo.com",
-    cityscape: { src: "/offices/cityscape.webp", alt: "" },
+    cityscape: { src: "/offices/image.png", alt: "" },
   },
   {
     id: "usa",
@@ -641,6 +641,11 @@ export const SMART_TRACKING_CARDS: readonly SmartTrackingCard[] = [
   {
     id: 5,
     src: "/home/smart-tracking/card-5.svg",
+    alt: "Shipment documents and media — attachments gallery with document and media tabs",
+  },
+  {
+    id: 6,
+    src: "/home/smart-tracking/card-6.svg",
     alt: "Shipment documents and media — attachments gallery with document and media tabs",
   },
 ] as const;
@@ -1626,7 +1631,7 @@ export const QUOTE_HELICOPTER_BRANDS = [
   "Bell",
   "Robinson",
   "Boeing",
-  "Kaman model",
+  "Kaman",
 ] as const;
 
 export const QUOTE_HELICOPTER_MODELS_BY_BRAND: Readonly<Record<string, readonly string[]>> = {
@@ -1634,6 +1639,7 @@ export const QUOTE_HELICOPTER_MODELS_BY_BRAND: Readonly<Record<string, readonly 
     "H125",
     "H130",
     "H145",
+    "H155",
     "H160",
     "H170",
     "AS332L1",
@@ -1668,7 +1674,7 @@ export const QUOTE_HELICOPTER_MODELS_BY_BRAND: Readonly<Record<string, readonly 
   //CH-47 Chinook
 
   Boeing: ["CH-47 Chinook"],
-  "Kaman model": ["K-MAX"],
+  Kaman: ["K-MAX"],
 };
 
 export const QUOTE_QUANTITIES = ["01", "02", "03", "04", "05", "06"] as const;
@@ -1808,24 +1814,15 @@ export const PLACEHOLDER_TEAM_MEMBERS: readonly TeamMemberPlaceholder[] = [
   {
     _id: "team.daniel-cosico",
     full_name: "Daniel Cosico",
-    role: "Deployment & Lead Coordinator",
+    role: "Control Tower Team Leader",
     placeholderPhoto: "/team/daniel-cosico.webp",
     // TODO(content): client to provide bio for Daniel Cosico.
-    bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
-  },
-
-  {
-    _id: "team.alfredo-dinglasan",
-    full_name: "Alfredo Dinglasan",
-    role: "Logistic Specialist",
-    placeholderPhoto: "/team/alfredo-dinglasan.webp",
-    // TODO(content): client to provide bio for Alfredo Dinglasan.
     bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
   },
   {
     _id: "team.remi-hachisuka",
     full_name: "Remi Hachisuka",
-    role: "Japan Desk Manager",
+    role: "Japan Desk & Commercial Manager",
     placeholderPhoto: "/team/remi-hachisuka.webp",
     // TODO(content): client to provide bio for Remi Hachisuka.
     bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
@@ -1841,14 +1838,14 @@ export const PLACEHOLDER_TEAM_MEMBERS: readonly TeamMemberPlaceholder[] = [
   {
     _id: "team.mia-juliet-marot",
     full_name: "Mia Juliet Marot",
-    role: "Junior Sales & Marketing",
-    placeholderPhoto: "/team/mia-juliet-marot.png",
+    role: "Junior Sales & Marketing Executive ",
+    placeholderPhoto: "/team/mia-juliet-marot.webp",
     // TODO(content): client to provide bio for Mia Juliet Marot.
     bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
   },
   {
     _id: "team.ariana-resclosado",
-    full_name: "Ariana Resclosado",
+    full_name: "Ariana Reclosado",
     role: "Logistic Coordinator",
     placeholderPhoto: "/team/ariana-resclosado.png",
     // TODO(content): client to provide bio for Ariana Resclosado.

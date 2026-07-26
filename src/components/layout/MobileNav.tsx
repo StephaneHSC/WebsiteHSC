@@ -3,10 +3,23 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
+import { JetBrains_Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { NAV } from "@/lib/constants";
-import { buttonVariants } from "@/components/ui/Button";
 import { Logo } from "./Logo";
+
+// Client request: "Aptos Mono" for the mobile menu. Aptos Mono is a
+// Microsoft system font (ships with Office/Windows), not distributed on
+// Google Fonts and not licensed for web embedding — visitors without it
+// installed would silently fall back to a default font, so nothing would
+// actually change for them. JetBrains Mono is the closest freely-licensed,
+// webfont-safe substitute; swap this import if the client provides a
+// licensed Aptos Mono webfont file later.
+const menuMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["500", "700"],
+  variable: "--font-menu-mono",
+});
 
 export type MobileNavProps = {
   /** White hamburger glyph for use on dark / transparent backgrounds. */
@@ -102,7 +115,7 @@ export function MobileNav({ inverted = false }: MobileNavProps = {}) {
               </button>
             </div>
 
-            <nav className="flex-1 overflow-y-auto px-6 py-4">
+            <nav className={cn("flex-1 overflow-y-auto px-6 py-4", menuMono.variable)}>
               <ul className="space-y-2">
                 {NAV.map((item) =>
                   item.children ? (
@@ -113,7 +126,8 @@ export function MobileNav({ inverted = false }: MobileNavProps = {}) {
                         onClick={() =>
                           setExpanded((prev) => (prev === item.label ? null : item.label))
                         }
-                        className="text-ink hover:bg-surface-alt focus-visible:ring-brand-red font-display flex w-full items-center justify-between rounded-full px-5 py-3 text-xl font-bold transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                        className="text-ink hover:bg-surface-alt hover:text-brand-red focus-visible:ring-brand-red flex w-full items-center justify-between rounded-full px-5 py-3 text-xl font-bold transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                        style={{ fontFamily: "var(--font-menu-mono)" }}
                       >
                         <span>{item.label}</span>
                         <ChevronIcon
@@ -137,7 +151,8 @@ export function MobileNav({ inverted = false }: MobileNavProps = {}) {
                                 <Link
                                   href={child.href}
                                   onClick={close}
-                                  className="text-ink-soft hover:text-ink font-display block rounded-md px-4 py-2 text-base transition-colors"
+                                  className="text-ink-soft hover:text-brand-red block rounded-md px-4 py-2 text-base transition-colors"
+                                  style={{ fontFamily: "var(--font-menu-mono)" }}
                                 >
                                   {child.label}
                                 </Link>
@@ -152,25 +167,28 @@ export function MobileNav({ inverted = false }: MobileNavProps = {}) {
                       <Link
                         href={item.href}
                         onClick={close}
-                        className="text-ink hover:bg-surface-alt focus-visible:ring-brand-red font-display block rounded-full px-5 py-3 text-xl font-bold transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                        className="text-ink hover:bg-surface-alt hover:text-brand-red focus-visible:ring-brand-red block rounded-full px-5 py-3 text-xl font-bold transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                        style={{ fontFamily: "var(--font-menu-mono)" }}
                       >
                         {item.label}
                       </Link>
                     </li>
                   ),
                 )}
+                {/* Request Quote — now a regular menu choice (client request
+                    2026-07), not the standalone bottom pill it used to be. */}
+                <li>
+                  <Link
+                    href="/quote"
+                    onClick={close}
+                    className="text-ink hover:bg-surface-alt hover:text-brand-red focus-visible:ring-brand-red block rounded-full px-5 py-3 text-xl font-bold transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                    style={{ fontFamily: "var(--font-menu-mono)" }}
+                  >
+                    Request Quote
+                  </Link>
+                </li>
               </ul>
             </nav>
-
-            <div className="p-6">
-              <Link
-                href="/quote"
-                onClick={close}
-                className={cn(buttonVariants({ variant: "primary", size: "lg" }), "w-full")}
-              >
-                Request Quote
-              </Link>
-            </div>
           </motion.aside>
         )}
       </AnimatePresence>

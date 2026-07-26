@@ -455,7 +455,7 @@ const TeamCard = forwardRef<HTMLButtonElement, TeamCardProps>(function TeamCard(
  * vs "Reclosado") — both spellings are listed so either source resolves.
  */
 const CARD_PHOTO_ZOOM: Record<string, number> = {
-  "mia juliet marot": 1.5,
+  "mia juliet marot": 1.15,
   "ariana resclosado": 1.25,
   "ariana reclosado": 1.25,
 };
