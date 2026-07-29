@@ -74,7 +74,7 @@ export function SmartTrackingCards() {
             <li
               key={card.id}
               // `snap-always` forces one-card-per-swipe (no fling-skipping).
-              className="w-[300px] shrink-0 snap-start snap-always sm:w-[400px] lg:w-[520px] xl:w-[580px]"
+              className="w-[420px] shrink-0 snap-start snap-always sm:w-[460px] lg:w-[520px] xl:w-[580px]"
             >
               <Image
                 src={card.src}

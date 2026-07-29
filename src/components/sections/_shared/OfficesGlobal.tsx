@@ -244,6 +244,8 @@ type ContactRowProps = {
 };
 
 function ContactRow({ icon, label, href, stopPropagation }: ContactRowProps) {
+  // Grid (not flex) so wrapped text lines fall under the label column
+  // instead of back to the container's left edge under the icon.
   const inner = (
     <>
       <span className="text-surface/80 mt-1 inline-flex h-4 w-4 shrink-0">{icon}</span>
@@ -251,12 +253,12 @@ function ContactRow({ icon, label, href, stopPropagation }: ContactRowProps) {
     </>
   );
   return (
-    <li className="flex items-start gap-3">
+    <li className="grid grid-cols-[1rem_1fr] items-start gap-3">
       {href ? (
         <a
           href={href}
           onClick={stopPropagation ? (e) => e.stopPropagation() : undefined}
-          className="text-surface focus-visible:ring-surface focus-visible:ring-offset-ink flex items-start gap-3 rounded-sm transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+          className="text-surface focus-visible:ring-surface focus-visible:ring-offset-ink col-span-2 grid grid-cols-subgrid items-start rounded-sm transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
         >
           {inner}
         </a>

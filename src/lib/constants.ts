@@ -48,7 +48,7 @@ export const NAV: readonly NavItem[] = [
 export const FOOTER = {
   company: [
     { label: "Why Choose Us", href: "/why-choose-us" },
-    { label: "Services", href: "/services" },
+    { label: "Transport Solutions", href: "/services" },
     { label: "Shipment Showcase", href: "/showcase" },
     { label: "Our Team", href: "/team" },
     { label: "Request Quote", href: "/quote" },
@@ -1839,7 +1839,7 @@ export const PLACEHOLDER_TEAM_MEMBERS: readonly TeamMemberPlaceholder[] = [
     _id: "team.mia-juliet-marot",
     full_name: "Mia Juliet Marot",
     role: "Junior Sales & Marketing Executive ",
-    placeholderPhoto: "/media/team/mia-juliet-marot.webp",
+    placeholderPhoto: "/media/team/mia-juliet-marot.png",
     // TODO(content): client to provide bio for Mia Juliet Marot.
     bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
   },
@@ -1858,10 +1858,11 @@ export const SERVICES_TEASER: readonly Service[] = [
     slug: "ocean-roro",
     name: "Ocean RO/RO",
     description: "Transport your aircraft using Ro/Ro vessel, loaded on a MAFI or simply towing.",
-    image: "/home/services-teaser/ser-1.webp",
+    image: "/home/services-teaser/ser-1.png",
+    imageObjectPosition: "70% 50%",
     detailEyebrow: "OVERVIEW OCEAN RO/RO",
     detailHeroTitle: ["Roll-On/Roll-Off", "Ocean Transport"],
-    detailHeroImage: "/home/services-teaser/ser-1.webp",
+    detailHeroImage: "/home/services-teaser/ser-1.png",
     detailOverview: {
       label: "Roll-On/Roll-Off Ocean Transport",
       title: ["Fast, Secure", "Helicopter Transport", "Using RoRo Vessels."],
@@ -1911,10 +1912,10 @@ export const SERVICES_TEASER: readonly Service[] = [
     slug: "ocean-lolo",
     name: "Ocean LO/LO",
     description: "Safe Lift-on/Lift-off into cargo hold of container vessel or MPV Breakbulk ship.",
-    image: "/home/services-teaser/ser-2.webp",
+    image: "/home/services-teaser/image.png",
     detailEyebrow: "OVERVIEW OCEAN LO/LO",
     detailHeroTitle: ["Ocean Lift-On / Lift-Off", "Transport Method"],
-    detailHeroImage: "/home/services-teaser/ser-2.webp",
+    detailHeroImage: "/home/services-teaser/image.png",
     detailOverview: {
       label: "Lift-on / Lift-off Shipping",
       title: ["Container & Heavy", "Lift Shipping Options"],
@@ -1980,11 +1981,11 @@ export const SERVICES_TEASER: readonly Service[] = [
     name: "Road Freight",
     description:
       "We deal with assets-own trucking companies providing GPS-equipped Air-ride specialised trailers.",
-    image: "/home/services-teaser/ser-4.webp",
-    imageObjectPosition: "30% 50%",
+    image: "/home/services-teaser/ser-4.png",
+    imageObjectPosition: "60% 50%",
     detailEyebrow: "OVERVIEW ROAD FREIGHT",
     detailHeroTitle: ["Helicopter Road Freight Solutions"],
-    detailHeroImage: "/home/services-teaser/ser-4.webp",
+    detailHeroImage: "/home/services-teaser/ser-4.png",
     detailOverview: {
       label: "Road Freight Transport",
       title: ["End-to-End", "Road Freight Services"],
@@ -2048,11 +2049,11 @@ export const SERVICES_TEASER: readonly Service[] = [
     name: "Air Chartering",
     description:
       "When time is of the essence or to reach places unreachable by 74F, go for the mighty Antonov124-100 or the IL76.",
-    image: "/home/services-teaser/ser-6.webp",
+    image: "/home/services-teaser/ser-6.png",
     imageObjectPosition: "70% 50%",
     detailEyebrow: "OVERVIEW AIR CHARTERING",
     detailHeroTitle: ["Air Charter Transport for Urgent Shipments"],
-    detailHeroImage: "/home/services-teaser/ser-6.webp",
+    detailHeroImage: "/home/services-teaser/ser-6.png",
     detailOverview: {
       label: "Air Charter Transport",
       title: ["Fast-Response", "Aircraft Charter", "Transport Solutions"],
