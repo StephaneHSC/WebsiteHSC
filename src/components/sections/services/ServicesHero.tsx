@@ -18,7 +18,10 @@ export function ServicesHero() {
           fill
           priority
           sizes="99vw"
-          className="object-cover object-center"
+          // Shifted left of center so the HSC logo on the wrapped helicopter
+          // (left side of the source photo) isn't cropped off on narrower
+          // viewports.
+          className="object-cover object-[30%_center]"
         />
         <span className="bg-ink/40 md:bg-ink/40 absolute inset-0" />
       </div>
@@ -38,15 +41,10 @@ export function ServicesHero() {
           </Reveal>
           <Reveal delay={0.1}>
             <h1 className="font-body text-surface mt-4 text-[32px] leading-[1.31] font-bold tracking-[0.02em] capitalize md:mt-6 md:text-5xl md:leading-[1.2] lg:text-[64px] lg:leading-[82px]">
-              {/*
-               * Mobile (3 lines): "Global Logistics" / "Experts With Unique"
-               * / "Industry Access.". Desktop (2 lines): "Global Logistics
-               * Experts" / "With Unique Industry Access."
-               */}
-              Global Logistics
-              <br className="md:hidden" /> Experts
-              <br className="hidden md:inline" /> With Unique
-              <br className="md:hidden" /> Industry Access.
+              {/* Client copy change — was "Global Logistics Experts With
+               * Unique Industry Access." */}
+              Transport Solutions
+              <br /> That Work.
             </h1>
           </Reveal>
         </div>

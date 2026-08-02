@@ -969,8 +969,10 @@ export const SERVICES: readonly Service[] = [
           ),
         ]),
         para([
+          reg("Heli Skycargo contracts with the very best "),
+          bold("global Ro/Ro carriers"),
           reg(
-            "Heli Skycargo contracts with the very best global Ro/Ro carriers, including NYK, Höegh Autoliners, Wallenius Wilhelmsen, MOL (Mitsui O.S.K. Lines), K Line, EUKOR, Grimaldi, Bahri Shipping, Cosco, Glovis and many others.",
+            ", including NYK, Höegh Autoliners, Wallenius Wilhelmsen, MOL (Mitsui O.S.K. Lines), K Line, EUKOR, Grimaldi, Bahri Shipping, Cosco, Glovis and many others.",
           ),
         ]),
       ],
@@ -979,8 +981,20 @@ export const SERVICES: readonly Service[] = [
     },
     detailWhenToChoose: {
       title: SHARED_WHEN_TO_CHOOSE.title,
-      intro:
-        "RoRo (Roll-on/Roll-off) transport is the ideal solution where the helicopter can be safely secured onto a MAFI trailer or towed directly onboard the vessel, allowing cargo to remain on a single transport platform throughout the shipping process. This method is often preferred for its safety thanks to minimal cargo handling and travelling below ship deck. By reducing the number of loading and unloading activities, RoRo transport minimizes handling risks and shortens transit times, making it particularly suitable for helicopters moving between major international ports served by established RoRo carrier networks. It is an excellent option for operators seeking a reliable, secure, and economical transportation solution while maintaining the highest standards of aircraft protection.",
+      intro: [
+        para([
+          bold("RoRo (Roll-on/Roll-off)"),
+          reg(
+            " transport is the ideal solution where the helicopter can be safely secured onto a MAFI trailer or towed directly onboard the vessel, allowing cargo to remain on a single transport platform throughout the shipping process. This method is often preferred for its safety thanks to minimal cargo handling and ",
+          ),
+          bold("travelling below ship deck"),
+          reg(
+            ". By reducing the number of loading and unloading activities, RoRo transport minimizes handling risks and shortens transit times, making it particularly suitable for helicopters moving between major international ports served by established RoRo carrier networks. It is an excellent option for operators seeking a ",
+          ),
+          bold("reliable, secure, and economical transportation solution"),
+          reg(" while maintaining the highest standards of aircraft protection."),
+        ]),
+      ],
       image: "/media/services/detail/ocean-roro-when.webp",
       cards: [
         {
@@ -1068,7 +1082,7 @@ export const SERVICES: readonly Service[] = [
       title: SHARED_WHEN_TO_CHOOSE.title,
       intro:
         "LoLo transport is the preferred option when a helicopter cannot be safely towed onboard a RoRo vessel, when project requirements demand direct lifting operations and fast delivery, or when the origin and destination ports are not served by RoRo carriers.",
-      image: "/media/services/detail/ocean-lolo-when.webp",
+      image: "/media/services/detail/ocean-lolo-when.png",
       cards: [
         {
           title: "Get There",
@@ -1150,8 +1164,12 @@ export const SERVICES: readonly Service[] = [
         ]),
         para([
           reg(
-            "All solutions are tailored based on aircraft size, destination requirements, and operational constraints. By utilizing container vessel services, Ocean FCL provides access to a wide range of global routes, higher sailing frequency, and greater destination flexibility compared to specialized cargo vessels.",
+            "All solutions are tailored based on aircraft size, destination requirements, and operational constraints. By utilizing container vessel services, Ocean FCL provides access to a ",
           ),
+          bold(
+            "wide range of global routes, higher sailing frequency, and greater destination flexibility",
+          ),
+          reg(" compared to specialized cargo vessels."),
         ]),
       ],
       image: "/media/services/detail/ocean-fcl-overview.webp",
@@ -1235,8 +1253,10 @@ export const SERVICES: readonly Service[] = [
           reg(" between airports, ports, maintenance facilities, and final project locations."),
         ]),
         para([
+          reg("Our team would arrange "),
+          bold("road survey, road permit application, dedicated escort"),
           reg(
-            "Our team would arrange road survey, road permit application, dedicated escort to meet your shipment safety requirements. Each route is pre-assessed for height restrictions, bridge load limits, road width, turning radii, and access constraints to ensure safe and uninterrupted transport operations from origin to destination. Heli Skycargo oversees documentation, permits, escort arrangements, and operational planning, including high-pole escort vehicles and police escorts where required, ensuring controlled, compliant, and safe execution throughout the entire inland transport process.",
+            " to meet your shipment safety requirements. Each route is pre-assessed for height restrictions, bridge load limits, road width, turning radii, and access constraints to ensure safe and uninterrupted transport operations from origin to destination. Heli Skycargo oversees documentation, permits, escort arrangements, and operational planning, including high-pole escort vehicles and police escorts where required, ensuring controlled, compliant, and safe execution throughout the entire inland transport process.",
           ),
         ]),
       ],
@@ -1311,8 +1331,10 @@ export const SERVICES: readonly Service[] = [
           reg(" and new generation "),
           bold("787 Freighter (B787F)"),
           reg(
-            " operating on established global airline routes across Europe, Asia, the Americas, Middle East and Africa. This option is ideal for shipments requiring dependable schedules, extensive global coverage, and optimized cost efficiency compared to dedicated charter solutions.",
+            " operating on established global airline routes across Europe, Asia, the Americas, Middle East and Africa. This option is ideal for shipments requiring ",
           ),
+          bold("dependable schedules, extensive global coverage, and optimized cost efficiency"),
+          reg(" compared to dedicated charter solutions."),
         ]),
         para([
           reg(
@@ -1330,8 +1352,20 @@ export const SERVICES: readonly Service[] = [
     },
     detailWhenToChoose: {
       title: SHARED_WHEN_TO_CHOOSE.title,
-      intro:
-        "Air Commercial transport is best suited for urgent helicopter shipments that require faster delivery than sea freight but do not require the immediacy or exclusivity of an air charter. It is ideal when projects are time-sensitive but still allow alignment with scheduled freighter departures, offering a practical balance between speed and cost efficiency. A standard hangar-to-hangar could range between 7 to 20 days depending on the destination, customs, flight schedule and other elements. This option is suitable for helicopters that can be prepared within airline cargo requirements, including disassembly or crating, while still meeting tight operational deadlines.",
+      intro: [
+        para([
+          bold("Air Commercial transport"),
+          reg(" is best suited for urgent helicopter shipments that require "),
+          bold("faster delivery than sea freight"),
+          reg(
+            " but do not require the immediacy or exclusivity of an air charter. It is ideal when projects are ",
+          ),
+          bold("time-sensitive"),
+          reg(
+            " but still allow alignment with scheduled freighter departures, offering a practical balance between speed and cost efficiency. A standard hangar-to-hangar could range between 7 to 20 days depending on the destination, customs, flight schedule and other elements. This option is suitable for helicopters that can be prepared within airline cargo requirements, including disassembly or crating, while still meeting tight operational deadlines.",
+          ),
+        ]),
+      ],
       image: "/media/services/detail/air-commercial-when.webp",
       cards: [
         {
@@ -1419,7 +1453,11 @@ export const SERVICES: readonly Service[] = [
           reg("Air charter is the preferred transportation solution when "),
           bold("speed, flexibility, and operational urgency"),
           reg(
-            " are critical factors. Utilizing dedicated cargo aircraft allows helicopters to be delivered hangar-to-hangar in the shortest transit time ranging within 3 to 5 days, making it ideal for urgent deployments, emergency response missions, and time-sensitive project requirements. Air charter also provides access to remote and hard-to-reach destinations where conventional sea freight services or commercial airfreight B74F may be impractical or unavailable. Charter flights offer maximum schedule control, enabling departures and routing to be tailored around specific project timelines and operational demands. With significantly fewer handling stages throughout the logistics chain, helicopters benefit from enhanced security, reduced transit risk, and faster delivery, making air charter the optimal choice for critical helicopter transportation requirements worldwide.",
+            " are critical factors. Utilizing dedicated cargo aircraft allows helicopters to be delivered hangar-to-hangar in the shortest transit time ranging within 3 to 5 days, making it ideal for urgent deployments, emergency response missions, and time-sensitive project requirements. Air charter also provides access to remote and hard-to-reach destinations where conventional sea freight services or commercial airfreight B74F may be impractical or unavailable. Charter flights offer ",
+          ),
+          bold("maximum schedule control"),
+          reg(
+            ", enabling departures and routing to be tailored around specific project timelines and operational demands. With significantly fewer handling stages throughout the logistics chain, helicopters benefit from enhanced security, reduced transit risk, and faster delivery, making air charter the optimal choice for critical helicopter transportation requirements worldwide.",
           ),
         ]),
       ],
@@ -1877,8 +1915,10 @@ export const SERVICES_TEASER: readonly Service[] = [
           ),
         ]),
         para([
+          reg("Heli Skycargo contracts with the very best "),
+          bold("global Ro/Ro carriers"),
           reg(
-            "Heli Skycargo contracts with the very best global Ro/Ro carriers, including NYK, Höegh Autoliners, Wallenius Wilhelmsen, MOL (Mitsui O.S.K. Lines), K Line, EUKOR, Grimaldi, Bahri Shipping, Cosco, Glovis and many others.",
+            ", including NYK, Höegh Autoliners, Wallenius Wilhelmsen, MOL (Mitsui O.S.K. Lines), K Line, EUKOR, Grimaldi, Bahri Shipping, Cosco, Glovis and many others.",
           ),
         ]),
       ],
@@ -1887,8 +1927,20 @@ export const SERVICES_TEASER: readonly Service[] = [
     },
     detailWhenToChoose: {
       title: SHARED_WHEN_TO_CHOOSE.title,
-      intro:
-        "RoRo (Roll-on/Roll-off) transport is the ideal solution where the helicopter can be safely secured onto a MAFI trailer or towed directly onboard the vessel, allowing cargo to remain on a single transport platform throughout the shipping process. This method is often preferred for its safety thanks to minimal cargo handling and travelling below ship deck. By reducing the number of loading and unloading activities, RoRo transport minimizes handling risks and shortens transit times, making it particularly suitable for helicopters moving between major international ports served by established RoRo carrier networks. It is an excellent option for operators seeking a reliable, secure, and economical transportation solution while maintaining the highest standards of aircraft protection.",
+      intro: [
+        para([
+          bold("RoRo (Roll-on/Roll-off)"),
+          reg(
+            " transport is the ideal solution where the helicopter can be safely secured onto a MAFI trailer or towed directly onboard the vessel, allowing cargo to remain on a single transport platform throughout the shipping process. This method is often preferred for its safety thanks to minimal cargo handling and ",
+          ),
+          bold("travelling below ship deck"),
+          reg(
+            ". By reducing the number of loading and unloading activities, RoRo transport minimizes handling risks and shortens transit times, making it particularly suitable for helicopters moving between major international ports served by established RoRo carrier networks. It is an excellent option for operators seeking a ",
+          ),
+          bold("reliable, secure, and economical transportation solution"),
+          reg(" while maintaining the highest standards of aircraft protection."),
+        ]),
+      ],
       image: "/media/services/detail/ocean-roro-when.webp",
       cards: [
         {
@@ -1941,7 +1993,7 @@ export const SERVICES_TEASER: readonly Service[] = [
     detailWhenToChoose: {
       title: SHARED_WHEN_TO_CHOOSE.title,
       intro: SHARED_WHEN_TO_CHOOSE.intro,
-      image: "/media/services/detail/ocean-lolo-when.webp",
+      image: "/media/services/detail/ocean-lolo-when.png",
       cards: SHARED_WHEN_TO_CHOOSE.cards,
     },
   },

@@ -129,10 +129,10 @@ export function MobileNav({ inverted = false }: MobileNavProps = {}) {
                         className="text-ink hover:bg-surface-alt hover:text-brand-red focus-visible:ring-brand-red flex w-full items-center justify-between rounded-full px-5 py-3 text-2xl font-bold transition-colors focus-visible:ring-2 focus-visible:outline-none"
                         style={{ fontFamily: "var(--font-menu-mono)" }}
                       >
-                        <span>{item.label}</span>
+                        <span className="flex-1 text-left">{item.label}</span>
                         <ChevronIcon
                           className={cn(
-                            "transition-transform duration-200",
+                            "shrink-0 transition-transform duration-200",
                             expanded === item.label && "rotate-180",
                           )}
                         />
