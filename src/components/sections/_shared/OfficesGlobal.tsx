@@ -208,7 +208,10 @@ function OfficeCard({ office, isActive, onActivate }: OfficeCardProps) {
         isActive ? "bg-brand-red/70 lg:bg-transparent" : "hover:bg-white/5",
       )}
     >
-      <p className="font-display text-surface text-[14px] leading-[20px] font-semibold uppercase">
+      {/* min-h reserves room for 2 lines (Philippines' longer label wraps;
+          the others don't) so every card's country heading below starts at
+          the same vertical offset regardless of label length. */}
+      <p className="font-display text-surface min-h-[40px] text-[14px] leading-[20px] font-semibold uppercase">
         {office.label}
       </p>
       <h3 className="font-display text-surface mt-3 text-4xl leading-tight font-semibold tracking-tight uppercase md:text-[40px] md:leading-[44px] lg:text-[48px] lg:leading-[48px]">

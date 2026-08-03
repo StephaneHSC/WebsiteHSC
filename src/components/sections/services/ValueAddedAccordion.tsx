@@ -65,7 +65,7 @@ export function ValueAddedAccordion() {
           </Reveal>
         </div>
 
-        <ul className="mt-12 flex flex-col gap-[10px] xl:mt-[120px]">
+        <ul className="mt-12 flex flex-col xl:mt-[120px]">
           {VALUE_ADDED_SERVICES.map((service, i) => (
             <li key={service.slug}>
               <Reveal delay={0.04 * i}>

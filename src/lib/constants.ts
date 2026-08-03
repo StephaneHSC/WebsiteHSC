@@ -1885,7 +1885,7 @@ export const PLACEHOLDER_TEAM_MEMBERS: readonly TeamMemberPlaceholder[] = [
   {
     _id: "team.anjelimo-mulati",
     full_name: "Anjelimo Mulati",
-    role: "Africa Sales & Procurement Manager",
+    role: "Africa Desk & Procurement Manager",
     placeholderPhoto: "/media/team/anjelimo-mulati.webp",
     // TODO(content): client to provide bio for Anjelimo Mulati.
     bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],

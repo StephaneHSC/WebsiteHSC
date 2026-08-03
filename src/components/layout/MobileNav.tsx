@@ -126,7 +126,7 @@ export function MobileNav({ inverted = false }: MobileNavProps = {}) {
                         onClick={() =>
                           setExpanded((prev) => (prev === item.label ? null : item.label))
                         }
-                        className="text-ink hover:bg-surface-alt hover:text-brand-red focus-visible:ring-brand-red flex w-full items-center justify-between rounded-full px-5 py-3 text-2xl font-bold transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                        className="text-ink hover:bg-surface-alt hover:text-brand-red focus-visible:ring-brand-red flex w-full items-center justify-between rounded-full px-5 py-3 text-2xl font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none"
                         style={{ fontFamily: "var(--font-menu-mono)" }}
                       >
                         <span className="flex-1 text-left">{item.label}</span>
@@ -167,7 +167,7 @@ export function MobileNav({ inverted = false }: MobileNavProps = {}) {
                       <Link
                         href={item.href}
                         onClick={close}
-                        className="text-ink hover:bg-surface-alt hover:text-brand-red focus-visible:ring-brand-red block rounded-full px-5 py-3 text-2xl font-bold transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                        className="text-ink hover:bg-surface-alt hover:text-brand-red focus-visible:ring-brand-red block rounded-full px-5 py-3 text-2xl font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none"
                         style={{ fontFamily: "var(--font-menu-mono)" }}
                       >
                         {item.label}
@@ -181,7 +181,7 @@ export function MobileNav({ inverted = false }: MobileNavProps = {}) {
                   <Link
                     href="/quote"
                     onClick={close}
-                    className="text-ink hover:bg-surface-alt hover:text-brand-red focus-visible:ring-brand-red block rounded-full px-5 py-3 text-2xl font-bold transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                    className="text-ink hover:bg-surface-alt hover:text-brand-red focus-visible:ring-brand-red block rounded-full px-5 py-3 text-2xl font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none"
                     style={{ fontFamily: "var(--font-menu-mono)" }}
                   >
                     Request Quote

@@ -25,6 +25,14 @@ export function ServicesTeaser() {
   // viewport. Defaults to index 2 (Ocean FCL) so the third card lands on
   // mount, matching desktop and the Figma frame.
   const [mobileInViewIndex, setMobileInViewIndex] = useState(2);
+  // Tablet tap-to-expand (iPad, client request): hover-incapable pointers at
+  // md+ don't get the CSS `hover:hover`-gated expand, so a card's Link would
+  // otherwise navigate on the very first tap with no chance to preview it
+  // expanded first. First tap on a not-yet-expanded card previews it instead
+  // of navigating; a second tap on that SAME (already-expanded) card lets the
+  // Link through. Phones stay untouched — they render fully expanded from the
+  // start (no hover-gated CSS to fight), so a single tap already navigates.
+  const [tappedIndex, setTappedIndex] = useState<number | null>(null);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<Array<HTMLLIElement | null>>([]);
 
@@ -138,6 +146,20 @@ export function ServicesTeaser() {
                 }}
                 onMouseEnter={() => setHoveredIndex(i)}
                 onMouseLeave={() => setHoveredIndex(null)}
+                onClickCapture={(e) => {
+                  if (item === "value-added") return;
+                  const isTabletNoHover =
+                    typeof window !== "undefined" &&
+                    window.matchMedia("(hover: none) and (min-width: 768px)").matches;
+                  if (!isTabletNoHover) return;
+                  const alreadyExpanded = desktopActive === i || tappedIndex === i;
+                  if (!alreadyExpanded) {
+                    // First tap: preview instead of navigating. Capture phase
+                    // so this runs before the inner <Link>'s own click/nav.
+                    e.preventDefault();
+                    setTappedIndex(i);
+                  }
+                }}
                 data-active={desktopActive === i ? "true" : undefined}
                 data-in-view={isMobileCentered ? "true" : undefined}
                 className={cn(
@@ -154,7 +176,8 @@ export function ServicesTeaser() {
                   // as the largest in frame. Reset on md+ where the desktop
                   // expansion takes over.
                   "scale-[0.88] transition-transform duration-300 ease-out data-[in-view=true]:scale-100 md:!scale-100",
-                  desktopActive === i && "md:!min-w-[420px] lg:!min-w-[600px] xl:!min-w-[720px]",
+                  (desktopActive === i || tappedIndex === i) &&
+                    "md:!min-w-[420px] lg:!min-w-[600px] xl:!min-w-[720px]",
                 )}
               >
                 <Reveal delay={0.2 + i * 0.06} className="h-full">
@@ -164,7 +187,7 @@ export function ServicesTeaser() {
                     <ServiceCard
                       service={item}
                       number={i + 1}
-                      active={desktopActive === i || isMobileCentered}
+                      active={desktopActive === i || isMobileCentered || tappedIndex === i}
                     />
                   )}
                 </Reveal>
