@@ -47,7 +47,11 @@ export function ValueAddedAccordion() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="bg-surface w-full overflow-hidden">
+    <section
+      id="value-added"
+      ref={sectionRef}
+      className="bg-surface w-full scroll-mt-20 overflow-hidden"
+    >
       <Container className="max-w-[1600px] py-20 md:py-24 xl:px-[75px] xl:py-[108px]">
         <div className="flex flex-col items-center gap-4 text-center">
           <Reveal>

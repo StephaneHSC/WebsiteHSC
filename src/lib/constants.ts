@@ -837,7 +837,7 @@ export const VALUE_ADDED_SERVICES: readonly ValueAddedService[] = [
     label: "Equipment Rental",
     thumb: "/media/services/value-added/equipment-rental.webp",
     description:
-      "We have our own dedicated S76C++ airfreight cradle and AW139 saddle for oceanfreight and road freight that can be rented out for the transportation of Sikorski 76C++ and Leonardo Helicopter AW139.",
+      "We have our own dedicated S76C++ airfreight cradle, AW139, AW189 shipping kit that can be rented out for the transportation of Sikorski 76C++ and Leonardo Helicopter AW139/AW189",
     shortDescription:
       "Lifting tool, transport saddle and other shipping kits available for rental.",
     iconM4: "/media/services/detail/value-added/equipment-rental.png",
@@ -847,7 +847,7 @@ export const VALUE_ADDED_SERVICES: readonly ValueAddedService[] = [
     label: "AOG",
     thumb: "/media/services/value-added/aog.webp",
     description:
-      "Helicopter On Ground ! Get your AOG parts on the next flight out. We shipped from any part of the world to anywhere, every day, weekend included.",
+      "Helicopter On Ground ! Get your AOG parts on the next flight out. We shipped from any part of the world to anywhere, every day, weekend included. Send your request to team@heliskycargo.com or WhatsApp us.",
     shortDescription: "Grounded aircraft? We arrange parts and engineers to restore service fast.",
     iconM4: "/media/services/detail/value-added/aog.png",
   },
@@ -856,7 +856,7 @@ export const VALUE_ADDED_SERVICES: readonly ValueAddedService[] = [
     label: "OBC",
     thumb: "/media/services/value-added/obc.webp",
     description:
-      "Our hand carry team is ready to hop on a plane to get your parts delivered with speed at destination. It takes 60 minutes Chrono to come up with a solution upon receipt of your request.",
+      "Our hand carry team is ready to hop on a plane to get your parts delivered with speed at destination. It takes 60 minutes Chrono to come up with a solution upon receipt of your request. Send your request to team@heliskycargo.com or WhatsApp us.",
     shortDescription:
       "Our hand-carry team ensures supervised transport and secure delivery of critical aeroparts.",
     iconM4: "/media/services/detail/value-added/obc.png",
@@ -909,7 +909,7 @@ export const VALUE_ADDED_SERVICES: readonly ValueAddedService[] = [
   {
     slug: "cargo-insurance",
     label: "Cargo Insurance",
-    thumb: "/media/services/value-added/cargo-insurance.webp",
+    thumb: "/media/services/value-added/cargo-insurance.png",
     description:
       "We provide a comprehensive all-risk marine insurance at a very competitive price.",
     shortDescription:
@@ -1080,8 +1080,15 @@ export const SERVICES: readonly Service[] = [
     },
     detailWhenToChoose: {
       title: SHARED_WHEN_TO_CHOOSE.title,
-      intro:
-        "LoLo transport is the preferred option when a helicopter cannot be safely towed onboard a RoRo vessel, when project requirements demand direct lifting operations and fast delivery, or when the origin and destination ports are not served by RoRo carriers.",
+      intro: [
+        para([
+          reg(
+            "LoLo transport is the preferred option when a helicopter cannot be safely towed onboard a RoRo vessel, when project requirements demand ",
+          ),
+          bold("direct lifting operations and fast delivery"),
+          reg(", or when the origin and destination ports are not served by RoRo carriers."),
+        ]),
+      ],
       image: "/media/services/detail/ocean-lolo-when.png",
       cards: [
         {
@@ -1247,7 +1254,13 @@ export const SERVICES: readonly Service[] = [
       paragraphs: [
         para([
           reg(
-            "Our road freight helicopter transport solution provides secure and efficient inland movement of helicopters using assets-own, GPS-equipped air-ride low-bed trailers, modular transport platforms, or specialized heavy transport trailers, selected based on aircraft dimensions, weight distribution, and operational requirements. This service is designed to ensure ",
+            "Our road freight helicopter transport solution provides secure and efficient inland movement of helicopters using ",
+          ),
+          bold(
+            "assets-own, GPS-equipped air-ride low-bed trailers, modular transport platforms, or specialized heavy transport trailers",
+          ),
+          reg(
+            ", selected based on aircraft dimensions, weight distribution, and operational requirements. This service is designed to ensure ",
           ),
           bold("safe first-mile, in-transit, last-mile connectivity"),
           reg(" between airports, ports, maintenance facilities, and final project locations."),
@@ -1457,7 +1470,11 @@ export const SERVICES: readonly Service[] = [
           ),
           bold("maximum schedule control"),
           reg(
-            ", enabling departures and routing to be tailored around specific project timelines and operational demands. With significantly fewer handling stages throughout the logistics chain, helicopters benefit from enhanced security, reduced transit risk, and faster delivery, making air charter the optimal choice for critical helicopter transportation requirements worldwide.",
+            ", enabling departures and routing to be tailored around specific project timelines and operational demands. With significantly fewer handling stages throughout the logistics chain, helicopters benefit from",
+          ),
+          bold(" enhanced security, reduced transit risk, and faster delivery,"),
+          reg(
+            "            making air charter the optimal choice for critical helicopter transportation requirements worldwide.",
           ),
         ]),
       ],
@@ -1964,10 +1981,10 @@ export const SERVICES_TEASER: readonly Service[] = [
     slug: "ocean-lolo",
     name: "Ocean LO/LO",
     description: "Safe Lift-on/Lift-off into cargo hold of container vessel or MPV Breakbulk ship.",
-    image: "/home/services-teaser/image.png",
+    image: "/home/services-teaser/ser-2-enhanced.png",
     detailEyebrow: "OVERVIEW OCEAN LO/LO",
     detailHeroTitle: ["Ocean Lift-On / Lift-Off", "Transport Method"],
-    detailHeroImage: "/home/services-teaser/image.png",
+    detailHeroImage: "/home/services-teaser/ser-2-enhanced.png",
     detailOverview: {
       label: "Lift-on / Lift-off Shipping",
       title: ["Container & Heavy", "Lift Shipping Options"],
