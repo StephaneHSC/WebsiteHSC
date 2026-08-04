@@ -84,7 +84,10 @@ export async function CustomerTestimonials() {
                   alt=""
                   width={64}
                   height={56}
-                  className="mx-1 -mt-2 inline-block h-[0.85em] w-auto align-middle md:mx-2"
+                  // Tight, no horizontal gap either side — reads as the "O"
+                  // in "LOVE" rather than a separate element floating
+                  // between two words.
+                  className="-mx-0.5 -mt-2 inline-block h-[0.9em] w-auto align-middle"
                 />
                 <span className="text-brand-red font-black">ve</span> Heli Skycargo
               </span>

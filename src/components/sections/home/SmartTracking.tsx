@@ -4,6 +4,11 @@ import { SectionEyebrow } from "@/components/sections/_shared/SectionEyebrow";
 import { Reveal } from "@/components/sections/_shared/Reveal";
 import { AppBadgeRow } from "@/components/ui/AppBadge";
 import { SmartTrackingCards } from "./SmartTrackingCards";
+import { client } from "@/lib/sanity/client";
+import { urlFor } from "@/lib/sanity/image";
+import { smartTrackingCardsQuery } from "@/lib/sanity/queries";
+import { SMART_TRACKING_CARDS, type SmartTrackingCard } from "@/lib/constants";
+import type { SmartTrackingCardsDoc } from "@/types/sanity";
 
 /**
  * Home page · Smart Tracking section.
@@ -12,8 +17,32 @@ import { SmartTrackingCards } from "./SmartTrackingCards";
  * right; stacks on mobile) followed by a horizontal scroll-snap row of 5
  * feature cards. Cards live in a separate client island so this section stays
  * server-rendered.
+ *
+ * Card content is Sanity-managed (singleton `smartTrackingCards`, editors can
+ * add/reorder cards) with the hardcoded `SMART_TRACKING_CARDS` composite SVGs
+ * as fallback while Sanity is empty — same pattern as `StatsBand`.
  */
-export function SmartTracking() {
+export async function SmartTracking() {
+  const doc = await client.fetch<SmartTrackingCardsDoc | null>(
+    smartTrackingCardsQuery,
+    {},
+    { next: { revalidate: 60 } },
+  );
+  // Only cards with an actual uploaded image count — an editor can add an
+  // array entry in Studio before attaching the image, which would otherwise
+  // crash `urlFor` (no asset until an image is uploaded). The query
+  // dereferences the asset (`asset->{ url }`), so check `url` here, not
+  // `_ref` — the raw reference field is gone once dereferenced.
+  const validCards = doc?.cards?.filter((c) => Boolean(c.image?.asset?.url)) ?? [];
+  const cards: readonly SmartTrackingCard[] =
+    validCards.length > 0
+      ? validCards.map((c, i) => ({
+          id: i + 1,
+          src: urlFor(c.image).width(1172).format("webp").quality(85).url(),
+          alt: c.alt,
+        }))
+      : SMART_TRACKING_CARDS;
+
   return (
     <Section tone="light" spacing="loose" className="overflow-hidden">
       <Container className="max-w-[1440px] lg:px-12">
@@ -55,7 +84,7 @@ export function SmartTracking() {
         </div>
       </Container>
 
-      <SmartTrackingCards />
+      <SmartTrackingCards cards={cards} />
     </Section>
   );
 }

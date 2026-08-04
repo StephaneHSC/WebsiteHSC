@@ -81,6 +81,17 @@ export const siteStatsQuery = /* groq */ `
   }
 `;
 
+/** Smart Tracking app feature cards (singleton, home page carousel). */
+export const smartTrackingCardsQuery = /* groq */ `
+  *[_type == "smartTrackingCards"][0]{
+    "cards": cards[] | order(order asc) {
+      image { ..., asset->{ url } },
+      alt,
+      order
+    }
+  }
+`;
+
 /**
  * Showcase gallery images for a specific item, matched by slug.
  * Returns null when no document exists for the given slug (galleries are optional).

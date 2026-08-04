@@ -522,9 +522,30 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
         </section>
       )}
 
-      {/* Step 03 — Shipment Details (mobile accordion) */}
+      {/* Step 02 — Route (client asked to bring this back 2026-08). */}
       <CollapsibleSection
         number="02"
+        label="Route"
+        status={statusFor(2)}
+        collapsed={isCollapsed(2)}
+        desktopAccordion={accordionEverywhere}
+        onToggle={() => toggleStep(2)}
+        controlsId="step-02-body"
+      >
+        <Step02RouteInformation
+          routes={state.routes}
+          onChangeRoute={updateRoute}
+          onAddRoute={addRoute}
+          onRemoveRoute={removeRoute}
+          errors={errors}
+          stackFields={stackFields}
+          hideMultiRoute={isShell}
+        />
+      </CollapsibleSection>
+
+      {/* Step 03 — Shipment Details (mobile accordion) */}
+      <CollapsibleSection
+        number="03"
         label="Helicopter Details"
         status={statusFor(3)}
         collapsed={isCollapsed(3)}

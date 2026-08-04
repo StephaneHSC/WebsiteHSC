@@ -66,6 +66,14 @@ export function Step03ShipmentDetails({
       >
         {/* Left column: Shipping Period + Transaction Type */}
         <div className="flex flex-col gap-[20px]">
+          <TextField
+            label="Shipping Period"
+            required
+            placeholder="e.g. Q3 2026"
+            value={state.shippingPeriod}
+            onChange={(e) => onChange({ shippingPeriod: e.currentTarget.value })}
+            error={errors.shippingPeriod}
+          />
           <SelectField
             label="Transaction Type"
             required

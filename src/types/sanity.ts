@@ -66,6 +66,16 @@ export type SiteStats = {
   stats: SiteStat[];
 };
 
+export type SmartTrackingCardDoc = {
+  image: SanityImage;
+  alt: string;
+  order: number;
+};
+
+export type SmartTrackingCardsDoc = {
+  cards: SmartTrackingCardDoc[];
+};
+
 /**
  * Gallery strip item — image or video. Discriminate by the presence of
  * `url` (video) vs `image` (image); `_type` is "galleryImage"/"galleryVideo"

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Reveal } from "@/components/sections/_shared/Reveal";
 import { cn } from "@/lib/utils";
-import { SMART_TRACKING_CARDS } from "@/lib/constants";
+import type { SmartTrackingCard } from "@/lib/constants";
 
 /**
  * Horizontal scroll-snap card row with prev/next nav buttons.
@@ -13,12 +13,13 @@ import { SMART_TRACKING_CARDS } from "@/lib/constants";
  * server component. Mobile users get native swipe; desktop gets buttons that
  * programmatically smooth-scroll one card at a time.
  *
- * Card data is in `SMART_TRACKING_CARDS` so future "Mobile App" pages can
- * reuse it. Cards are full composite assets (title + description + mockup
- * baked into the image); alt text carries accessibility.
+ * Card data is passed down from `SmartTracking` (Sanity-managed, with the
+ * hardcoded `SMART_TRACKING_CARDS` as fallback). Cards are full composite
+ * assets (title + description + mockup baked into the image); alt text
+ * carries accessibility.
  */
 
-export function SmartTrackingCards() {
+export function SmartTrackingCards({ cards }: { cards: readonly SmartTrackingCard[] }) {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(false);
@@ -70,20 +71,24 @@ export function SmartTrackingCards() {
         className="focus-visible:ring-brand-red snap-x snap-mandatory overflow-x-auto scroll-smooth pb-2 [-ms-overflow-style:none] [scrollbar-width:none] focus-visible:ring-2 focus-visible:outline-none [&::-webkit-scrollbar]:hidden"
       >
         <ul className="flex gap-6 px-4 sm:px-6 lg:gap-8 lg:px-8">
-          {SMART_TRACKING_CARDS.map((card) => (
+          {cards.map((card) => (
             <li
               key={card.id}
               // `snap-always` forces one-card-per-swipe (no fling-skipping).
               className="w-[300px] shrink-0 snap-start snap-always sm:w-[400px] lg:w-[520px] xl:w-[580px]"
             >
-              <Image
-                src={card.src}
-                alt={card.alt}
-                width={1172}
-                height={1114}
-                className="h-auto w-full"
-                sizes="(min-width: 1280px) 580px, (min-width: 1024px) 520px, (min-width: 640px) 400px, 300px"
-              />
+              {/* aspect-ratio box (not fixed width/height) — the fallback
+                  SVGs are guaranteed 1172x1114, but a Sanity-uploaded photo
+                  won't necessarily match that exactly. */}
+              <div className="relative aspect-[1172/1114] w-full">
+                <Image
+                  src={card.src}
+                  alt={card.alt}
+                  fill
+                  className="object-cover"
+                  sizes="(min-width: 1280px) 580px, (min-width: 1024px) 520px, (min-width: 640px) 400px, 300px"
+                />
+              </div>
             </li>
           ))}
         </ul>
