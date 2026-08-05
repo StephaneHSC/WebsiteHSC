@@ -163,7 +163,7 @@ function ValueAddedRow({ service, number, isOpen, onToggle }: RowProps) {
           {/* Inline description, only shown when open and only when a description exists.
               `aria-hidden` keeps screen readers from announcing the collapsed copy as
               part of the parent button's accessible name. */}
-          {hasDescription ? (
+          {hasDescription && service.description ? (
             <span
               id={`value-added-panel-${service.slug}`}
               aria-hidden={!isOpen}

@@ -20,12 +20,18 @@ export function LinkifyEmail({ text }: { text: string }) {
           {part}
           {emails[i] ? (
             <a
-              href={`mailto:${emails[i]}`}
+              href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(emails[i]!)}`}
+              target="_blank"
+              rel="noopener noreferrer"
               className="underline hover:opacity-80"
+              // Opens Gmail's compose window in a new tab instead of
+              // `mailto:`, which silently does nothing without a default
+              // mail client configured on the machine.
+              //
               // Callers often render this inside a larger clickable row
               // (e.g. the Value-Added accordion's toggle button) — stop the
               // click bubbling up so it doesn't also collapse/toggle that
-              // ancestor instead of opening the mail client.
+              // ancestor.
               onClick={(e) => e.stopPropagation()}
             >
               {emails[i]}
