@@ -92,6 +92,22 @@ export const smartTrackingCardsQuery = /* groq */ `
   }
 `;
 
+/** Global office locations (singleton, "Our Offices" band above the footer). */
+export const officeLocationsQuery = /* groq */ `
+  *[_type == "officeLocations"][0]{
+    "offices": offices[] | order(order asc) {
+      officeId,
+      label,
+      country,
+      address,
+      phone,
+      email,
+      cityscape { ..., asset->{ url } },
+      order
+    }
+  }
+`;
+
 /**
  * Showcase gallery images for a specific item, matched by slug.
  * Returns null when no document exists for the given slug (galleries are optional).

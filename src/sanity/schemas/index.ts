@@ -6,6 +6,7 @@ import { quoteFormConfig } from "./quoteFormConfig";
 import { siteStats } from "./siteStats";
 import { showcaseItem } from "./showcaseItem";
 import { smartTrackingCards } from "./smartTrackingCards";
+import { officeLocations } from "./officeLocations";
 
 export const schemaTypes: SchemaTypeDefinition[] = [
   teamMember,
@@ -15,4 +16,5 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   siteStats,
   showcaseItem,
   smartTrackingCards,
+  officeLocations,
 ];

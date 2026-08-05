@@ -731,3 +731,13 @@ Initial recommendation was wrong — assumed the video was a hero background loo
 **Why**: Explicit client/developer request. This goes beyond the project brief's "only 5 areas are CMS-managed" rule (§3.3) — flagged and confirmed before implementing.
 
 **Tradeoffs**: Each card is still a single composite image (title/description/mockup baked in by the editor's designer), not structured fields — chosen to match today's visual design without a card-layout rewrite. `SmartTrackingCards` (client component, the scroll-snap row) now takes `cards` as a prop instead of importing the constant directly, so it no longer works standalone without a parent passing data. The image is rendered inside an `aspect-[1172/1114]` box with `object-cover` (not fixed `width`/`height`) since a Sanity upload won't necessarily match the fallback SVGs' exact pixel dimensions.
+
+---
+
+## 2026-08-03 — Office Locations made CMS-managed (scope change, 7th area)
+
+**Decision**: Added a new Sanity singleton `officeLocations` (array of `{ officeId, label, country, address, phone, email, cityscape, order }`) so editors can add/reorder/edit the "Our Offices" band (above the footer on home, services, services/[slug], /why-choose-us, /team, /showcase, /quote) without a deploy. Same CMS-first-with-fallback pattern as the other CMS-managed areas: falls back to the hardcoded `OFFICES` constant when the doc is empty or an entry is incomplete.
+
+**Why**: Explicit client/developer request, same session as the Smart Tracking cards change above. Also beyond the project brief's original 5-area list — flagged and confirmed before implementing.
+
+**Tradeoffs**: `OfficesGlobal.tsx` split into two files — a server component (fetches + falls back, same filename/export signature so none of the 7 call sites needed changes) and `OfficesGlobalClient.tsx` (the actual interactive UI: active-office state, cross-fading cityscape background, sliding highlight). An office entry is only used once every required text field AND an uploaded cityscape photo are present — a partially-filled Studio entry is dropped rather than rendering broken.

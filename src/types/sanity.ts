@@ -76,6 +76,21 @@ export type SmartTrackingCardsDoc = {
   cards: SmartTrackingCardDoc[];
 };
 
+export type OfficeLocationDoc = {
+  officeId: string;
+  label: string;
+  country: string;
+  address: string;
+  phone: string;
+  email: string;
+  cityscape: SanityImage;
+  order: number;
+};
+
+export type OfficeLocationsDoc = {
+  offices: OfficeLocationDoc[];
+};
+
 /**
  * Gallery strip item — image or video. Discriminate by the presence of
  * `url` (video) vs `image` (image); `_type` is "galleryImage"/"galleryVideo"

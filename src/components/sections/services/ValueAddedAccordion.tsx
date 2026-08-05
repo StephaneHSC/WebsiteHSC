@@ -115,7 +115,11 @@ function ValueAddedRow({ service, number, isOpen, onToggle }: RowProps) {
           className={cn(
             "relative block w-full shrink-0 overflow-hidden transition-[height] duration-300 ease-out",
             "xl:w-[708px]",
-            isOpen ? "h-[200px] xl:h-[400px]" : "h-[80px] xl:h-[100px]",
+            // Closed height must cover the tallest closed row — 2-line labels
+            // ("Ferry Flight Clearance", "Crates Manufacturing") make the
+            // text column taller than a shorter fixed thumbnail height,
+            // leaving a gap before the next row starts.
+            isOpen ? "h-[200px] xl:h-[400px]" : "h-[80px] xl:h-[148px]",
           )}
         >
           <Image
