@@ -86,8 +86,9 @@ export async function CustomerTestimonials() {
                   height={56}
                   // Tight, no horizontal gap either side — reads as the "O"
                   // in "LOVE" rather than a separate element floating
-                  // between two words.
-                  className="-mx-0.5 -mt-2 inline-block h-[0.9em] w-auto align-middle"
+                  // between two words. The source asset itself is drawn at a
+                  // tilt, so rotate it back level.
+                  className="-mx-0.5 -mt-2 inline-block h-[0.9em] w-auto rotate-[5deg] align-middle"
                 />
                 <span className="text-brand-red font-black">ve</span> Heli Skycargo
               </span>

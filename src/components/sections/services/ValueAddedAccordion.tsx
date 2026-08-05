@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Container } from "@/components/sections/_shared/Container";
 import { SectionEyebrow } from "@/components/sections/_shared/SectionEyebrow";
 import { Reveal } from "@/components/sections/_shared/Reveal";
+import { LinkifyEmail } from "@/components/sections/_shared/LinkifyEmail";
 import { VALUE_ADDED_SERVICES, type ValueAddedService } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
@@ -174,7 +175,7 @@ function ValueAddedRow({ service, number, isOpen, onToggle }: RowProps) {
               <span className="overflow-hidden">
                 <span className="text-ink mt-3 block max-w-[517px] xl:mt-6">
                   <span className="font-body block text-[14px] leading-[22px] xl:text-[17px] xl:leading-[25px]">
-                    {service.description}
+                    <LinkifyEmail text={service.description} />
                   </span>
                   {/* {service.detail ? (
                     <span className="font-body mt-3 block text-[14px] leading-[22px] xl:mt-4 xl:text-[17px] xl:leading-[25px]">

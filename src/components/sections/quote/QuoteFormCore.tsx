@@ -522,26 +522,50 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
         </section>
       )}
 
-      {/* Step 02 — Route (client asked to bring this back 2026-08). */}
-      <CollapsibleSection
-        number="02"
-        label="Route"
-        status={statusFor(2)}
-        collapsed={isCollapsed(2)}
-        desktopAccordion={accordionEverywhere}
-        onToggle={() => toggleStep(2)}
-        controlsId="step-02-body"
-      >
-        <Step02RouteInformation
-          routes={state.routes}
-          onChangeRoute={updateRoute}
-          onAddRoute={addRoute}
-          onRemoveRoute={removeRoute}
-          errors={errors}
-          stackFields={stackFields}
-          hideMultiRoute={isShell}
-        />
-      </CollapsibleSection>
+      {/* Step 02 — Route (client asked to bring this back 2026-08).
+          Mirrors Step 01's accordion/plain-section split, matching the
+          UI-fixes branch structure. "Add Another Route" always shows —
+          hideMultiRoute is NOT gated on isShell (client wants it everywhere,
+          including the embedded shell). */}
+      {accordionEverywhere ? (
+        <CollapsibleSection
+          number="02"
+          label="Route"
+          status={statusFor(2)}
+          collapsed={isCollapsed(2)}
+          desktopAccordion={accordionEverywhere}
+          onToggle={() => toggleStep(2)}
+          controlsId="step-02-body"
+        >
+          <Step02RouteInformation
+            routes={state.routes}
+            onChangeRoute={updateRoute}
+            onAddRoute={addRoute}
+            onRemoveRoute={removeRoute}
+            errors={errors}
+            stackFields={stackFields}
+            hideMultiRoute={false}
+          />
+        </CollapsibleSection>
+      ) : (
+        <section aria-labelledby="step-02" className="flex flex-col gap-[20px]">
+          <div
+            id="step-02"
+            className="border-input-border border-t border-dotted pt-[20px] lg:border-t-0 lg:pt-0"
+          >
+            <StepHeading number="02" label="Route" status={statusFor(2)} />
+          </div>
+          <Step02RouteInformation
+            routes={state.routes}
+            onChangeRoute={updateRoute}
+            onAddRoute={addRoute}
+            onRemoveRoute={removeRoute}
+            errors={errors}
+            stackFields={stackFields}
+            hideMultiRoute={false}
+          />
+        </section>
+      )}
 
       {/* Step 03 — Shipment Details (mobile accordion) */}
       <CollapsibleSection
