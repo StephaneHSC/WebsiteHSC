@@ -68,7 +68,7 @@ export function ServiceDetailHero({ service }: ServiceDetailHeroProps) {
                 ))}
               </h1>
 
-              <p className="line-clamp-2 min-h-[2lh] md:line-clamp-none md:min-h-0">
+              <p className="font-body line-clamp-2 min-h-[2lh] text-[14px] leading-[20px] md:line-clamp-none md:min-h-0 md:text-base">
                 {service.description}
               </p>
             </Reveal>

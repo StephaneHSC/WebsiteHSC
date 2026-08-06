@@ -88,7 +88,7 @@ export async function CustomerTestimonials() {
                   // in "LOVE" rather than a separate element floating
                   // between two words. The source asset itself is drawn at a
                   // tilt, so rotate it back level.
-                  className="-mx-0.5 -mt-2 inline-block h-[0.9em] w-auto rotate-[5deg] align-middle"
+                  className="-mx-0.5 -mt-3 inline-block h-[0.8em] w-auto rotate-[5deg] align-middle"
                 />
                 <span className="text-brand-red font-black">ve</span> Heli Skycargo
               </span>
