@@ -21,7 +21,7 @@ export function ServicesHero() {
           // Shifted left of center so the HSC logo on the wrapped helicopter
           // (left side of the source photo) isn't cropped off on narrower
           // viewports.
-          className="object-cover object-[30%_center]"
+          className="object-cover object-[3%_center]"
         />
         <span className="bg-ink/40 md:bg-ink/40 absolute inset-0" />
       </div>

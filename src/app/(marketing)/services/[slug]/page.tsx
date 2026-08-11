@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ServiceDetailHero } from "@/components/sections/service-detail/ServiceDetailHero";
+import { ServiceVideoSection } from "@/components/sections/service-detail/ServiceVideoSection";
 import { ServiceOverview } from "@/components/sections/service-detail/ServiceOverview";
 import { WhenToChoose } from "@/components/sections/service-detail/WhenToChoose";
 import { ValueAddedGrid } from "@/components/sections/service-detail/ValueAddedGrid";
@@ -44,6 +45,7 @@ export default async function ServiceDetailPage({ params }: { params: RouteParam
   return (
     <main className="flex flex-1 flex-col">
       <ServiceDetailHero service={service} />
+      {service.detailVideo ? <ServiceVideoSection src={service.detailVideo} /> : null}
       <ServiceOverview service={service} />
       <WhenToChoose service={service} />
       <ValueAddedGrid />

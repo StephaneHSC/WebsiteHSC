@@ -166,6 +166,11 @@ function TeamCard({ item, active }: { item: TeamCarouselItem; active: boolean })
               fill
               sizes="(min-width: 1024px) 220px, (min-width: 640px) 240px, 220px"
               className="object-cover object-top transition-transform duration-500 md:group-hover:scale-[1.03]"
+              style={
+                cardPhotoZoom(item.name) !== 1
+                  ? { transform: `scale(${cardPhotoZoom(item.name)})`, transformOrigin: "top" }
+                  : undefined
+              }
             />
           </div>
         ) : (
@@ -188,6 +193,23 @@ function TeamCard({ item, active }: { item: TeamCarouselItem; active: boolean })
       </div>
     </article>
   );
+}
+
+/**
+ * Per-photo zoom for the card grid — Ariana's source photo is a more
+ * zoomed-out full-body shot than the rest of the team's tighter bust-level
+ * crops, so it reads noticeably smaller in the same card frame. Scale it in
+ * until the client supplies a re-cropped source photo. Matches the same
+ * override in TeamSpotlightSection.tsx (kept separate since these are two
+ * different card components).
+ */
+const CARD_PHOTO_ZOOM: Record<string, number> = {
+  "ariana resclosado": 1.6,
+  "ariana reclosado": 1.6,
+};
+
+function cardPhotoZoom(fullName: string): number {
+  return CARD_PHOTO_ZOOM[fullName.trim().toLowerCase()] ?? 1;
 }
 
 function PlaceholderAvatar({ name }: { name: string }) {

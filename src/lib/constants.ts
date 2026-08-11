@@ -716,6 +716,14 @@ export type Service = {
    */
   detailHeroBenefits?: readonly ServiceBenefit[];
 
+  /**
+   * Optional full-width autoplay video band, rendered as its own section
+   * between the hero and the Overview section — not a replacement for the
+   * Overview photo. Portrait-shot source is fine; the band crops it
+   * (object-cover) to fill its own aspect box.
+   */
+  detailVideo?: string;
+
   /** §3.2 — Overview section. */
   detailOverview: {
     /** Gray pill label, e.g. "Roll-On/Roll-Off Ocean Transport". */
@@ -1309,6 +1317,7 @@ export const SERVICES: readonly Service[] = [
     detailEyebrow: "OVERVIEW AIR COMMERCIAL",
     detailHeroTitle: ["Commercial Air Freight Transport Solutions"],
     detailHeroImage: "/media/services/detail/air-commercial-hero.webp",
+    detailVideo: "/media/services/air-commerical-video-mobile.mp4",
     detailHeroImagePosition: "center 35%",
     detailHeroBenefits: [
       {
@@ -1515,7 +1524,7 @@ export const WHY_CHOOSE_GLOBAL_REACH = {
   },
   lede: "No matter from where to where, our experience and expertise in helicopter shipping will deliver a logistical solution catered to your needs and budget. 24/7, we are here for you. Our proven ability to orchestrate helicopter shipping & chartering makes us your partner of choice.",
   ctaLabel: "Request Quote",
-  ctaHref: "#request-quote",
+  ctaHref: "/quote",
 } as const;
 
 /**
@@ -1601,7 +1610,7 @@ export const WHY_CHOOSE_FEATURE_BLOCKS: readonly FeatureBlockContent[] = [
     },
     imageSide: "left",
     ctaLabel: "Request Quote",
-    ctaHref: "#request-quote",
+    ctaHref: "/quote",
   },
   {
     eyebrow: "Our Approach",
@@ -1623,7 +1632,7 @@ export const WHY_CHOOSE_FEATURE_BLOCKS: readonly FeatureBlockContent[] = [
     },
     imageSide: "right",
     ctaLabel: "Request Quote",
-    ctaHref: "#request-quote",
+    ctaHref: "/quote",
   },
 ];
 
