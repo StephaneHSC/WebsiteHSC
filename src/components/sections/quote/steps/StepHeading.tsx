@@ -59,7 +59,9 @@ export function StepHeading({
             labelWeight,
           )}
         >
-          <span className="mr-[12px] inline-block">{number}</span>
+          <span className="bg-brand-red text-surface mr-[12px] inline-flex size-[24px] items-center justify-center rounded-full text-[11px] font-bold normal-case lg:size-[26px] lg:text-[12px]">
+            {number}
+          </span>
           {label}
         </span>
         {iconBesideLabelOnDesktop && indicator ? (

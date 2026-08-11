@@ -33,7 +33,9 @@ export type ModeRadioGridProps = {
  * Each tile acts as a checkbox — clicking toggles it in/out of the selection.
  * Arrow keys move focus; Space toggles the focused item.
  */
-const SINGLE_ROW_GRID_TEMPLATE = "180fr 150fr 150fr 230fr 180fr 120fr";
+// Equal-width tiles per client request — was fractional per-label widths
+// (180/150/150/230/180/120) sized to each label's natural length.
+const SINGLE_ROW_GRID_TEMPLATE = "1fr 1fr 1fr 1fr 1fr 1fr";
 
 const SHELL_LABEL_OVERRIDES: Partial<Record<TransportMode, string>> = {
   "Ocean Breakbulk (Lo/Lo)": "Ocean Breakbulk",

@@ -522,15 +522,18 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
         </section>
       )}
 
-      {/* Step 02 — Route Information.
-          Embedded variant: collapsible. Standalone: not expanded by default. */}
+      {/* Step 02 — Route (client asked to bring this back 2026-08).
+          Mirrors Step 01's accordion/plain-section split, matching the
+          UI-fixes branch structure. "Add Another Route" always shows —
+          hideMultiRoute is NOT gated on isShell (client wants it everywhere,
+          including the embedded shell). */}
       {accordionEverywhere ? (
         <CollapsibleSection
           number="02"
-          label="Route Information"
+          label="Route"
           status={statusFor(2)}
           collapsed={isCollapsed(2)}
-          desktopAccordion
+          desktopAccordion={accordionEverywhere}
           onToggle={() => toggleStep(2)}
           controlsId="step-02-body"
         >
@@ -550,7 +553,7 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
             id="step-02"
             className="border-input-border border-t border-dotted pt-[20px] lg:border-t-0 lg:pt-0"
           >
-            <StepHeading number="02" label="Route Information" status={statusFor(2)} />
+            <StepHeading number="02" label="Route" status={statusFor(2)} />
           </div>
           <Step02RouteInformation
             routes={state.routes}
@@ -567,7 +570,7 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
       {/* Step 03 — Shipment Details (mobile accordion) */}
       <CollapsibleSection
         number="03"
-        label="Shipment Details"
+        label="Helicopter Details"
         status={statusFor(3)}
         collapsed={isCollapsed(3)}
         desktopAccordion={accordionEverywhere}
@@ -606,7 +609,7 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
       {/* Step 05 — Contact & Company (mobile accordion) */}
       <CollapsibleSection
         number="05"
-        label="Contact & Company"
+        label="Contact Details"
         status={statusFor(5)}
         collapsed={isCollapsed(5)}
         desktopAccordion={accordionEverywhere}
@@ -635,7 +638,7 @@ export function QuoteFormCore({ variant, config, prefill }: QuoteFormCoreProps) 
           aria-disabled={submitting || undefined}
           className={cn(
             "font-body inline-flex h-[56px] items-center justify-center px-[30px] text-[14px] font-bold tracking-[0.04em] capitalize transition-colors lg:text-[15px]",
-            "bg-ink text-surface hover:bg-ink/80 disabled:cursor-not-allowed disabled:opacity-60",
+            "bg-brand-red text-surface hover:bg-brand-red/80 disabled:cursor-not-allowed disabled:opacity-60",
             variant === "standalone" ? "w-full lg:w-[510px]" : "w-full",
           )}
         >

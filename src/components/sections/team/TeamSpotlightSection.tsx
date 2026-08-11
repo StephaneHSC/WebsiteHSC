@@ -153,7 +153,7 @@ function SpotlightComposite({ member }: SpotlightCompositeProps) {
         Desktop (lg+): single 1600×900 photo with content absolute-positioned
         over the upper-right per Figma `344:5593`.
       */}
-      <div className="relative w-full lg:aspect-[1600/900]">
+      <div className="relative w-full lg:aspect-[1600/900] lg:min-h-[820px] xl:min-h-0">
         {/* Photo wrapper — Figma mobile aspect (430/500), absolute fill on lg+. */}
         <div className="relative aspect-[430/500] w-full lg:absolute lg:inset-0 lg:aspect-auto lg:h-full">
           <Image
@@ -412,9 +412,10 @@ const TeamCard = forwardRef<HTMLButtonElement, TeamCardProps>(function TeamCard(
               fill
               sizes="146px"
               className="object-cover object-top transition-transform duration-500 md:group-hover:scale-[1.03]"
-              style={
-                zoom !== 1 ? { transform: `scale(${zoom})`, transformOrigin: "top" } : undefined
-              }
+              style={{
+                ...(zoom !== 1 ? { transform: `scale(${zoom})`, transformOrigin: "top" } : null),
+                objectPosition: cardPhotoObjectPosition(member.full_name),
+              }}
             />
           </div>
         ) : null}
@@ -455,13 +456,27 @@ const TeamCard = forwardRef<HTMLButtonElement, TeamCardProps>(function TeamCard(
  * vs "Reclosado") — both spellings are listed so either source resolves.
  */
 const CARD_PHOTO_ZOOM: Record<string, number> = {
-  "mia juliet marot": 1.15,
   "ariana resclosado": 1.25,
   "ariana reclosado": 1.25,
 };
 
 function cardPhotoZoom(fullName: string): number {
   return CARD_PHOTO_ZOOM[fullName.trim().toLowerCase()] ?? 1;
+}
+
+/**
+ * Per-photo horizontal centering override for the card grid. Mia's source
+ * photo has her positioned off-center within the frame, so the default
+ * "object-top" (horizontally centered on the raw image) still reads as
+ * off-center once cropped into the card — nudge the visible crop window
+ * left/right until the subject actually sits centered.
+ */
+const CARD_PHOTO_POSITION: Record<string, string> = {
+  "mia juliet marot": "15% top",
+};
+
+function cardPhotoObjectPosition(fullName: string): string {
+  return CARD_PHOTO_POSITION[fullName.trim().toLowerCase()] ?? "50% top";
 }
 
 function isPlaceholder(m: AnyMember): m is TeamMemberPlaceholder {

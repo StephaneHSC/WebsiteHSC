@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Container } from "@/components/sections/_shared/Container";
 import { SectionEyebrow } from "@/components/sections/_shared/SectionEyebrow";
 import { Reveal } from "@/components/sections/_shared/Reveal";
+import { LinkifyEmail } from "@/components/sections/_shared/LinkifyEmail";
 import { VALUE_ADDED_SERVICES, type ValueAddedService } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
@@ -47,7 +48,11 @@ export function ValueAddedAccordion() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="bg-surface w-full overflow-hidden">
+    <section
+      id="value-added"
+      ref={sectionRef}
+      className="bg-surface w-full scroll-mt-20 overflow-hidden"
+    >
       <Container className="max-w-[1600px] py-20 md:py-24 xl:px-[75px] xl:py-[108px]">
         <div className="flex flex-col items-center gap-4 text-center">
           <Reveal>
@@ -61,7 +66,7 @@ export function ValueAddedAccordion() {
           </Reveal>
         </div>
 
-        <ul className="mt-12 flex flex-col gap-[10px] xl:mt-[120px]">
+        <ul className="mt-12 flex flex-col xl:mt-[120px]">
           {VALUE_ADDED_SERVICES.map((service, i) => (
             <li key={service.slug}>
               <Reveal delay={0.04 * i}>
@@ -111,7 +116,11 @@ function ValueAddedRow({ service, number, isOpen, onToggle }: RowProps) {
           className={cn(
             "relative block w-full shrink-0 overflow-hidden transition-[height] duration-300 ease-out",
             "xl:w-[708px]",
-            isOpen ? "h-[200px] xl:h-[400px]" : "h-[80px] xl:h-[100px]",
+            // Closed height must cover the tallest closed row — 2-line labels
+            // ("Ferry Flight Clearance", "Crates Manufacturing") make the
+            // text column taller than a shorter fixed thumbnail height,
+            // leaving a gap before the next row starts.
+            isOpen ? "h-[200px] xl:h-[400px]" : "h-[80px] xl:h-[148px]",
           )}
         >
           <Image
@@ -154,7 +163,7 @@ function ValueAddedRow({ service, number, isOpen, onToggle }: RowProps) {
           {/* Inline description, only shown when open and only when a description exists.
               `aria-hidden` keeps screen readers from announcing the collapsed copy as
               part of the parent button's accessible name. */}
-          {hasDescription ? (
+          {hasDescription && service.description ? (
             <span
               id={`value-added-panel-${service.slug}`}
               aria-hidden={!isOpen}
@@ -166,7 +175,7 @@ function ValueAddedRow({ service, number, isOpen, onToggle }: RowProps) {
               <span className="overflow-hidden">
                 <span className="text-ink mt-3 block max-w-[517px] xl:mt-6">
                   <span className="font-body block text-[14px] leading-[22px] xl:text-[17px] xl:leading-[25px]">
-                    {service.description}
+                    <LinkifyEmail text={service.description} />
                   </span>
                   {/* {service.detail ? (
                     <span className="font-body mt-3 block text-[14px] leading-[22px] xl:mt-4 xl:text-[17px] xl:leading-[25px]">

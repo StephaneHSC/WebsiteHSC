@@ -48,7 +48,7 @@ export const NAV: readonly NavItem[] = [
 export const FOOTER = {
   company: [
     { label: "Why Choose Us", href: "/why-choose-us" },
-    { label: "Services", href: "/services" },
+    { label: "Transport Solutions", href: "/services" },
     { label: "Shipment Showcase", href: "/showcase" },
     { label: "Our Team", href: "/team" },
     { label: "Request Quote", href: "/quote" },
@@ -716,6 +716,14 @@ export type Service = {
    */
   detailHeroBenefits?: readonly ServiceBenefit[];
 
+  /**
+   * Optional full-width autoplay video band, rendered as its own section
+   * between the hero and the Overview section — not a replacement for the
+   * Overview photo. Portrait-shot source is fine; the band crops it
+   * (object-cover) to fill its own aspect box.
+   */
+  detailVideo?: string;
+
   /** §3.2 — Overview section. */
   detailOverview: {
     /** Gray pill label, e.g. "Roll-On/Roll-Off Ocean Transport". */
@@ -837,7 +845,7 @@ export const VALUE_ADDED_SERVICES: readonly ValueAddedService[] = [
     label: "Equipment Rental",
     thumb: "/media/services/value-added/equipment-rental.webp",
     description:
-      "We have our own dedicated S76C++ airfreight cradle and AW139 saddle for oceanfreight and road freight that can be rented out for the transportation of Sikorski 76C++ and Leonardo Helicopter AW139.",
+      "We have our own dedicated S76C++ airfreight cradle, AW139, AW189 shipping kit that can be rented out for the transportation of Sikorski 76C++ and Leonardo Helicopter AW139/AW189",
     shortDescription:
       "Lifting tool, transport saddle and other shipping kits available for rental.",
     iconM4: "/media/services/detail/value-added/equipment-rental.png",
@@ -847,7 +855,7 @@ export const VALUE_ADDED_SERVICES: readonly ValueAddedService[] = [
     label: "AOG",
     thumb: "/media/services/value-added/aog.webp",
     description:
-      "Helicopter On Ground ! Get your AOG parts on the next flight out. We shipped from any part of the world to anywhere, every day, weekend included.",
+      "Helicopter On Ground ! Get your AOG parts on the next flight out. We shipped from any part of the world to anywhere, every day, weekend included. Send your request to team@heliskycargo.com or WhatsApp us.",
     shortDescription: "Grounded aircraft? We arrange parts and engineers to restore service fast.",
     iconM4: "/media/services/detail/value-added/aog.png",
   },
@@ -856,7 +864,7 @@ export const VALUE_ADDED_SERVICES: readonly ValueAddedService[] = [
     label: "OBC",
     thumb: "/media/services/value-added/obc.webp",
     description:
-      "Our hand carry team is ready to hop on a plane to get your parts delivered with speed at destination. It takes 60 minutes Chrono to come up with a solution upon receipt of your request.",
+      "Our hand carry team is ready to hop on a plane to get your parts delivered with speed at destination. It takes 60 minutes Chrono to come up with a solution upon receipt of your request. Send your request to team@heliskycargo.com or WhatsApp us.",
     shortDescription:
       "Our hand-carry team ensures supervised transport and secure delivery of critical aeroparts.",
     iconM4: "/media/services/detail/value-added/obc.png",
@@ -909,7 +917,7 @@ export const VALUE_ADDED_SERVICES: readonly ValueAddedService[] = [
   {
     slug: "cargo-insurance",
     label: "Cargo Insurance",
-    thumb: "/media/services/value-added/cargo-insurance.webp",
+    thumb: "/media/services/value-added/cargo-insurance.png",
     description:
       "We provide a comprehensive all-risk marine insurance at a very competitive price.",
     shortDescription:
@@ -969,8 +977,10 @@ export const SERVICES: readonly Service[] = [
           ),
         ]),
         para([
+          reg("Heli Skycargo contracts with the very best "),
+          bold("global Ro/Ro carriers"),
           reg(
-            "Heli Skycargo contracts with the very best global Ro/Ro carriers, including NYK, Höegh Autoliners, Wallenius Wilhelmsen, MOL (Mitsui O.S.K. Lines), K Line, EUKOR, Grimaldi, Bahri Shipping, Cosco, Glovis and many others.",
+            ", including NYK, Höegh Autoliners, Wallenius Wilhelmsen, MOL (Mitsui O.S.K. Lines), K Line, EUKOR, Grimaldi, Bahri Shipping, Cosco, Glovis and many others.",
           ),
         ]),
       ],
@@ -979,8 +989,20 @@ export const SERVICES: readonly Service[] = [
     },
     detailWhenToChoose: {
       title: SHARED_WHEN_TO_CHOOSE.title,
-      intro:
-        "RoRo (Roll-on/Roll-off) transport is the ideal solution where the helicopter can be safely secured onto a MAFI trailer or towed directly onboard the vessel, allowing cargo to remain on a single transport platform throughout the shipping process. This method is often preferred for its safety thanks to minimal cargo handling and travelling below ship deck. By reducing the number of loading and unloading activities, RoRo transport minimizes handling risks and shortens transit times, making it particularly suitable for helicopters moving between major international ports served by established RoRo carrier networks. It is an excellent option for operators seeking a reliable, secure, and economical transportation solution while maintaining the highest standards of aircraft protection.",
+      intro: [
+        para([
+          bold("RoRo (Roll-on/Roll-off)"),
+          reg(
+            " transport is the ideal solution where the helicopter can be safely secured onto a MAFI trailer or towed directly onboard the vessel, allowing cargo to remain on a single transport platform throughout the shipping process. This method is often preferred for its safety thanks to minimal cargo handling and ",
+          ),
+          bold("travelling below ship deck"),
+          reg(
+            ". By reducing the number of loading and unloading activities, RoRo transport minimizes handling risks and shortens transit times, making it particularly suitable for helicopters moving between major international ports served by established RoRo carrier networks. It is an excellent option for operators seeking a ",
+          ),
+          bold("reliable, secure, and economical transportation solution"),
+          reg(" while maintaining the highest standards of aircraft protection."),
+        ]),
+      ],
       image: "/media/services/detail/ocean-roro-when.webp",
       cards: [
         {
@@ -1066,9 +1088,16 @@ export const SERVICES: readonly Service[] = [
     },
     detailWhenToChoose: {
       title: SHARED_WHEN_TO_CHOOSE.title,
-      intro:
-        "LoLo transport is the preferred option when a helicopter cannot be safely towed onboard a RoRo vessel, when project requirements demand direct lifting operations and fast delivery, or when the origin and destination ports are not served by RoRo carriers.",
-      image: "/media/services/detail/ocean-lolo-when.webp",
+      intro: [
+        para([
+          reg(
+            "LoLo transport is the preferred option when a helicopter cannot be safely towed onboard a RoRo vessel, when project requirements demand ",
+          ),
+          bold("direct lifting operations and fast delivery"),
+          reg(", or when the origin and destination ports are not served by RoRo carriers."),
+        ]),
+      ],
+      image: "/media/services/detail/ocean-lolo-when.png",
       cards: [
         {
           title: "Get There",
@@ -1150,8 +1179,12 @@ export const SERVICES: readonly Service[] = [
         ]),
         para([
           reg(
-            "All solutions are tailored based on aircraft size, destination requirements, and operational constraints. By utilizing container vessel services, Ocean FCL provides access to a wide range of global routes, higher sailing frequency, and greater destination flexibility compared to specialized cargo vessels.",
+            "All solutions are tailored based on aircraft size, destination requirements, and operational constraints. By utilizing container vessel services, Ocean FCL provides access to a ",
           ),
+          bold(
+            "wide range of global routes, higher sailing frequency, and greater destination flexibility",
+          ),
+          reg(" compared to specialized cargo vessels."),
         ]),
       ],
       image: "/media/services/detail/ocean-fcl-overview.webp",
@@ -1229,14 +1262,22 @@ export const SERVICES: readonly Service[] = [
       paragraphs: [
         para([
           reg(
-            "Our road freight helicopter transport solution provides secure and efficient inland movement of helicopters using assets-own, GPS-equipped air-ride low-bed trailers, modular transport platforms, or specialized heavy transport trailers, selected based on aircraft dimensions, weight distribution, and operational requirements. This service is designed to ensure ",
+            "Our road freight helicopter transport solution provides secure and efficient inland movement of helicopters using ",
+          ),
+          bold(
+            "assets-own, GPS-equipped air-ride low-bed trailers, modular transport platforms, or specialized heavy transport trailers",
+          ),
+          reg(
+            ", selected based on aircraft dimensions, weight distribution, and operational requirements. This service is designed to ensure ",
           ),
           bold("safe first-mile, in-transit, last-mile connectivity"),
           reg(" between airports, ports, maintenance facilities, and final project locations."),
         ]),
         para([
+          reg("Our team would arrange "),
+          bold("road survey, road permit application, dedicated escort"),
           reg(
-            "Our team would arrange road survey, road permit application, dedicated escort to meet your shipment safety requirements. Each route is pre-assessed for height restrictions, bridge load limits, road width, turning radii, and access constraints to ensure safe and uninterrupted transport operations from origin to destination. Heli Skycargo oversees documentation, permits, escort arrangements, and operational planning, including high-pole escort vehicles and police escorts where required, ensuring controlled, compliant, and safe execution throughout the entire inland transport process.",
+            " to meet your shipment safety requirements. Each route is pre-assessed for height restrictions, bridge load limits, road width, turning radii, and access constraints to ensure safe and uninterrupted transport operations from origin to destination. Heli Skycargo oversees documentation, permits, escort arrangements, and operational planning, including high-pole escort vehicles and police escorts where required, ensuring controlled, compliant, and safe execution throughout the entire inland transport process.",
           ),
         ]),
       ],
@@ -1276,6 +1317,7 @@ export const SERVICES: readonly Service[] = [
     detailEyebrow: "OVERVIEW AIR COMMERCIAL",
     detailHeroTitle: ["Commercial Air Freight Transport Solutions"],
     detailHeroImage: "/media/services/detail/air-commercial-hero.webp",
+    detailVideo: "/media/services/air-commerical-video-mobile.mp4",
     detailHeroImagePosition: "center 35%",
     detailHeroBenefits: [
       {
@@ -1311,8 +1353,10 @@ export const SERVICES: readonly Service[] = [
           reg(" and new generation "),
           bold("787 Freighter (B787F)"),
           reg(
-            " operating on established global airline routes across Europe, Asia, the Americas, Middle East and Africa. This option is ideal for shipments requiring dependable schedules, extensive global coverage, and optimized cost efficiency compared to dedicated charter solutions.",
+            " operating on established global airline routes across Europe, Asia, the Americas, Middle East and Africa. This option is ideal for shipments requiring ",
           ),
+          bold("dependable schedules, extensive global coverage, and optimized cost efficiency"),
+          reg(" compared to dedicated charter solutions."),
         ]),
         para([
           reg(
@@ -1330,8 +1374,20 @@ export const SERVICES: readonly Service[] = [
     },
     detailWhenToChoose: {
       title: SHARED_WHEN_TO_CHOOSE.title,
-      intro:
-        "Air Commercial transport is best suited for urgent helicopter shipments that require faster delivery than sea freight but do not require the immediacy or exclusivity of an air charter. It is ideal when projects are time-sensitive but still allow alignment with scheduled freighter departures, offering a practical balance between speed and cost efficiency. A standard hangar-to-hangar could range between 7 to 20 days depending on the destination, customs, flight schedule and other elements. This option is suitable for helicopters that can be prepared within airline cargo requirements, including disassembly or crating, while still meeting tight operational deadlines.",
+      intro: [
+        para([
+          bold("Air Commercial transport"),
+          reg(" is best suited for urgent helicopter shipments that require "),
+          bold("faster delivery than sea freight"),
+          reg(
+            " but do not require the immediacy or exclusivity of an air charter. It is ideal when projects are ",
+          ),
+          bold("time-sensitive"),
+          reg(
+            " but still allow alignment with scheduled freighter departures, offering a practical balance between speed and cost efficiency. A standard hangar-to-hangar could range between 7 to 20 days depending on the destination, customs, flight schedule and other elements. This option is suitable for helicopters that can be prepared within airline cargo requirements, including disassembly or crating, while still meeting tight operational deadlines.",
+          ),
+        ]),
+      ],
       image: "/media/services/detail/air-commercial-when.webp",
       cards: [
         {
@@ -1419,7 +1475,15 @@ export const SERVICES: readonly Service[] = [
           reg("Air charter is the preferred transportation solution when "),
           bold("speed, flexibility, and operational urgency"),
           reg(
-            " are critical factors. Utilizing dedicated cargo aircraft allows helicopters to be delivered hangar-to-hangar in the shortest transit time ranging within 3 to 5 days, making it ideal for urgent deployments, emergency response missions, and time-sensitive project requirements. Air charter also provides access to remote and hard-to-reach destinations where conventional sea freight services or commercial airfreight B74F may be impractical or unavailable. Charter flights offer maximum schedule control, enabling departures and routing to be tailored around specific project timelines and operational demands. With significantly fewer handling stages throughout the logistics chain, helicopters benefit from enhanced security, reduced transit risk, and faster delivery, making air charter the optimal choice for critical helicopter transportation requirements worldwide.",
+            " are critical factors. Utilizing dedicated cargo aircraft allows helicopters to be delivered hangar-to-hangar in the shortest transit time ranging within 3 to 5 days, making it ideal for urgent deployments, emergency response missions, and time-sensitive project requirements. Air charter also provides access to remote and hard-to-reach destinations where conventional sea freight services or commercial airfreight B74F may be impractical or unavailable. Charter flights offer ",
+          ),
+          bold("maximum schedule control"),
+          reg(
+            ", enabling departures and routing to be tailored around specific project timelines and operational demands. With significantly fewer handling stages throughout the logistics chain, helicopters benefit from",
+          ),
+          bold(" enhanced security, reduced transit risk, and faster delivery,"),
+          reg(
+            "            making air charter the optimal choice for critical helicopter transportation requirements worldwide.",
           ),
         ]),
       ],
@@ -1460,7 +1524,7 @@ export const WHY_CHOOSE_GLOBAL_REACH = {
   },
   lede: "No matter from where to where, our experience and expertise in helicopter shipping will deliver a logistical solution catered to your needs and budget. 24/7, we are here for you. Our proven ability to orchestrate helicopter shipping & chartering makes us your partner of choice.",
   ctaLabel: "Request Quote",
-  ctaHref: "#request-quote",
+  ctaHref: "/quote",
 } as const;
 
 /**
@@ -1546,7 +1610,7 @@ export const WHY_CHOOSE_FEATURE_BLOCKS: readonly FeatureBlockContent[] = [
     },
     imageSide: "left",
     ctaLabel: "Request Quote",
-    ctaHref: "#request-quote",
+    ctaHref: "/quote",
   },
   {
     eyebrow: "Our Approach",
@@ -1568,7 +1632,7 @@ export const WHY_CHOOSE_FEATURE_BLOCKS: readonly FeatureBlockContent[] = [
     },
     imageSide: "right",
     ctaLabel: "Request Quote",
-    ctaHref: "#request-quote",
+    ctaHref: "/quote",
   },
 ];
 
@@ -1830,7 +1894,7 @@ export const PLACEHOLDER_TEAM_MEMBERS: readonly TeamMemberPlaceholder[] = [
   {
     _id: "team.anjelimo-mulati",
     full_name: "Anjelimo Mulati",
-    role: "Africa Sales & Procurement Manager",
+    role: "Africa Desk & Procurement Manager",
     placeholderPhoto: "/media/team/anjelimo-mulati.webp",
     // TODO(content): client to provide bio for Anjelimo Mulati.
     bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
@@ -1839,7 +1903,7 @@ export const PLACEHOLDER_TEAM_MEMBERS: readonly TeamMemberPlaceholder[] = [
     _id: "team.mia-juliet-marot",
     full_name: "Mia Juliet Marot",
     role: "Junior Sales & Marketing Executive ",
-    placeholderPhoto: "/media/team/mia-juliet-marot.webp",
+    placeholderPhoto: "/media/team/mia-juliet-marot.png",
     // TODO(content): client to provide bio for Mia Juliet Marot.
     bioParagraphs: [LOREM_BIO_1, LOREM_BIO_2],
   },
@@ -1858,10 +1922,11 @@ export const SERVICES_TEASER: readonly Service[] = [
     slug: "ocean-roro",
     name: "Ocean RO/RO",
     description: "Transport your aircraft using Ro/Ro vessel, loaded on a MAFI or simply towing.",
-    image: "/home/services-teaser/ser-1.webp",
+    image: "/home/services-teaser/ser-1.png",
+    imageObjectPosition: "70% 50%",
     detailEyebrow: "OVERVIEW OCEAN RO/RO",
     detailHeroTitle: ["Roll-On/Roll-Off", "Ocean Transport"],
-    detailHeroImage: "/home/services-teaser/ser-1.webp",
+    detailHeroImage: "/home/services-teaser/ser-1.png",
     detailOverview: {
       label: "Roll-On/Roll-Off Ocean Transport",
       title: ["Fast, Secure", "Helicopter Transport", "Using RoRo Vessels."],
@@ -1876,8 +1941,10 @@ export const SERVICES_TEASER: readonly Service[] = [
           ),
         ]),
         para([
+          reg("Heli Skycargo contracts with the very best "),
+          bold("global Ro/Ro carriers"),
           reg(
-            "Heli Skycargo contracts with the very best global Ro/Ro carriers, including NYK, Höegh Autoliners, Wallenius Wilhelmsen, MOL (Mitsui O.S.K. Lines), K Line, EUKOR, Grimaldi, Bahri Shipping, Cosco, Glovis and many others.",
+            ", including NYK, Höegh Autoliners, Wallenius Wilhelmsen, MOL (Mitsui O.S.K. Lines), K Line, EUKOR, Grimaldi, Bahri Shipping, Cosco, Glovis and many others.",
           ),
         ]),
       ],
@@ -1886,8 +1953,20 @@ export const SERVICES_TEASER: readonly Service[] = [
     },
     detailWhenToChoose: {
       title: SHARED_WHEN_TO_CHOOSE.title,
-      intro:
-        "RoRo (Roll-on/Roll-off) transport is the ideal solution where the helicopter can be safely secured onto a MAFI trailer or towed directly onboard the vessel, allowing cargo to remain on a single transport platform throughout the shipping process. This method is often preferred for its safety thanks to minimal cargo handling and travelling below ship deck. By reducing the number of loading and unloading activities, RoRo transport minimizes handling risks and shortens transit times, making it particularly suitable for helicopters moving between major international ports served by established RoRo carrier networks. It is an excellent option for operators seeking a reliable, secure, and economical transportation solution while maintaining the highest standards of aircraft protection.",
+      intro: [
+        para([
+          bold("RoRo (Roll-on/Roll-off)"),
+          reg(
+            " transport is the ideal solution where the helicopter can be safely secured onto a MAFI trailer or towed directly onboard the vessel, allowing cargo to remain on a single transport platform throughout the shipping process. This method is often preferred for its safety thanks to minimal cargo handling and ",
+          ),
+          bold("travelling below ship deck"),
+          reg(
+            ". By reducing the number of loading and unloading activities, RoRo transport minimizes handling risks and shortens transit times, making it particularly suitable for helicopters moving between major international ports served by established RoRo carrier networks. It is an excellent option for operators seeking a ",
+          ),
+          bold("reliable, secure, and economical transportation solution"),
+          reg(" while maintaining the highest standards of aircraft protection."),
+        ]),
+      ],
       image: "/media/services/detail/ocean-roro-when.webp",
       cards: [
         {
@@ -1911,10 +1990,10 @@ export const SERVICES_TEASER: readonly Service[] = [
     slug: "ocean-lolo",
     name: "Ocean LO/LO",
     description: "Safe Lift-on/Lift-off into cargo hold of container vessel or MPV Breakbulk ship.",
-    image: "/home/services-teaser/ser-2.webp",
+    image: "/home/services-teaser/ser-2-enhanced.png",
     detailEyebrow: "OVERVIEW OCEAN LO/LO",
     detailHeroTitle: ["Ocean Lift-On / Lift-Off", "Transport Method"],
-    detailHeroImage: "/home/services-teaser/ser-2.webp",
+    detailHeroImage: "/home/services-teaser/ser-2-enhanced.png",
     detailOverview: {
       label: "Lift-on / Lift-off Shipping",
       title: ["Container & Heavy", "Lift Shipping Options"],
@@ -1940,7 +2019,7 @@ export const SERVICES_TEASER: readonly Service[] = [
     detailWhenToChoose: {
       title: SHARED_WHEN_TO_CHOOSE.title,
       intro: SHARED_WHEN_TO_CHOOSE.intro,
-      image: "/media/services/detail/ocean-lolo-when.webp",
+      image: "/media/services/detail/ocean-lolo-when.png",
       cards: SHARED_WHEN_TO_CHOOSE.cards,
     },
   },
@@ -1980,11 +2059,11 @@ export const SERVICES_TEASER: readonly Service[] = [
     name: "Road Freight",
     description:
       "We deal with assets-own trucking companies providing GPS-equipped Air-ride specialised trailers.",
-    image: "/home/services-teaser/ser-4.webp",
-    imageObjectPosition: "30% 50%",
+    image: "/home/services-teaser/ser-4.png",
+    imageObjectPosition: "60% 50%",
     detailEyebrow: "OVERVIEW ROAD FREIGHT",
     detailHeroTitle: ["Helicopter Road Freight Solutions"],
-    detailHeroImage: "/home/services-teaser/ser-4.webp",
+    detailHeroImage: "/home/services-teaser/ser-4.png",
     detailOverview: {
       label: "Road Freight Transport",
       title: ["End-to-End", "Road Freight Services"],
@@ -2048,11 +2127,11 @@ export const SERVICES_TEASER: readonly Service[] = [
     name: "Air Chartering",
     description:
       "When time is of the essence or to reach places unreachable by 74F, go for the mighty Antonov124-100 or the IL76.",
-    image: "/home/services-teaser/ser-6.webp",
+    image: "/home/services-teaser/ser-6.png",
     imageObjectPosition: "70% 50%",
     detailEyebrow: "OVERVIEW AIR CHARTERING",
     detailHeroTitle: ["Air Charter Transport for Urgent Shipments"],
-    detailHeroImage: "/home/services-teaser/ser-6.webp",
+    detailHeroImage: "/home/services-teaser/ser-6.png",
     detailOverview: {
       label: "Air Charter Transport",
       title: ["Fast-Response", "Aircraft Charter", "Transport Solutions"],

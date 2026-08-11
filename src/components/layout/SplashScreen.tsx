@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { AutoplayVideo } from "@/components/ui/AutoplayVideo";
 
 export function SplashScreen({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<"visible" | "animating" | "done">("visible");
@@ -52,10 +53,8 @@ export function SplashScreen({ children }: { children: React.ReactNode }) {
             transition: state === "animating" ? "transform 700ms ease-in-out" : "none",
           }}
         >
-          <video
-            autoPlay
-            muted
-            playsInline
+          <AutoplayVideo
+            loop={false}
             className="absolute inset-0 h-full w-full object-cover opacity-50 md:opacity-60"
             src="/home/hero-video.mp4"
           />

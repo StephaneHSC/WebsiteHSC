@@ -44,7 +44,7 @@ export function OurSolutions() {
               <p className="text-ink text-lg font-medium md:text-xl">
                 We work on solutions and fast response.
               </p>
-              <p className="text-ink-soft mt-2 text-[15px] md:text-[17px]">
+              <p className="text-ink-soft mt-2 text-[15px] md:text-[17px] md:whitespace-nowrap">
                 We bring deep, functional expertise but are known for our flexible and available
                 approach to work.
               </p>
@@ -54,7 +54,7 @@ export function OurSolutions() {
         />
         <Reveal delay={0.3} className="mt-8 flex justify-center">
           <Link
-            href="#request-quote"
+            href="/quote"
             className={cn(
               buttonVariants({ variant: "secondary", size: "md" }),
               "border-ink hover:border-ink hover:bg-surface border-[1.5px] font-semibold",

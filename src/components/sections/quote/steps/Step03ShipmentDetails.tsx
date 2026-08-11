@@ -67,12 +67,11 @@ export function Step03ShipmentDetails({
         {/* Left column: Shipping Period + Transaction Type */}
         <div className="flex flex-col gap-[20px]">
           <TextField
-            label="Helicopter Shipping Period"
+            label="Shipping Period"
             required
             placeholder="e.g. Q3 2026"
             value={state.shippingPeriod}
             onChange={(e) => onChange({ shippingPeriod: e.currentTarget.value })}
-            maxLength={80}
             error={errors.shippingPeriod}
           />
           <SelectField

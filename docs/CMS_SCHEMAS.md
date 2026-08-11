@@ -2,7 +2,7 @@
 
 > Source of truth for Sanity content models. Mirror the field definitions from the project brief exactly. Do not add fields without updating this doc + `docs/DECISIONS.md`.
 
-There are **5 schemas total**: 3 collections + 2 singletons.
+There are **8 schemas total**: 4 collections + 4 singletons (`showcaseItem`, `smartTrackingCards`, and `officeLocations` were added later as explicit scope changes — see `docs/DECISIONS.md`).
 
 ---
 
@@ -116,6 +116,67 @@ Appears on: Why Choose Us stats band; reusable on Home page.
 - Recommend exactly 4 stats for the band layout
 - `value` max 8 characters
 - `label` max 24 characters
+
+---
+
+## 6. `smartTrackingCards` — Singleton with repeater
+
+Appears on: Home page "Smart Tracking Powered By Our Bespoke App" carousel.
+
+Added 2026-08-03 as an explicit scope change (see `docs/DECISIONS.md`) — not in the original project brief's 5-area list.
+
+```
+{
+  cards: [
+    {
+      image: image,   // composite graphic — title/description/mockup baked in by editor's designer
+      alt: string,     // accessibility description
+      order: number
+    },
+    ...
+  ]
+}
+```
+
+**Validation rules**:
+
+- `image` required
+- `alt` required, max 160 characters
+
+**Fallback**: when the doc is empty/unpublished, the frontend renders the hardcoded `SMART_TRACKING_CARDS` composite SVGs from `src/lib/constants.ts` instead.
+
+---
+
+## 7. `officeLocations` — Singleton with repeater
+
+Appears on: "Our Offices" band above the footer — home, services, services/[slug], /why-choose-us, /team, /showcase, /quote.
+
+Added 2026-08-03 as an explicit scope change (see `docs/DECISIONS.md`) — not in the original project brief's 5-area list.
+
+```
+{
+  offices: [
+    {
+      officeId: string,   // short unique slug, e.g. "hk", "usa"
+      label: string,       // e.g. "Heli Skycargo Limited"
+      country: string,     // e.g. "Hong Kong"
+      address: string,
+      phone: string,
+      email: string,
+      cityscape: image,    // background photo when this office is active
+      order: number
+    },
+    ...
+  ]
+}
+```
+
+**Validation rules**:
+
+- All fields required except `order`
+- `email` must be a valid email address
+
+**Fallback**: when the doc is empty, or an entry is missing a required field or its cityscape image, the frontend renders the hardcoded `OFFICES` constant from `src/lib/constants.ts` instead (whole-array fallback, not per-entry).
 
 ---
 

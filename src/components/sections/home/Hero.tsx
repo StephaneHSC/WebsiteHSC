@@ -1,6 +1,7 @@
 import { Container } from "@/components/sections/_shared/Container";
 import { Reveal } from "@/components/sections/_shared/Reveal";
 import { AppBadgeRow } from "@/components/ui/AppBadge";
+import { AutoplayVideo } from "@/components/ui/AutoplayVideo";
 
 /**
  * Home page Hero
@@ -9,20 +10,14 @@ export function Hero() {
   return (
     <section className="bg-surface text-surface relative isolate w-full overflow-hidden p-2">
       <div aria-hidden="true" className="absolute inset-0 -z-10 overflow-hidden">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 h-full w-full object-cover object-center"
-        >
+        <AutoplayVideo className="absolute inset-0 h-full w-full object-cover object-center">
           {/* #t=4.8 starts playback at 4.8s — matches the splash auto-dismiss
               so the home hero continues where the splash left off. Loops
               return to the start of the file, not back to 4.8s. */}
           <source src="/home/hero-video.mp4#t=5.5" type="video/mp4" />
           {/* Optional fallback fallback text/image if video fails */}
           Your browser does not support the video tag.
-        </video>
+        </AutoplayVideo>
 
         {/* Your existing gradient overlay stays on top of the video */}
         <div className="from-ink/40 via-ink/55 to-ink/80 absolute inset-0 bg-gradient-to-br" />

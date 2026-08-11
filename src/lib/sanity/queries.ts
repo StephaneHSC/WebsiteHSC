@@ -81,6 +81,33 @@ export const siteStatsQuery = /* groq */ `
   }
 `;
 
+/** Smart Tracking app feature cards (singleton, home page carousel). */
+export const smartTrackingCardsQuery = /* groq */ `
+  *[_type == "smartTrackingCards"][0]{
+    "cards": cards[] | order(order asc) {
+      image { ..., asset->{ url } },
+      alt,
+      order
+    }
+  }
+`;
+
+/** Global office locations (singleton, "Our Offices" band above the footer). */
+export const officeLocationsQuery = /* groq */ `
+  *[_type == "officeLocations"][0]{
+    "offices": offices[] | order(order asc) {
+      officeId,
+      label,
+      country,
+      address,
+      phone,
+      email,
+      cityscape { ..., asset->{ url } },
+      order
+    }
+  }
+`;
+
 /**
  * Showcase gallery images for a specific item, matched by slug.
  * Returns null when no document exists for the given slug (galleries are optional).
