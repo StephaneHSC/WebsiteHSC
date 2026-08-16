@@ -717,10 +717,10 @@ export type Service = {
   detailHeroBenefits?: readonly ServiceBenefit[];
 
   /**
-   * Optional full-width autoplay video band, rendered as its own section
-   * between the hero and the Overview section — not a replacement for the
-   * Overview photo. Portrait-shot source is fine; the band crops it
-   * (object-cover) to fill its own aspect box.
+   * Optional autoplay video, rendered as its own section between the hero
+   * and the Overview section — not a replacement for the Overview photo.
+   * Display is capped (see `ServiceVideoSection`); portrait-shot source is
+   * fine — the player crops it (object-cover) to fill its own aspect box.
    */
   detailVideo?: string;
 
@@ -1317,7 +1317,7 @@ export const SERVICES: readonly Service[] = [
     detailEyebrow: "OVERVIEW AIR COMMERCIAL",
     detailHeroTitle: ["Commercial Air Freight Transport Solutions"],
     detailHeroImage: "/media/services/detail/air-commercial-hero.webp",
-    detailVideo: "/media/services/air-commerical-video-mobile.mp4",
+    detailVideo: "/media/services/air-commercial-video-mobile.mp4",
     detailHeroImagePosition: "center 35%",
     detailHeroBenefits: [
       {
