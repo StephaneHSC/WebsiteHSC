@@ -15,7 +15,11 @@
  * account (created on first deploy), so CI only needs AWS credentials.
  *
  * Deploy:  npx sst deploy --stage production
- * Remove:  npx sst remove  --stage production   (blocked on production, see `protect`)
+ * Remove:  npx sst remove  --stage production
+ *          Blocked on production unless SST_ALLOW_REMOVE=true (see `protect`
+ *          below); the sst-remove workflow sets it for a deliberate teardown.
+ *          Note a teardown mints a new CloudFront distribution, which means
+ *          re-pointing the `www` DNS record afterwards.
  */
 export default $config({
   app(input) {
@@ -38,17 +42,22 @@ export default $config({
   },
 
   async run() {
+    // Custom domain - heliskycargo.com
+    // Note: authoritative DNS for this domain is Bluehost, not SiteGround.
+    // SiteGround only hosts the old site's files
+    const certArn = process.env.HSC_DOMAIN_CERT_ARN;
+
     new sst.aws.Nextjs("HscWeb", {
       openNextVersion: "4.1.0",
 
-      // Custom domain — uncomment once heliskycargo.com is managed in Route 53
-      // (or configure `dns` for an external provider). Until then the app is
-      // served on the generated CloudFront URL that `sst deploy` prints.
-      //
-      // domain: {
-      //   name: "heliskycargo.com",
-      //   redirects: ["www.heliskycargo.com"],
-      // },
+      ...(certArn && {
+        domain: {
+          name: "www.heliskycargo.com",
+          // SST can't write to Bluehost, so `dns: false` + our own ACM cert (us-east-1)
+          dns: false,
+          cert: certArn,
+        },
+      }),
 
       // Env vars flow from GitHub Actions secrets → the build (for NEXT_PUBLIC_*)
       // and the server Lambda (for the server-only secrets used by /api/quote).

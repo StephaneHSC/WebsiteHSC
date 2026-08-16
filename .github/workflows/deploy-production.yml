@@ -46,6 +46,8 @@ jobs:
       - name: Deploy with SST (OpenNext)
         run: npx sst deploy --stage production
         env:
+          # us-east-1 ACM cert ARN. Custom domain attaches only when this is set.
+          HSC_DOMAIN_CERT_ARN: ${{ secrets.HSC_DOMAIN_CERT_ARN }}
           # NEXT_PUBLIC_* are read at build time and inlined into the client bundle.
           NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID }}
           NEXT_PUBLIC_SANITY_DATASET: ${{ secrets.NEXT_PUBLIC_SANITY_DATASET }}
