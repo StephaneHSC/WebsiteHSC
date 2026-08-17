@@ -16,7 +16,7 @@ export function ServiceVideoSection({ src }: ServiceVideoSectionProps) {
   return (
     <section className="bg-surface w-full py-10 md:py-14 lg:py-20">
       <Container>
-        <div className="relative mx-auto aspect-video w-full max-w-4xl overflow-hidden">
+        <div className="relative mx-auto aspect-video w-full max-w-3xl overflow-hidden">
           <AutoplayVideo
             src={src}
             className="absolute inset-0 h-full w-full object-cover object-center"
