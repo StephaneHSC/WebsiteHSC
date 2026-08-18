@@ -42,6 +42,12 @@ export const NAV: readonly NavItem[] = [
 ] as const;
 
 /**
+ * Customer portal - external app (separate deployment), not a route on this site.
+ * Linked from the header (>= sm) and the mobile menu (all widths).
+ */
+export const CUSTOMER_PORTAL_URL = "https://webpanel.heliskycargo.com";
+
+/**
  * Footer link columns — match the Figma footer frame (node 344:3278).
  * Mobile collapses these into +/- accordion sections; desktop shows them side-by-side.
  */
