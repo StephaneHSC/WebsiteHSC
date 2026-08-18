@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { Logo } from "./Logo";
 import { MobileNav } from "./MobileNav";
 import { buttonVariants } from "@/components/ui/Button";
+import { CUSTOMER_PORTAL_URL } from "@/lib/constants";
 
 // Mobile heroes are shorter, so flip to opaque sooner. Threshold is read on
 // each scroll so window resize / device rotation adapts automatically.
@@ -54,7 +55,21 @@ export function Header() {
       />
       <div className="mx-auto flex max-w-[1600px] items-center justify-between px-4 py-3 sm:px-6 lg:px-12 lg:py-4 xl:px-20">
         <Logo inverted={!scrolled} />
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Customer portal - external app, opened in the same tab.
+              Hidden below 480px: logo + both buttons + burger need ~463px, so
+              portrait phones would overflow. It stays reachable as a MobileNav
+              row at every width. Brand red reads on both the transparent hero
+              and the scrolled white bar, so it needs no per-state override. */}
+          <a
+            href={CUSTOMER_PORTAL_URL}
+            className={cn(
+              buttonVariants({ variant: "brand", size: "sm" }),
+              "hidden min-[480px]:inline-flex",
+            )}
+          >
+            Customer Login
+          </a>
           <Link
             href="/quote"
             className={cn(

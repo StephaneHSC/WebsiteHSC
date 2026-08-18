@@ -5,7 +5,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { JetBrains_Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
-import { NAV } from "@/lib/constants";
+import { NAV, CUSTOMER_PORTAL_URL } from "@/lib/constants";
 import { Logo } from "./Logo";
 
 // Client request: "Aptos Mono" for the mobile menu. Aptos Mono is a
@@ -186,6 +186,19 @@ export function MobileNav({ inverted = false }: MobileNavProps = {}) {
                   >
                     Request Quote
                   </Link>
+                </li>
+                {/* Customer portal - external app, so a plain anchor (not
+                    next/link) and same tab. Present at every width; the header
+                    also surfaces it from sm: up. */}
+                <li>
+                  <a
+                    href={CUSTOMER_PORTAL_URL}
+                    onClick={close}
+                    className="text-ink hover:bg-surface-alt hover:text-brand-red focus-visible:ring-brand-red block rounded-full px-5 py-3 text-2xl font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                    style={{ fontFamily: "var(--font-menu-mono)" }}
+                  >
+                    Customer Login
+                  </a>
                 </li>
               </ul>
             </nav>
